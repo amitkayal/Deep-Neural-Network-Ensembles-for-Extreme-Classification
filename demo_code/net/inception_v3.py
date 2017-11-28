@@ -53,6 +53,7 @@ class Inception3(nn.Module):
         self.Mixed_7c = InceptionE(2048)
         self.fc = nn.Linear(2048, num_classes)
 
+        # initialization
         for m in self.modules():
             if isinstance(m, nn.Conv2d) or isinstance(m, nn.Linear):
                 import scipy.stats as stats
@@ -149,7 +150,7 @@ class InceptionA(nn.Module):
         branch_pool = F.avg_pool2d(x, kernel_size=3, stride=1, padding=1)
         branch_pool = self.branch_pool(branch_pool)
 
-        outputs = [branch1x1, branch5x5, branch3x3dbl, branch_pool]
+        outputs = [branch1x1, branch5x5, branch3x3dbl, branch_pool] # concat
         return torch.cat(outputs, 1)
 
 
