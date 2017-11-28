@@ -1,3 +1,4 @@
 trained_models/*.pth
 demo_code/demo_images/*
 .idea/*
+data/*

@@ -2,9 +2,9 @@ import os
 os.environ['CUDA_VISIBLE_DEVICES'] = '1,2,3'
 
 from common import *
-from net.rate import *
-from net.loss import *
-from utility.file import *
+# from net.rate import *
+# from net.loss import *
+# from utility.file import *
 
 from dataset.cdimage import *
 from dataset.sampler import *
