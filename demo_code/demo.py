@@ -1,5 +1,5 @@
 # from common import *
-from net.excited_inception_v3 import SEInception3
+from net.excited_inception_v3 import *
 from net.inception_v3 import Inception3
 from torch.autograd import Variable
 import torch.nn.functional as F
@@ -66,7 +66,7 @@ if __name__ == '__main__':
     #model_file ='/root/share/project/kaggle/cdiscount/deliver/release/trained_models/LB=0.69673_se-inc3_00026000_model.pth'
     #net = SEInception3(in_shape=(3,CDISCOUNT_HEIGHT,CDISCOUNT_WIDTH),num_classes=CDISCOUNT_NUM_CLASSES)
 
-    model_file ='/root/share/project/kaggle/cdiscount/deliver/release/trained_models/LB=0.69565_inc3_00075000_model.pth'
+    model_file ='../trained_models/LB=0.69565_inc3_00075000_model.pth'
     net = Inception3(in_shape=(3,CDISCOUNT_HEIGHT,CDISCOUNT_WIDTH),num_classes=CDISCOUNT_NUM_CLASSES)
 
     net.load_state_dict(torch.load(model_file))
@@ -75,10 +75,10 @@ if __name__ == '__main__':
 
     #let's test a few images
     img_files=[
-        '/media/ssd/data/kaggle/cdiscount/image/train/1000019388/2453177-1.jpg',
-        '/media/ssd/data/kaggle/cdiscount/image/train/1000012993/6287-0.jpg',
-        '/media/ssd/data/kaggle/cdiscount/image/train/1000011423/2196367-1.jpg',
-        '/media/ssd/data/kaggle/cdiscount/image/train/1000005928/5987233-0.jpg',
+        'demo_images/1000019388/2453177-1.jpg',
+        'demo_images/1000012993/6287-0.jpg',
+        'demo_images/1000011423/2196367-1.jpg',
+        'demo_images/1000005928/5987233-0.jpg',
     ]
 
     for img_file in img_files:
