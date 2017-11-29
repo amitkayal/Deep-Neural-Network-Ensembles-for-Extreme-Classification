@@ -1,4 +1,13 @@
 from common import *
+import cv2
+import os
+import torch
+import numpy as np
+import random
+import math
+
+from torch.utils.data import DataLoader
+from torch.utils.data.sampler import SequentialSampler
 
 ## for debug
 def dummy_transform(img,text='dummy_transform'):
@@ -145,7 +154,7 @@ def fix_multi_crop(image, roi_size=(160,160)):
 ## -------------------------------------------------------------------------------
 
 
-from dataset.cdimage import *
+from cdimage import *
 def run_check_multi_crop():
 
     def test_augment(image):
@@ -184,7 +193,9 @@ def run_check_multi_crop():
             tensor = images[a][0]
             print('%d: %s'%(a,str(tensor.size())))
             image= pytorch_tensor_to_image_transform(tensor)
-            im_show('image%d'%a,image)
+            ####
+            #im_show('image%d'%a,image)
+            ####
         cv2.waitKey(0)
         xx=0
 

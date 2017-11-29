@@ -1,4 +1,16 @@
 import os
+import random
+import cv2
+import inspect
+import datetime
+from cdimage import CDiscountDataset
+from torch.utils.data.sampler import RandomSampler
+from threading import Timer as timer
+from logging import Logger
+from torch.autograd import Variable
+from torch import optim
+from torch.optim.lr_scheduler import StepLR
+import torch.nn.functional as F
 os.environ['CUDA_VISIBLE_DEVICES'] = '1,2,3'
 
 from common import *
@@ -6,15 +18,21 @@ from common import *
 # from net.loss import *
 # from utility.file import *
 
-from dataset.cdimage import *
-from dataset.sampler import *
-from dataset.transform import *
+# from dataset.cdimage import *
+# from dataset.sampler import *
+from transform import *
 
 # --------------------------------------------------------
 
-from net.model.cdiscount.inception_v3 import Inception3 as Net
+from net.inception_v3 import Inception3 as Net
 
- 
+
+
+SEED = 123456
+PROJECT_PATH = './project'
+CDISCOUNT_HEIGHT = 180
+CDISCOUNT_WIDTH = 180
+CDISCOUNT_NUM_CLASSES = 5270
 
 ####################################################################################################
 ## common functions ##
@@ -71,10 +89,13 @@ def evaluate( net, test_loader ):
         logits = net(images)
         probs  = F.softmax(logits)
         loss = F.cross_entropy(logits, labels)
-        acc  = top_accuracy(probs, labels, top_k=(1,))#1,5
-
+        ####
+        #acc  = top_accuracy(probs, labels, top_k=(1,))#1,5
+        ####
         batch_size = len(indices)
-        test_acc  += batch_size*acc[0][0]
+        ####
+        #test_acc  += batch_size*acc[0][0]
+        ####
         test_loss += batch_size*loss.data[0]
         test_num  += batch_size
 
@@ -86,34 +107,38 @@ def evaluate( net, test_loader ):
 #--------------------------------------------------------------
 def run_training():
 
-    out_dir  = '/home/ck/project/results/inception3-180-02c' # s_xx1'
-    initial_checkpoint = \
-		'/home/ck/project/results/inception3-180-02b/checkpoint/00075000_model.pth'
-        #None  #
+    out_dir  = './test_dir' # s_xx1'
+    initial_checkpoint = None#\
+		# '/home/ck/project/results/inception3-180-02b/checkpoint/00075000_model.pth'
+        # None  #
 
     #pretrained_file = '/home/ck/project/data/pretrain/inception_v3_google-1a9a5a14.pth'
     #pretrained_file = '/root/share/data/models/pytorch/imagenet/inception/inception_v3_google-1a9a5a14.pth'
-    pretrained_file = '/home/ck/project/results/inception3-299-02a/checkpoint/00040000_model.pth'
+    pretrained_file = None#'/home/ck/project/results/inception3-299-02a/checkpoint/00040000_model.pth'
     skip = [] #['fc.weight', 'fc.bias']
 
     ## setup  ---------------------------
     os.makedirs(out_dir +'/checkpoint', exist_ok=True)
     os.makedirs(out_dir +'/backup', exist_ok=True)
-    backup_project_as_zip(PROJECT_PATH, out_dir +'/backup/code.train.zip')
-
-    log = Logger()
-    log.open(out_dir+'/log.train.txt',mode='a')
-    log.write('\n--- [START %s] %s\n\n' % (datetime.now().strftime('%Y-%m-%d %H:%M:%S'), '-' * 64))
-    log.write('** some experiment setting **\n')
-    log.write('\tSEED         = %u\n' % SEED)
-    log.write('\tPROJECT_PATH = %s\n' % PROJECT_PATH)
-    log.write('\tout_dir      = %s\n' % out_dir)
-    log.write('\n')
-
+    ####
+    #backup_project_as_zip(PROJECT_PATH, out_dir +'/backup/code.train.zip')
+    ####
+    ####
+    # log = Logger()
+    # log.open(out_dir+'/log.train.txt',mode='a')
+    # log.write('\n--- [START %s] %s\n\n' % (datetime.now().strftime('%Y-%m-%d %H:%M:%S'), '-' * 64))
+    # log.write('** some experiment setting **\n')
+    # log.write('\tSEED         = %u\n' % SEED)
+    # log.write('\tPROJECT_PATH = %s\n' % PROJECT_PATH)
+    # log.write('\tout_dir      = %s\n' % out_dir)
+    # log.write('\n')
+    ####
 
 
     ## net ------------------------------ -
-    log.write('** net setting **\n')
+    ####
+    #log.write('** net setting **\n')
+    ####
     net = Net(in_shape = (3, CDISCOUNT_HEIGHT, CDISCOUNT_WIDTH), num_classes=CDISCOUNT_NUM_CLASSES)
     net.cuda()
 
@@ -127,13 +152,13 @@ def run_training():
     #     for p in net.layer3.parameters():
     #         p.requires_grad = False
 
-
-    log.write('%s\n\n'%(type(net)))
-    log.write('\n%s\n'%(str(net)), is_terminal=0)
-    log.write(inspect.getsource(net.__init__)+'\n', is_terminal=0)
-    log.write(inspect.getsource(net.forward )+'\n', is_terminal=0)
-    log.write('\n')
-
+    ####
+    # log.write('%s\n\n'%(type(net)))
+    # log.write('\n%s\n'%(str(net)), is_terminal=0)
+    # log.write(inspect.getsource(net.__init__)+'\n', is_terminal=0)
+    # log.write(inspect.getsource(net.forward )+'\n', is_terminal=0)
+    # log.write('\n')
+    ####
 
     ## optimiser ----------------------------------
     #LR = StepLR([ (0, 0.01),  (200, 0.001),  (300, -1)])
@@ -152,7 +177,9 @@ def run_training():
 
 
     ## dataset ----------------------------------------
-    log.write('** dataset setting **\n')
+    ####
+    #log.write('** dataset setting **\n')
+    ####
     batch_size  = 128 #60   #512  #96 #256
     iter_accum  = 4 #2  #448//batch_size
 
@@ -179,21 +206,22 @@ def run_training():
                         num_workers = 4,
                         pin_memory  = True)
 
-
-    log.write('\ttrain_dataset.split = %s\n'%(train_dataset.split))
-    log.write('\tvalid_dataset.split = %s\n'%(valid_dataset.split))
-    log.write('\tlen(train_dataset)  = %d\n'%(len(train_dataset)))
-    log.write('\tlen(valid_dataset)  = %d\n'%(len(valid_dataset)))
-    log.write('\tlen(train_loader)   = %d\n'%(len(train_loader)))
-    log.write('\tlen(valid_loadernum_iters)   = %d\n'%(len(valid_loader)))
-    log.write('\tbatch_size  = %d\n'%(batch_size))
-    log.write('\titer_accum  = %d\n'%(iter_accum))
-    log.write('\tbatch_size*iter_accum  = %d\n'%(batch_size*iter_accum))
-    log.write('\n')
-
-    log.write(inspect.getsource(train_augment)+'\n',is_terminal=False)
-    log.write(inspect.getsource(valid_augment)+'\n',is_terminal=False)
-    log.write('\n')
+    ####
+    # log.write('\ttrain_dataset.split = %s\n'%(train_dataset.split))
+    # log.write('\tvalid_dataset.split = %s\n'%(valid_dataset.split))
+    # log.write('\tlen(train_dataset)  = %d\n'%(len(train_dataset)))
+    # log.write('\tlen(valid_dataset)  = %d\n'%(len(valid_dataset)))
+    # log.write('\tlen(train_loader)   = %d\n'%(len(train_loader)))
+    # log.write('\tlen(valid_loadernum_iters)   = %d\n'%(len(valid_loader)))
+    # log.write('\tbatch_size  = %d\n'%(batch_size))
+    # log.write('\titer_accum  = %d\n'%(iter_accum))
+    # log.write('\tbatch_size*iter_accum  = %d\n'%(batch_size*iter_accum))
+    # log.write('\n')
+    #
+    # log.write(inspect.getsource(train_augment)+'\n',is_terminal=False)
+    # log.write(inspect.getsource(valid_augment)+'\n',is_terminal=False)
+    # log.write('\n')
+    ####
 
     # if 0:  ## check data
     #     check_dataset(train_dataset, train_loader)
@@ -204,7 +232,9 @@ def run_training():
     start_iter = 0
     start_epoch= 0.
     if initial_checkpoint is not None:
-        log.write('\tloading @ initial_checkpoint = %s\n' % initial_checkpoint)
+        ####
+        #log.write('\tloading @ initial_checkpoint = %s\n' % initial_checkpoint)
+        ####
         net.load_state_dict(torch.load(initial_checkpoint, map_location=lambda storage, loc: storage))
  
         checkpoint  = torch.load(initial_checkpoint.replace('_model.pth','_optimizer.pth'),\
@@ -215,18 +245,21 @@ def run_training():
 
 
     elif pretrained_file is not None:  #pretrain
-        log.write('\tloading @ pretrained_file = %s\n' % pretrained_file)
+        ####
+        #log.write('\tloading @ pretrained_file = %s\n' % pretrained_file)
+        ####
         net.load_pretrain_pytorch_file( pretrained_file, skip )
 
 
     ## start training here! ##############################################
-    log.write('** start training here! **\n')
-
-    log.write(' optimizer=%s\n'%str(optimizer) )
-    log.write(' LR=%s\n\n'%str(LR) )
-    log.write('   rate   iter   epoch  | valid_loss/acc | train_loss/acc | batch_loss/acc |  time   \n')
-    log.write('-------------------------------------------------------------------------------------\n')
-
+    ####
+    # log.write('** start training here! **\n')
+    #
+    # log.write(' optimizer=%s\n'%str(optimizer) )
+    # log.write(' LR=%s\n\n'%str(LR) )
+    # log.write('   rate   iter   epoch  | valid_loss/acc | train_loss/acc | batch_loss/acc |  time   \n')
+    # log.write('-------------------------------------------------------------------------------------\n')
+    ####
  
     train_loss  = 0.0
     train_acc   = 0.0
@@ -260,8 +293,10 @@ def run_training():
 
             if i % iter_log == 0:
                 print('\r',end='',flush=True)
-                log.write('%0.4f  %5.1f k   %4.2f  | %0.4f  %0.4f | %0.4f  %0.4f | %0.4f  %0.4f | %5.0f min \n' % \
-                        (rate, i/1000, epoch, valid_loss, valid_acc, train_loss, train_acc, batch_loss, batch_acc, (timer() - start)/60))
+                ####
+                # log.write('%0.4f  %5.1f k   %4.2f  | %0.4f  %0.4f | %0.4f  %0.4f | %0.4f  %0.4f | %5.0f min \n' % \
+                #         (rate, i/1000, epoch, valid_loss, valid_acc, train_loss, train_acc, batch_loss, batch_acc, (timer() - start)/60))
+                ####
 
             #if 1:
             if i in iter_save:
@@ -276,9 +311,10 @@ def run_training():
             # learning rate schduler -------------
             lr = LR.get_rate(i)
             if lr<0 : break
-            adjust_learning_rate(optimizer, lr/iter_accum)
-            rate = get_learning_rate(optimizer)[0]*iter_accum
-
+            ####
+            # adjust_learning_rate(optimizer, lr/iter_accum)
+            # rate = get_learning_rate(optimizer)[0]*iter_accum
+            ####
 
             # one iteration update  -------------
             images = Variable(images).cuda()
@@ -286,8 +322,11 @@ def run_training():
             logits = net(images)
             probs  = F.softmax(logits)
 
-            loss = FocalLoss()(logits, labels)  #F.cross_entropy(logits, labels)
-            acc  = top_accuracy(probs, labels, top_k=(1,))
+            loss = F.cross_entropy(logits, labels)
+            ####
+            # loss = FocalLoss()(logits, labels)  #F.cross_entropy(logits, labels)
+            # acc  = top_accuracy(probs, labels, top_k=(1,))
+            ####
 
             # optimizer.zero_grad()
             # loss.backward()
@@ -302,7 +341,11 @@ def run_training():
 
 
             # print statistics  ------------
-            batch_acc  = acc[0][0]
+            ####
+            #batch_acc  = acc[0][0]
+            ####
+            batch_acc = 0 # temp value for testing
+
             batch_loss = loss.data[0]
             sum_train_loss += batch_loss
             sum_train_acc  += batch_acc
@@ -331,11 +374,10 @@ def run_training():
             'iter'     : i,
             'epoch'    : epoch,
         }, out_dir +'/checkpoint/%d_optimizer.pth'%(i))
- 
-    log.write('\n')
 
-
-
+    ####
+    # log.write('\n')
+    ####
 
 ##to determine best threshold etc ... ## ------------------------------ 
  
