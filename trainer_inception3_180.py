@@ -118,7 +118,7 @@ def save_checkpoint(optimizer, i, epoch, net, best_valid_acc, out_dir, name):
 
 
 #--------------------------------------------------------------
-def evaluate(net, test_loader, max_iter):
+def evaluate(net, test_loader, sample_num):
 
     test_num  = 0
     test_loss = 0
@@ -127,8 +127,8 @@ def evaluate(net, test_loader, max_iter):
 
     # for iter, (images, labels, indices) in enumerate(test_loader, 0):
     for iter, (images, labels) in enumerate(test_loader, 0):#remove indices for testing
-        # if cnt > max_iter:
-        #     break
+        if test_num > sample_num:
+            break
 
         images = Variable(images.type(torch.FloatTensor)).cuda() if use_cuda else Variable(
         images.type(torch.FloatTensor))
@@ -160,15 +160,24 @@ def evaluate(net, test_loader, max_iter):
 #--------------------------------------------------------------
 def run_training():
 
+    # settings
     out_dir  = '../' # s_xx1'
     initial_checkpoint = None
     pretrained_file = '../trained_models/LB=0.69565_inc3_00075000_model.pth'
     skip = [] #['fc.weight', 'fc.bias']
 
+    num_iters   = 1000*1000
+    iter_smooth = 100
+    iter_valid  = 200 #500
+    iter_log = 1
+    iter_save_freq = 1000
+    iter_save   = [0, num_iters-1] + list(range(0,num_iters,1*iter_save_freq)) # first and last iters, then every 1000 iters
+
+    validation_num = 50000
+
     ## setup  ---------------------------
     os.makedirs(out_dir +'/checkpoint', exist_ok=True)
     os.makedirs(out_dir +'/backup', exist_ok=True)
-    ####
 
     log.write('\n--- [START %s] %s\n\n' % (datetime.now().strftime('%Y-%m-%d %H:%M:%S'), '-' * 64))
     log.write('** some experiment setting **\n')
@@ -203,23 +212,14 @@ def run_training():
     #LR = StepLR([ (0, 0.01),  (200, 0.001),  (300, -1)])
     LR = StepLR([ (0, 0.01), (1, 0.001), (3, 0.0001)])
 
-    num_iters   = 1000*1000
-    iter_smooth = 100
-    iter_valid  = 200 #500
-    iter_log = 1
-    iter_save_freq = 1000
-    iter_save   = [0, num_iters-1] + list(range(0,num_iters,1*iter_save_freq)) # first and last iters, then every 1000 iters
-
-
     ## optimizer = optim.SGD(net.parameters(), lr=0.01, momentum=0.9, weight_decay=0.0005)  ###0.0005
     optimizer = optim.SGD(filter(lambda p: p.requires_grad, net.parameters()), lr=0.01, momentum=0.1, weight_decay=0.0001)
-
 
     ## dataset ----------------------------------------
     log.write('** dataset setting **\n')
     batch_size  = 128 #60   #512  #96 #256
+    validation_batch_size = 256
     iter_accum  = 4 #2  #448//batch_size
-
 
     transform = transforms.Compose([
         # transforms.ToTensor(): Converts a PIL.Image or numpy.ndarray (H x W x C) in the range [0, 255] to a torch.FloatTensor of shape (C x H x W) in the range [0.0, 1.0].
@@ -242,7 +242,7 @@ def run_training():
     valid_loader  = DataLoader(
                         valid_dataset,
                         sampler     = SequentialSampler(valid_dataset),
-                        batch_size  = batch_size,
+                        batch_size  = validation_batch_size,
                         drop_last   = False,
                         num_workers = 0,
                         pin_memory  = False)
@@ -340,7 +340,7 @@ def run_training():
 
             if i % iter_valid == 0:
                 net.eval()
-                valid_loss, valid_acc = evaluate(net, valid_loader, 10)
+                valid_loss, valid_acc = evaluate(net, valid_loader, validation_num)
                 net.train()
 
                 # update best valida_acc and update best model
@@ -373,11 +373,10 @@ def run_training():
             # learning rate schduler -------------
             lr = LR.get_rate(epoch)
             if lr<0 : break
-            ####
             adjust_learning_rate(optimizer, lr/iter_accum)
             rate = get_learning_rate(optimizer)[0]*iter_accum
-            ####
 
+            end = time.time()
             # one iteration update  -------------
             images = Variable(images.type(torch.FloatTensor)).cuda() if use_cuda else Variable(images.type(torch.FloatTensor))
             labels = Variable(labels).cuda() if use_cuda else Variable(labels)
