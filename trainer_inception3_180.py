@@ -146,17 +146,13 @@ def run_training():
 		# '/home/ck/project/results/inception3-180-02b/checkpoint/00075000_model.pth'
         # None  #
 
-    #pretrained_file = '/home/ck/project/data/pretrain/inception_v3_google-1a9a5a14.pth'
-    #pretrained_file = '/root/share/data/models/pytorch/imagenet/inception/inception_v3_google-1a9a5a14.pth'
     pretrained_file = '../trained_models/LB=0.69565_inc3_00075000_model.pth'
-    #None#'/home/ck/project/results/inception3-299-02a/checkpoint/00040000_model.pth'
     skip = [] #['fc.weight', 'fc.bias']
 
     ## setup  ---------------------------
     os.makedirs(out_dir +'/checkpoint', exist_ok=True)
     os.makedirs(out_dir +'/backup', exist_ok=True)
     ####
-    #backup_project_as_zip(PROJECT_PATH, out_dir +'/backup/code.train.zip')
 
     log.write('\n--- [START %s] %s\n\n' % (datetime.now().strftime('%Y-%m-%d %H:%M:%S'), '-' * 64))
     log.write('** some experiment setting **\n')
@@ -210,10 +206,6 @@ def run_training():
     batch_size  = 128 #60   #512  #96 #256
     iter_accum  = 4 #2  #448//batch_size
 
-    # train_dataset = CDiscountDataset(#'train_id_v0_5655916', 'train',  mode='train',
-    #                                  'train_id_v0_7019896', 'train',  mode='train',
-    #                                  #'train_id_v0_5000', 'train',  mode='train',  #'train_id_v0_100000',#
-    #                                 transform =[ lambda x:train_augment(x),])
 
     transform = transforms.Compose([
         # transforms.ToTensor(): Converts a PIL.Image or numpy.ndarray (H x W x C) in the range [0, 255] to a torch.FloatTensor of shape (C x H x W) in the range [0.0, 1.0].
@@ -230,8 +222,6 @@ def run_training():
                         num_workers = 0,
                         pin_memory  = False)
     if train_loader != None: print("Train loader loaded!")
-    # valid_dataset = CDiscountDataset( 'valid_id_v0_5000', 'train',  mode='train',
-    #                                 transform =[ lambda x:valid_augment(x),])
 
     valid_dataset = CDiscountDataset(csv_dir+data_file_name,root_dir,transform=transform)
 
