@@ -337,7 +337,6 @@ def run_training():
         ################################
         #print("start iteration")
         for k, data in enumerate(train_loader, 0):
-            #print("Iteration ",str(i))
             images,labels = data
             #print("image type:",type(images))
             # images = cv2.cvtColor(images, cv2.COLOR_BGR2RGB)
@@ -354,14 +353,12 @@ def run_training():
             #     valid_loss, valid_acc = evaluate(net, valid_loader)
             #     net.train()
             #
+
             if i % iter_log == 0:
                 # print('\r',end='',flush=True)
                 ####
                 log.write('\r%0.4f  %5.1f k  %4.2f  | %0.4f  %0.4f | %0.4f  %0.4f | %0.4f  %0.4f | %5.0f min \n' % \
                         (rate, i/1000, epoch, valid_loss, valid_acc, train_loss, train_acc, batch_loss, batch_acc, (timer() - start)/60))
-                ####
-            #
-            ####
 
             #if 1:
             if i in iter_save:
@@ -384,17 +381,10 @@ def run_training():
             # one iteration update  -------------
             images = Variable(images.type(torch.FloatTensor)).cuda() if use_cuda else Variable(images.type(torch.FloatTensor))
             labels = Variable(labels).cuda() if use_cuda else Variable(labels)
-            #print("variable images type",type(images))
             logits = net(images)
             probs  = F.softmax(logits)
-            #print("probs size:",probs.data.size())
-            #print("probs type:",type(probs.data))
-            #print("labels type:",type(labels.data))
-            #value, index = torch.max(probs.data[0],0)
-            # print("accuracy:",get_accuracy(probs, labels))
-            #print("probs:",index)
-            #print("labels:",labels)
             loss = F.cross_entropy(logits, labels)
+
             ####
             # loss = FocalLoss()(logits, labels)  #F.cross_entropy(logits, labels)
             # acc  = top_accuracy(probs, labels, top_k=(1,))
@@ -405,22 +395,15 @@ def run_training():
             # optimizer.step()
 
             # accumulate gradients
-            # print("loss:",loss.data)
-            #print("start backward...")
             loss.backward()
-            #print("backward finished")
             if j%iter_accum == 0:
                 #torch.nn.utils.clip_grad_norm(net.parameters(), 1)
                 #print("optim step")
                 optimizer.step()
                 optimizer.zero_grad()
 
-
             # print statistics  ------------
-            ####
-            #batch_acc  = acc[0][0]
-            ####
-            batch_acc = 0 # temp value for testing
+            batch_acc  = get_accuracy(probs, labels)
 
             batch_loss = loss.data[0]
             sum_train_loss += batch_loss
