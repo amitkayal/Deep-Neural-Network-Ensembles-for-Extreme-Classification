@@ -86,14 +86,16 @@ def valid_augment(image):
     return tensor
 
 def get_accuracy(probs, labels):
-    batch_size = probs.data.size()[0]
+    probs = probs.cpu().data if use_cuda else probs.data
+    labels = labels.data
+    batch_size = probs.size()[0]
     correct_num = 0.0
     for i in range(batch_size):
-        value, index = torch.max(probs.data[i], 0)
+        value, index = torch.max(probs[i], 0)
         #print("index ",index.numpy()[0])
         #print("label",labels.data[i])
-        indexing = index.cpu().numpy()[0] 
-        if(indexing == labels.data[i]):
+        indexing = index.numpy()[0]
+        if indexing == labels[i]:
             correct_num = correct_num + 1.0
             #print("correct!")
     return correct_num / batch_size
