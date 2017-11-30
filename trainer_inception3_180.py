@@ -4,7 +4,7 @@ import os
 import random
 import cv2
 import inspect
-import datetime
+from datetime import *
 from cdimage import CDiscountDataset
 from torch.utils.data.sampler import RandomSampler
 from logging import Logger
