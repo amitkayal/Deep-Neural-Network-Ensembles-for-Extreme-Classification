@@ -36,7 +36,7 @@ PROJECT_PATH = './project'
 CDISCOUNT_HEIGHT = 180
 CDISCOUNT_WIDTH = 180
 CDISCOUNT_NUM_CLASSES = 5270
-log = Log("-")
+log = Log("log.out")
 
 csv_dir = './data/'
 root_dir = '../output/train/'
