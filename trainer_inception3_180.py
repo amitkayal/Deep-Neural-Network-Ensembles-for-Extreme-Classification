@@ -133,14 +133,15 @@ def evaluate( net, test_loader ):
 #--------------------------------------------------------------
 def run_training():
 
-    out_dir  = './test_dir' # s_xx1'
+    out_dir  = '../' # s_xx1'
     initial_checkpoint = None#\
 		# '/home/ck/project/results/inception3-180-02b/checkpoint/00075000_model.pth'
         # None  #
 
     #pretrained_file = '/home/ck/project/data/pretrain/inception_v3_google-1a9a5a14.pth'
     #pretrained_file = '/root/share/data/models/pytorch/imagenet/inception/inception_v3_google-1a9a5a14.pth'
-    pretrained_file = None#'/home/ck/project/results/inception3-299-02a/checkpoint/00040000_model.pth'
+    pretrained_file = '../trained_models/LB=0.69565_inc3_00075000_model.pth'
+    #None#'/home/ck/project/results/inception3-299-02a/checkpoint/00040000_model.pth'
     skip = [] #['fc.weight', 'fc.bias']
 
     ## setup  ---------------------------
