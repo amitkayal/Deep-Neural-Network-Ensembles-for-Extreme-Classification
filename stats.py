@@ -90,7 +90,7 @@ df.sort_index(inplace=True)
 df.to_csv("./data/validation.csv")
 
 # 12118359
-df = pd.DataFrame.from_dict(train_rows, orient="index")
+df = pd.DataFrame.from_diwct(train_rows, orient="index")
 df.index.name = "index"
 df.columns = columns
 df.sort_index(inplace=True)

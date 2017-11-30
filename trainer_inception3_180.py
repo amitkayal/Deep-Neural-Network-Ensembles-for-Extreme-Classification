@@ -25,6 +25,7 @@ from transform import *
 # --------------------------------------------------------
 
 from net.inception_v3 import Inception3 as Net
+from __future__ import print_function
 
 use_cuda = True
 
@@ -197,12 +198,11 @@ def run_training():
     #LR = StepLR([ (0, 0.01),  (200, 0.001),  (300, -1)])
     #LR = StepLR([ (0, 0.0001),])
 
-    num_iters   = 1000  *1000 
+    num_iters   = 1000*1000
     iter_smooth = 20
-    iter_log    = 1000
+    iter_log    = 1
     iter_valid  = 500
-    iter_save   = [0, num_iters-1]\
-                   + list(range(0,num_iters,1*1000))
+    iter_save   = [0, num_iters-1] + list(range(0,num_iters,1*iter_log)) # first and last iters, then every 1000 iters
 
 
     ## optimizer = optim.SGD(net.parameters(), lr=0.01, momentum=0.9, weight_decay=0.0005)  ###0.0005
@@ -275,12 +275,15 @@ def run_training():
     ## resume from previous ----------------------------------
     start_iter = 0
     start_epoch= 0.
-    if initial_checkpoint is not None:
+    if initial_checkpoint is not None: # load a checkpoint and resume from previous training
         ####
         #log.write('\tloading @ initial_checkpoint = %s\n' % initial_checkpoint)
         ####
+
+        # load model
         net.load_state_dict(torch.load(initial_checkpoint, map_location=lambda storage, loc: storage))
- 
+
+        # load other info
         checkpoint  = torch.load(initial_checkpoint.replace('_model.pth','_optimizer.pth'),\
 					  map_location=lambda storage, loc: storage)
         start_iter  = checkpoint['iter' ]
@@ -288,7 +291,7 @@ def run_training():
         #optimizer.load_state_dict(checkpoint['optimizer'])
 
 
-    elif pretrained_file is not None:  #pretrain
+    elif pretrained_file is not None: # load a pretrained model and train from the beginning
         ####
         #log.write('\tloading @ pretrained_file = %s\n' % pretrained_file)
         ####
@@ -356,15 +359,16 @@ def run_training():
             #     #         (rate, i/1000, epoch, valid_loss, valid_acc, train_loss, train_acc, batch_loss, batch_acc, (timer() - start)/60))
             #     ####
             #
-            # #if 1:
-            # if i in iter_save:
-            #     torch.save(net.state_dict(),out_dir +'/checkpoint/%08d_model.pth'%(i))
-            #     torch.save({
-            #         'optimizer': optimizer.state_dict(),
-            #         'iter'     : i,
-            #         'epoch'    : epoch,
-            #     }, out_dir +'/checkpoint/%08d_optimizer.pth'%(i))
             ####
+
+            #if 1:
+            if i in iter_save:
+                torch.save(net.state_dict(),out_dir +'/checkpoint/%08d_model.pth'%(i))
+                torch.save({
+                    'optimizer': optimizer.state_dict(),
+                    'iter'     : i,
+                    'epoch'    : epoch,
+                }, out_dir +'/checkpoint/%08d_optimizer.pth'%(i))
 
 
             # learning rate schduler -------------
