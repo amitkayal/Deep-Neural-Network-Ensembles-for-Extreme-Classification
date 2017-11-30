@@ -86,6 +86,8 @@ def valid_augment(image):
     return tensor
 
 def get_accuracy(probs, labels):
+    print("probs type:",type(probs))
+    print("labels type:",type(labels))
     probs = probs.cpu().data if use_cuda else probs.data
     labels = labels.data
     batch_size = probs.size()[0]
