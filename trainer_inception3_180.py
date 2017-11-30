@@ -128,7 +128,7 @@ def evaluate(net, test_loader, max_iter):
         #print("labels:", labels)
         #print("probs:",probs)
         loss = F.cross_entropy(logits, labels)
-        test_acc = get_accuracy(probs, labels)
+        test_acc += get_accuracy(probs, labels)
         ####
         #acc  = top_accuracy(probs, labels, top_k=(1,))#1,5
         ####
@@ -142,8 +142,7 @@ def evaluate(net, test_loader, max_iter):
 
         cnt = cnt + 1
 
-    assert(test_num == len(test_loader.sampler))
-    test_acc  = test_acc/test_num
+    test_acc  = test_acc/cnt
     test_loss = test_loss/test_num
     return test_loss, test_acc
 
