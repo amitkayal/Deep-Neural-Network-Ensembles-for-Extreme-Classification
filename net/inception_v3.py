@@ -67,8 +67,10 @@ class Inception3(nn.Module):
                 m.bias.data.zero_()
 
     def forward(self, x):
- 
+        print("net forwarding...")
         # 299 x 299 x 3
+        #print("x size:",x.size())
+        #print("x type",type(x.data))
         x = self.Conv2d_1a_3x3(x)
         # 149 x 149 x 32
         x = self.Conv2d_2a_3x3(x)
