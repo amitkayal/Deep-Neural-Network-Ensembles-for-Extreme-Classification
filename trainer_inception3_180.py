@@ -119,6 +119,10 @@ def evaluate(net, test_loader, max_iter):
         if cnt > max_iter:
             break
 
+        images = Variable(images.type(torch.FloatTensor)).cuda() if use_cuda else Variable(
+        images.type(torch.FloatTensor))
+        labels = Variable(labels).cuda() if use_cuda else Variable(labels)
+
         logits = net(images)
         probs  = F.softmax(logits)
         #print("labels:", labels)
