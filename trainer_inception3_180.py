@@ -265,8 +265,8 @@ def run_training():
     log.write('\tbatch_size*iter_accum  = %d\n'%(batch_size*iter_accum))
     log.write('\n')
 
-    log.write(inspect.getsource(train_augment)+'\n')
-    log.write(inspect.getsource(valid_augment)+'\n')
+    # log.write(inspect.getsource(train_augment)+'\n')
+    # log.write(inspect.getsource(valid_augment)+'\n')
     log.write('\n')
     ####
 
@@ -433,11 +433,9 @@ def run_training():
                 sum_train_acc  = 0.
                 sum = 0
 
-            # ### temo delete for testing
-            # print('\r%0.4f  %5.1f k   %4.2f  | %0.4f  %0.4f | %0.4f  %0.4f | %0.4f  %0.4f | %5.0f min  %d,%d' % \
-            #         (rate, i/1000, epoch, valid_loss, valid_acc, train_loss, train_acc, batch_loss, batch_acc,(timer() - start)/60 ,i,j),\
-            #         end='',flush=True)
-            # ###
+            print('\r%0.4f  %5.1f k   %4.2f  | %0.4f  %0.4f | %0.4f  %0.4f | %0.4f  %0.4f | %5.0f min  %d,%d' % \
+                    (rate, i/1000, epoch, valid_loss, valid_acc, train_loss, train_acc, batch_loss, batch_acc,(timer() - start)/60 ,i,j),\
+                    end='',flush=True)
             j=j+1
         pass  #-- end of one data loader --
     pass #-- end of all iterations --
