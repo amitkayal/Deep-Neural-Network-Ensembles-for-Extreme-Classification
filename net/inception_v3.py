@@ -67,7 +67,7 @@ class Inception3(nn.Module):
                 m.bias.data.zero_()
 
     def forward(self, x):
-        print("net forwarding...")
+        # print("net forwarding...")
         # 299 x 299 x 3
         #print("x size:",x.size())
         #print("x type",type(x.data))
@@ -354,11 +354,11 @@ def run_check_net():
     loss = F.binary_cross_entropy_with_logits(logits, y)
     loss.backward()
 
-    print(type(net))
-    print(net)
-
-    print('probs')
-    print(probs)
+    # print(type(net))
+    # print(net)
+    #
+    # print('probs')
+    # print(probs)
 
     #merging
     # net.eval()

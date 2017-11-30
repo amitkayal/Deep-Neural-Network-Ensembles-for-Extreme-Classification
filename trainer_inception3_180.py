@@ -354,9 +354,9 @@ def run_training():
             #     net.train()
             #
             if i % iter_log == 0:
-                print('\r',end='',flush=True)
+                # print('\r',end='',flush=True)
                 ####
-                log.write('rate: %0.4f  iters: %5.1f k   epoch: %4.2f  | %0.4f  %0.4f | %0.4f  %0.4f | %0.4f  %0.4f | %5.0f min \n' % \
+                log.write('rate: %0.4f  iters: %5.1f k  epoch: %4.2f  |val: %0.4f  %0.4f |train: %0.4f  %0.4f |batch: %0.4f  %0.4f | %5.0f min \n' % \
                         (rate, i/1000, epoch, valid_loss, valid_acc, train_loss, train_acc, batch_loss, batch_acc, (timer() - start)/60))
                 ####
             #
@@ -390,7 +390,7 @@ def run_training():
             #print("probs type:",type(probs.data))
             #print("labels type:",type(labels.data))
             #value, index = torch.max(probs.data[0],0)
-            print("accuracy:",get_accuracy(probs, labels))
+            # print("accuracy:",get_accuracy(probs, labels))
             #print("probs:",index)
             #print("labels:",labels)
             loss = F.cross_entropy(logits, labels)
@@ -404,7 +404,7 @@ def run_training():
             # optimizer.step()
 
             # accumulate gradients
-            print("loss:",loss.data)
+            # print("loss:",loss.data)
             #print("start backward...")
             loss.backward()
             #print("backward finished")
@@ -432,11 +432,11 @@ def run_training():
                 sum_train_acc  = 0.
                 sum = 0
 
-            ### temo delete for testing
-            print('\r%0.4f  %5.1f k   %4.2f  | %0.4f  %0.4f | %0.4f  %0.4f | %0.4f  %0.4f | %5.0f min  %d,%d' % \
-                    (rate, i/1000, epoch, valid_loss, valid_acc, train_loss, train_acc, batch_loss, batch_acc,(timer() - start)/60 ,i,j),\
-                    end='',flush=True)
-            ###
+            # ### temo delete for testing
+            # print('\r%0.4f  %5.1f k   %4.2f  | %0.4f  %0.4f | %0.4f  %0.4f | %0.4f  %0.4f | %5.0f min  %d,%d' % \
+            #         (rate, i/1000, epoch, valid_loss, valid_acc, train_loss, train_acc, batch_loss, batch_acc,(timer() - start)/60 ,i,j),\
+            #         end='',flush=True)
+            # ###
             j=j+1
         pass  #-- end of one data loader --
     pass #-- end of all iterations --
