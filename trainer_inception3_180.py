@@ -171,7 +171,7 @@ def run_training():
     iter_save_freq = 1000
     iter_save   = [0, num_iters-1] + list(range(0,num_iters,1*iter_save_freq)) # first and last iters, then every 1000 iters
 
-    validation_num = 50000
+    validation_num = 1000
 
     batch_size  = 128 #60   #512  #96 #256
     validation_batch_size = 128
@@ -405,7 +405,6 @@ def run_training():
 
             # measure elapsed time
             iter_time_meter.update(time.time() - end)
-            end = time.time()
 
             # print statistics  ------------
             batch_acc  = get_accuracy(probs, labels)
@@ -422,7 +421,7 @@ def run_training():
                     log.write("=> Best validation model updated\n")
 
             print('\r%0.4f  %5.1f k   %4.2f  | %0.4f  %0.4f | %0.4f  %0.4f | %0.4f  %0.4f | %5.0f min | %d %d,%d' % \
-                    (rate, i/1000, epoch, valid_loss, valid_acc, train_loss_meter.avg, train_acc.avg, batch_loss, batch_acc,(timer() - start)/60, iter_time_meter.avg, i, j),\
+                    (rate, i/1000, epoch, valid_loss, valid_acc, train_loss_meter.avg, train_acc_meter.avg, batch_loss, batch_acc,(timer() - start)/60, iter_time_meter.avg, i, j),\
                     end='',flush=True)
             j=j+1
         pass  #-- end of one data loader --
