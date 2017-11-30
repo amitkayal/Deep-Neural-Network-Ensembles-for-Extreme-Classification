@@ -84,8 +84,6 @@ def train_augment(image):
     tensor = image_to_tensor_transform(image)
     return tensor
 
-
-
 def valid_augment(image):
 
     tensor = image_to_tensor_transform(image)
@@ -175,6 +173,10 @@ def run_training():
 
     validation_num = 50000
 
+    batch_size  = 128 #60   #512  #96 #256
+    validation_batch_size = 128
+    iter_accum  = 4 #2  #448//batch_size
+
     ## setup  ---------------------------
     os.makedirs(out_dir +'/checkpoint', exist_ok=True)
     os.makedirs(out_dir +'/backup', exist_ok=True)
@@ -217,10 +219,6 @@ def run_training():
 
     ## dataset ----------------------------------------
     log.write('** dataset setting **\n')
-    batch_size  = 128 #60   #512  #96 #256
-    validation_batch_size = 256
-    iter_accum  = 4 #2  #448//batch_size
-
     transform = transforms.Compose([
         # transforms.ToTensor(): Converts a PIL.Image or numpy.ndarray (H x W x C) in the range [0, 255] to a torch.FloatTensor of shape (C x H x W) in the range [0.0, 1.0].
         transforms.Lambda(lambda x:train_augment(x))
