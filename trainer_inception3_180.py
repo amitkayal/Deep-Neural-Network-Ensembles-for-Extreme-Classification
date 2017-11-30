@@ -5,14 +5,13 @@ import inspect
 import datetime
 from cdimage import CDiscountDataset
 from torch.utils.data.sampler import RandomSampler
-#from threading import Timer as timer
 from logging import Logger
 from torch.autograd import Variable
 from torch import optim
 from torch.optim.lr_scheduler import StepLR
 import torch.nn.functional as F
 from timeit import default_timer as timer
-os.environ['CUDA_VISIBLE_DEVICES'] = '1,2,3'
+os.environ['CUDA_VISIBLE_DEVICES'] = '0'
 
 from common import *
 # from net.rate import *
@@ -37,7 +36,7 @@ CDISCOUNT_NUM_CLASSES = 5270
 
 csv_dir = './data/'
 root_dir = '../output/train/'
-data_file_name = 'train_data.csv'
+data_file_name = 'validation.csv'
 
 learning_rate = 0.001
 
@@ -74,7 +73,7 @@ def train_augment(image):
 
     # flip  random ---------
     image = random_horizontal_flip(image, u=0.5)
-    print("enter image_to_tensor_transform")
+    #print("enter image_to_tensor_transform")
     tensor = image_to_tensor_transform(image)
     return tensor
 
@@ -108,12 +107,12 @@ def evaluate( net, test_loader ):
     for iter, (images, labels) in enumerate(test_loader, 0):#remove indices for testing
         images = images.permute(0, 3, 1, 2)  # add this for testing
         images  = Variable(images.type(torch.FloatTensor),volatile=True)#.cuda()disable for testing
-        print("evaluate image type:",type(images.data))
+        #print("evaluate image type:",type(images.data))
         labels  = Variable(labels)#.cuda()#disable for testing
         logits = net(images)
         probs  = F.softmax(logits)
-        print("labels:", labels)
-        print("probs:",probs)
+        #print("labels:", labels)
+        #print("probs:",probs)
         loss = F.cross_entropy(logits, labels)
         ####
         #acc  = top_accuracy(probs, labels, top_k=(1,))#1,5
@@ -134,14 +133,15 @@ def evaluate( net, test_loader ):
 #--------------------------------------------------------------
 def run_training():
 
-    out_dir  = './test_dir' # s_xx1'
+    out_dir  = '../' # s_xx1'
     initial_checkpoint = None#\
 		# '/home/ck/project/results/inception3-180-02b/checkpoint/00075000_model.pth'
         # None  #
 
     #pretrained_file = '/home/ck/project/data/pretrain/inception_v3_google-1a9a5a14.pth'
     #pretrained_file = '/root/share/data/models/pytorch/imagenet/inception/inception_v3_google-1a9a5a14.pth'
-    pretrained_file = None#'/home/ck/project/results/inception3-299-02a/checkpoint/00040000_model.pth'
+    pretrained_file = None#'../trained_models/LB=0.69565_inc3_00075000_model.pth'
+    #None#'/home/ck/project/results/inception3-299-02a/checkpoint/00040000_model.pth'
     skip = [] #['fc.weight', 'fc.bias']
 
     ## setup  ---------------------------
@@ -208,7 +208,7 @@ def run_training():
     ####
     #log.write('** dataset setting **\n')
     ####
-    batch_size  = 1 #60   #512  #96 #256
+    batch_size  = 4 #60   #512  #96 #256
     iter_accum  = 4 #2  #448//batch_size
 
     # train_dataset = CDiscountDataset(#'train_id_v0_5655916', 'train',  mode='train',
@@ -308,7 +308,7 @@ def run_training():
     batch_acc   = 0.0
     rate = 0
 
-    start = 60#timer()  set to 60 for testing
+    start =timer()
     j = 0
     i = 0
 
@@ -422,11 +422,11 @@ def run_training():
                 sum_train_acc  = 0.
                 sum = 0
 
-            #### temo delete for testing
-            # print('\r%0.4f  %5.1f k   %4.2f  | %0.4f  %0.4f | %0.4f  %0.4f | %0.4f  %0.4f | %5.0f min  %d,%d' % \
-            #         (rate, i/1000, epoch, valid_loss, valid_acc, train_loss, train_acc, batch_loss, batch_acc,(timer() - start)/60 ,i,j),\
-            #         end='',flush=True)
-            ####
+            ### temo delete for testing
+            print('\r%0.4f  %5.1f k   %4.2f  | %0.4f  %0.4f | %0.4f  %0.4f | %0.4f  %0.4f | %5.0f min  %d,%d' % \
+                    (rate, i/1000, epoch, valid_loss, valid_acc, train_loss, train_acc, batch_loss, batch_acc,(timer() - start)/60 ,i,j),\
+                    end='',flush=True)
+            ###
             j=j+1
         pass  #-- end of one data loader --
     pass #-- end of all iterations --
