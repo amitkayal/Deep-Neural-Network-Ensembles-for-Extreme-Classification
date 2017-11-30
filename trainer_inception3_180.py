@@ -26,6 +26,7 @@ from transform import *
 
 from net.inception_v3 import Inception3 as Net
 
+use_cuda = True
 
 
 SEED = 123456
@@ -91,7 +92,8 @@ def get_accuracy(probs, labels):
         value, index = torch.max(probs.data[i], 0)
         #print("index ",index.numpy()[0])
         #print("label",labels.data[i])
-        if(index.numpy()[0] == labels.data[i]):
+        indexing = index.cpu().numpy()[0] if use_cuda else index.numpy()[0]
+        if(indexing == labels.data[i]):
             correct_num = correct_num + 1.0
             #print("correct!")
     return correct_num / batch_size
