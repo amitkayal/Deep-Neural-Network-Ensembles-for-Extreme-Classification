@@ -202,9 +202,10 @@ def run_training():
 
     num_iters   = 1000*1000
     iter_smooth = 20
-    iter_log    = 1
     iter_valid  = 500
-    iter_save   = [0, num_iters-1] + list(range(0,num_iters,1*iter_log)) # first and last iters, then every 1000 iters
+    iter_log = 1
+    iter_save_freq = 1000
+    iter_save   = [0, num_iters-1] + list(range(0,num_iters,1*iter_save_freq)) # first and last iters, then every 1000 iters
 
 
     ## optimizer = optim.SGD(net.parameters(), lr=0.01, momentum=0.9, weight_decay=0.0005)  ###0.0005
@@ -302,12 +303,12 @@ def run_training():
 
     ## start training here! ##############################################
     ####
-    # log.write('** start training here! **\n')
-    #
-    # log.write(' optimizer=%s\n'%str(optimizer) )
+    log.write('** start training here! **\n')
+
+    log.write(' optimizer=%s\n'%str(optimizer) )
     # log.write(' LR=%s\n\n'%str(LR) )
-    # log.write('   rate   iter   epoch  | valid_loss/acc | train_loss/acc | batch_loss/acc |  time   \n')
-    # log.write('-------------------------------------------------------------------------------------\n')
+    log.write('   rate   iter   epoch  | valid_loss/acc | train_loss/acc | batch_loss/acc |  time   \n')
+    log.write('-------------------------------------------------------------------------------------\n')
     ####
 
     train_loss  = 0.0
@@ -356,7 +357,7 @@ def run_training():
             if i % iter_log == 0:
                 # print('\r',end='',flush=True)
                 ####
-                log.write('rate: %0.4f  iters: %5.1f k  epoch: %4.2f  |val: %0.4f  %0.4f |train: %0.4f  %0.4f |batch: %0.4f  %0.4f | %5.0f min \n' % \
+                log.write('%0.4f  %5.1f k  %4.2f  | %0.4f  %0.4f | %0.4f  %0.4f | %0.4f  %0.4f | %5.0f min \n' % \
                         (rate, i/1000, epoch, valid_loss, valid_acc, train_loss, train_acc, batch_loss, batch_acc, (timer() - start)/60))
                 ####
             #
