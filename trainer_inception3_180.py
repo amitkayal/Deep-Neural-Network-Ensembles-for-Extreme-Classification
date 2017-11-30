@@ -88,6 +88,8 @@ def valid_augment(image):
 def get_accuracy(probs, labels):
     probs = probs.data.cpu() if use_cuda else probs.data
     labels = labels.data.cpu() if use_cuda else labels.data
+    print("probs",probs)
+    print("labels",labels)
     batch_size = probs.size()[0]
     correct_num = 0.0
     for i in range(batch_size):
