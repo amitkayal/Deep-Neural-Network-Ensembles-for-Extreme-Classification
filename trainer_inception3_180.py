@@ -5,7 +5,6 @@ import inspect
 import datetime
 from cdimage import CDiscountDataset
 from torch.utils.data.sampler import RandomSampler
-#from threading import Timer as timer
 from logging import Logger
 from torch.autograd import Variable
 from torch import optim
@@ -74,7 +73,7 @@ def train_augment(image):
 
     # flip  random ---------
     image = random_horizontal_flip(image, u=0.5)
-    print("enter image_to_tensor_transform")
+    #print("enter image_to_tensor_transform")
     tensor = image_to_tensor_transform(image)
     return tensor
 
@@ -108,12 +107,12 @@ def evaluate( net, test_loader ):
     for iter, (images, labels) in enumerate(test_loader, 0):#remove indices for testing
         images = images.permute(0, 3, 1, 2)  # add this for testing
         images  = Variable(images.type(torch.FloatTensor),volatile=True)#.cuda()disable for testing
-        print("evaluate image type:",type(images.data))
+        #print("evaluate image type:",type(images.data))
         labels  = Variable(labels)#.cuda()#disable for testing
         logits = net(images)
         probs  = F.softmax(logits)
-        print("labels:", labels)
-        print("probs:",probs)
+        #print("labels:", labels)
+        #print("probs:",probs)
         loss = F.cross_entropy(logits, labels)
         ####
         #acc  = top_accuracy(probs, labels, top_k=(1,))#1,5
@@ -308,7 +307,7 @@ def run_training():
     batch_acc   = 0.0
     rate = 0
 
-    start = 60#timer()  set to 60 for testing
+    start =timer()
     j = 0
     i = 0
 
@@ -422,11 +421,11 @@ def run_training():
                 sum_train_acc  = 0.
                 sum = 0
 
-            #### temo delete for testing
-            # print('\r%0.4f  %5.1f k   %4.2f  | %0.4f  %0.4f | %0.4f  %0.4f | %0.4f  %0.4f | %5.0f min  %d,%d' % \
-            #         (rate, i/1000, epoch, valid_loss, valid_acc, train_loss, train_acc, batch_loss, batch_acc,(timer() - start)/60 ,i,j),\
-            #         end='',flush=True)
-            ####
+            ### temo delete for testing
+            print('\r%0.4f  %5.1f k   %4.2f  | %0.4f  %0.4f | %0.4f  %0.4f | %0.4f  %0.4f | %5.0f min  %d,%d' % \
+                    (rate, i/1000, epoch, valid_loss, valid_acc, train_loss, train_acc, batch_loss, batch_acc,(timer() - start)/60 ,i,j),\
+                    end='',flush=True)
+            ###
             j=j+1
         pass  #-- end of one data loader --
     pass #-- end of all iterations --

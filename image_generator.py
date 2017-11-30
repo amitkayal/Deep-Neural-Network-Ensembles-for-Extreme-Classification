@@ -5,7 +5,7 @@ import os
 from tqdm import *
 
 
-out_folder = '../output/train'
+out_folder = '../output/test'
 
 # Create output folder
 if not os.path.exists(out_folder):
@@ -20,9 +20,9 @@ for category in categories.index:
     if not os.path.exists(os.path.join(out_folder, str(category))):
         os.mkdir(os.path.join(out_folder, str(category)))
 
-num_products = 7069896  # 7069896 for train and 1768182 for test
+num_products = 1768182  # 7069896 for train and 1768182 for test
 
-with open('./data/train.bson', 'rb') as fbson:
+with open('./data/test.bson', 'rb') as fbson:
     data = bson.decode_file_iter(fbson)
 
     for c, d in tqdm(enumerate(data)):
