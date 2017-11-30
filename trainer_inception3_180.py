@@ -1,3 +1,5 @@
+from __future__ import print_function
+
 import os
 import random
 import cv2
@@ -25,7 +27,6 @@ from Log import *
 # --------------------------------------------------------
 
 from net.inception_v3 import Inception3 as Net
-from __future__ import print_function
 
 use_cuda = True
 
