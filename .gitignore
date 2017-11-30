@@ -4,3 +4,4 @@ demo_code/demo_images/*
 data/*
 test_dir/*
 *.pyc
+__pycache__
