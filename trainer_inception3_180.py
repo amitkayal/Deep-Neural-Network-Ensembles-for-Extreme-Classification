@@ -21,7 +21,7 @@ from common import *
 # from dataset.cdimage import *
 # from dataset.sampler import *
 from transform import *
-
+from Log import *
 # --------------------------------------------------------
 
 from net.inception_v3 import Inception3 as Net
@@ -35,6 +35,7 @@ PROJECT_PATH = './project'
 CDISCOUNT_HEIGHT = 180
 CDISCOUNT_WIDTH = 180
 CDISCOUNT_NUM_CLASSES = 5270
+log = Log("-")
 
 csv_dir = './data/'
 root_dir = '../output/train/'
@@ -159,12 +160,12 @@ def run_training():
     ####
     # log = Logger()
     # log.open(out_dir+'/log.train.txt',mode='a')
-    # log.write('\n--- [START %s] %s\n\n' % (datetime.now().strftime('%Y-%m-%d %H:%M:%S'), '-' * 64))
-    # log.write('** some experiment setting **\n')
-    # log.write('\tSEED         = %u\n' % SEED)
-    # log.write('\tPROJECT_PATH = %s\n' % PROJECT_PATH)
-    # log.write('\tout_dir      = %s\n' % out_dir)
-    # log.write('\n')
+    log.write('\n--- [START %s] %s\n\n' % (datetime.now().strftime('%Y-%m-%d %H:%M:%S'), '-' * 64))
+    log.write('** some experiment setting **\n')
+    log.write('\tSEED         = %u\n' % SEED)
+    log.write('\tPROJECT_PATH = %s\n' % PROJECT_PATH)
+    log.write('\tout_dir      = %s\n' % out_dir)
+    log.write('\n')
     ####
 
 
@@ -187,11 +188,11 @@ def run_training():
     #         p.requires_grad = False
 
     ####
-    # log.write('%s\n\n'%(type(net)))
-    # log.write('\n%s\n'%(str(net)), is_terminal=0)
-    # log.write(inspect.getsource(net.__init__)+'\n', is_terminal=0)
-    # log.write(inspect.getsource(net.forward )+'\n', is_terminal=0)
-    # log.write('\n')
+    log.write('%s\n\n'%(type(net)))
+    log.write('\n%s\n'%(str(net)), is_terminal=0)
+    log.write(inspect.getsource(net.__init__)+'\n', is_terminal=0)
+    log.write(inspect.getsource(net.forward )+'\n', is_terminal=0)
+    log.write('\n')
     ####
 
     ## optimiser ----------------------------------
@@ -211,7 +212,7 @@ def run_training():
 
     ## dataset ----------------------------------------
     ####
-    #log.write('** dataset setting **\n')
+    log.write('** dataset setting **\n')
     ####
     batch_size  = 128 #60   #512  #96 #256
     iter_accum  = 4 #2  #448//batch_size
@@ -251,20 +252,20 @@ def run_training():
 
     if valid_loader != None: print("Valid loader loaded!")
     ####
-    # log.write('\ttrain_dataset.split = %s\n'%(train_dataset.split))
-    # log.write('\tvalid_dataset.split = %s\n'%(valid_dataset.split))
-    # log.write('\tlen(train_dataset)  = %d\n'%(len(train_dataset)))
-    # log.write('\tlen(valid_dataset)  = %d\n'%(len(valid_dataset)))
-    # log.write('\tlen(train_loader)   = %d\n'%(len(train_loader)))
-    # log.write('\tlen(valid_loadernum_iters)   = %d\n'%(len(valid_loader)))
-    # log.write('\tbatch_size  = %d\n'%(batch_size))
-    # log.write('\titer_accum  = %d\n'%(iter_accum))
-    # log.write('\tbatch_size*iter_accum  = %d\n'%(batch_size*iter_accum))
-    # log.write('\n')
-    #
-    # log.write(inspect.getsource(train_augment)+'\n',is_terminal=False)
-    # log.write(inspect.getsource(valid_augment)+'\n',is_terminal=False)
-    # log.write('\n')
+    log.write('\ttrain_dataset.split = %s\n'%(train_dataset.split))
+    log.write('\tvalid_dataset.split = %s\n'%(valid_dataset.split))
+    log.write('\tlen(train_dataset)  = %d\n'%(len(train_dataset)))
+    log.write('\tlen(valid_dataset)  = %d\n'%(len(valid_dataset)))
+    log.write('\tlen(train_loader)   = %d\n'%(len(train_loader)))
+    log.write('\tlen(valid_loadernum_iters)   = %d\n'%(len(valid_loader)))
+    log.write('\tbatch_size  = %d\n'%(batch_size))
+    log.write('\titer_accum  = %d\n'%(iter_accum))
+    log.write('\tbatch_size*iter_accum  = %d\n'%(batch_size*iter_accum))
+    log.write('\n')
+
+    log.write(inspect.getsource(train_augment)+'\n',is_terminal=False)
+    log.write(inspect.getsource(valid_augment)+'\n',is_terminal=False)
+    log.write('\n')
     ####
 
     # if 0:  ## check data
@@ -277,7 +278,7 @@ def run_training():
     start_epoch= 0.
     if initial_checkpoint is not None: # load a checkpoint and resume from previous training
         ####
-        #log.write('\tloading @ initial_checkpoint = %s\n' % initial_checkpoint)
+        log.write('\tloading @ initial_checkpoint = %s\n' % initial_checkpoint)
         ####
 
         # load model
@@ -293,7 +294,7 @@ def run_training():
 
     elif pretrained_file is not None: # load a pretrained model and train from the beginning
         ####
-        #log.write('\tloading @ pretrained_file = %s\n' % pretrained_file)
+        log.write('\tloading @ pretrained_file = %s\n' % pretrained_file)
         ####
         net.load_pretrain_pytorch_file( pretrained_file, skip )
 
@@ -352,12 +353,12 @@ def run_training():
             #     valid_loss, valid_acc = evaluate(net, valid_loader)
             #     net.train()
             #
-            # if i % iter_log == 0:
-            #     print('\r',end='',flush=True)
-            #     ####
-            #     # log.write('%0.4f  %5.1f k   %4.2f  | %0.4f  %0.4f | %0.4f  %0.4f | %0.4f  %0.4f | %5.0f min \n' % \
-            #     #         (rate, i/1000, epoch, valid_loss, valid_acc, train_loss, train_acc, batch_loss, batch_acc, (timer() - start)/60))
-            #     ####
+            if i % iter_log == 0:
+                print('\r',end='',flush=True)
+                ####
+                log.write('%0.4f  %5.1f k   %4.2f  | %0.4f  %0.4f | %0.4f  %0.4f | %0.4f  %0.4f | %5.0f min \n' % \
+                        (rate, i/1000, epoch, valid_loss, valid_acc, train_loss, train_acc, batch_loss, batch_acc, (timer() - start)/60))
+                ####
             #
             ####
 
@@ -452,7 +453,7 @@ def run_training():
         }, out_dir +'/checkpoint/%d_optimizer.pth'%(i))
 
     ####
-    # log.write('\n')
+    log.write('\n')
     ####
 
 ##to determine best threshold etc ... ## ------------------------------ 
