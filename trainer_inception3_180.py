@@ -279,9 +279,7 @@ def run_training():
     start_iter = 0
     start_epoch= 0.
     if initial_checkpoint is not None: # load a checkpoint and resume from previous training
-        ####
         log.write('\tloading @ initial_checkpoint = %s\n' % initial_checkpoint)
-        ####
 
         # load model
         net.load_state_dict(torch.load(initial_checkpoint, map_location=lambda storage, loc: storage))
@@ -295,21 +293,17 @@ def run_training():
 
 
     elif pretrained_file is not None: # load a pretrained model and train from the beginning
-        ####
         log.write('\tloading @ pretrained_file = %s\n' % pretrained_file)
-        ####
         net.load_pretrain_pytorch_file( pretrained_file, skip )
 
 
     ## start training here! ##############################################
-    ####
     log.write('** start training here! **\n')
 
     log.write(' optimizer=%s\n'%str(optimizer) )
     # log.write(' LR=%s\n\n'%str(LR) )
     log.write('   rate   iter   epoch  | valid_loss/acc | train_loss/acc | batch_loss/acc |  time   \n')
     log.write('-------------------------------------------------------------------------------------\n')
-    ####
 
     train_loss  = 0.0
     train_acc   = 0.0
