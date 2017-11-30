@@ -110,9 +110,9 @@ def evaluate( net, test_loader ):
     # for iter, (images, labels, indices) in enumerate(test_loader, 0):
     for iter, (images, labels) in enumerate(test_loader, 0):#remove indices for testing
         images = images.permute(0, 3, 1, 2)  # add this for testing
-        images  = Variable(images.type(torch.FloatTensor),volatile=True).cuda()
+        images  = Variable(images.type(torch.FloatTensor),volatile=True).cuda() if use_cuda else Variable(images.type(torch.FloatTensor),volatile=True)
         #print("evaluate image type:",type(images.data))
-        labels  = Variable(labels).cuda()
+        labels  = Variable(labels).cuda() if use_cuda else Variable(labels)
         logits = net(images)
         probs  = F.softmax(logits)
         #print("labels:", labels)
@@ -172,7 +172,7 @@ def run_training():
     ####
     net = Net(in_shape = (3, CDISCOUNT_HEIGHT, CDISCOUNT_WIDTH), num_classes=CDISCOUNT_NUM_CLASSES)
     ####
-    net.cuda()
+    if use_cuda: net.cuda()
     ####
     # if 0: #freeze early layers
     #     for p in net.layer0.parameters():
@@ -375,8 +375,8 @@ def run_training():
             ####
 
             # one iteration update  -------------
-            images = Variable(images.type(torch.FloatTensor)).cuda()
-            labels = Variable(labels).cuda()
+            images = Variable(images.type(torch.FloatTensor)).cuda() if use_cuda else Variable(images.type(torch.FloatTensor))
+            labels = Variable(labels).cuda() if use_cuda else Variable(labels)
             #print("variable images type",type(images))
             logits = net(images)
             probs  = F.softmax(logits)
