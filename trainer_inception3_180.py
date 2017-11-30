@@ -156,25 +156,18 @@ def run_training():
     os.makedirs(out_dir +'/backup', exist_ok=True)
     ####
     #backup_project_as_zip(PROJECT_PATH, out_dir +'/backup/code.train.zip')
-    ####
-    ####
-    # log = Logger()
-    # log.open(out_dir+'/log.train.txt',mode='a')
+
     log.write('\n--- [START %s] %s\n\n' % (datetime.now().strftime('%Y-%m-%d %H:%M:%S'), '-' * 64))
     log.write('** some experiment setting **\n')
     log.write('\tSEED         = %u\n' % SEED)
     log.write('\tPROJECT_PATH = %s\n' % PROJECT_PATH)
     log.write('\tout_dir      = %s\n' % out_dir)
     log.write('\n')
-    ####
 
-
-    ## net ------------------------------ -
-    ####
-    #log.write('** net setting **\n')
-    ####
+    ## net -------------------------------
+    log.write('** net setting **\n')
     net = Net(in_shape = (3, CDISCOUNT_HEIGHT, CDISCOUNT_WIDTH), num_classes=CDISCOUNT_NUM_CLASSES)
-    ####
+
     if use_cuda: net.cuda()
     ####
     # if 0: #freeze early layers
@@ -187,13 +180,11 @@ def run_training():
     #     for p in net.layer3.parameters():
     #         p.requires_grad = False
 
-    ####
     log.write('%s\n\n'%(type(net)))
     log.write('\n%s\n'%(str(net)))
     log.write(inspect.getsource(net.__init__)+'\n')
     log.write(inspect.getsource(net.forward )+'\n')
     log.write('\n')
-    ####
 
     ## optimiser ----------------------------------
     #LR = StepLR([ (0, 0.01),  (200, 0.001),  (300, -1)])
@@ -263,11 +254,11 @@ def run_training():
     log.write('\tbatch_size  = %d\n'%(batch_size))
     log.write('\titer_accum  = %d\n'%(iter_accum))
     log.write('\tbatch_size*iter_accum  = %d\n'%(batch_size*iter_accum))
-    log.write('\n')
+    # log.write('\n')
 
     # log.write(inspect.getsource(train_augment)+'\n')
     # log.write(inspect.getsource(valid_augment)+'\n')
-    log.write('\n')
+    # log.write('\n')
     ####
 
     # if 0:  ## check data
@@ -315,7 +306,7 @@ def run_training():
 
     start =timer()
     j = 0 # number of iters in total
-    i = 0 # number of iters where bp is conducted
+    i = 0 # number of real iters where bp is conducted
 
     #net = torch.nn.DataParallel(net, device_ids=[0, 1, 2])
     while  i<num_iters:
@@ -390,6 +381,8 @@ def run_training():
 
             # accumulate gradients
             loss.backward()
+
+            ## update gradients every iter_accum
             if j%iter_accum == 0:
                 #torch.nn.utils.clip_grad_norm(net.parameters(), 1)
                 #print("optim step")
@@ -403,7 +396,7 @@ def run_training():
             sum_train_loss += batch_loss
             sum_train_acc  += batch_acc
             sum += 1
-            if i%iter_smooth == 0:
+            if i%iter_smooth == 0: # update train stats every iter_smooth iters
                 train_loss = sum_train_loss/sum
                 train_acc  = sum_train_acc /sum
                 sum_train_loss = 0.
@@ -428,9 +421,7 @@ def run_training():
             'epoch'    : epoch,
         }, out_dir +'/checkpoint/%d_optimizer.pth'%(i))
 
-    ####
     log.write('\n')
-    ####
 
 ##to determine best threshold etc ... ## ------------------------------
 
