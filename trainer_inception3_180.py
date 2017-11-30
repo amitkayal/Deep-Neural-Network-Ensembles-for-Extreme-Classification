@@ -182,7 +182,7 @@ def run_training():
 
     ## optimiser ----------------------------------
     #LR = StepLR([ (0, 0.01),  (200, 0.001),  (300, -1)])
-    LR = StepLR([ (0, 0.01), (1, 0.001), (2, 0.0001)])
+    LR = StepLR([ (0, 0.01), (1, 0.001), (3, 0.0001)])
 
     num_iters   = 1000*1000
     iter_smooth = 20
@@ -254,7 +254,7 @@ def run_training():
 
 
     ## resume from previous ----------------------------------
-    start_iter = 0
+    start_iter = 75000
     start_epoch= 0.
     if initial_checkpoint is not None: # load a checkpoint and resume from previous training
         log.write('\tloading @ initial_checkpoint = %s\n' % initial_checkpoint)
@@ -274,6 +274,9 @@ def run_training():
         log.write('\tloading @ pretrained_file = %s\n' % pretrained_file)
         net.load_pretrain_pytorch_file( pretrained_file, skip )
 
+    # Custom setting
+    start_iter = 0
+    start_epoch= 2.98
 
     ## start training here! ##############################################
     log.write('** start training here! **\n')
