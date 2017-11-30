@@ -24,7 +24,7 @@ from common import *
 from transform import *
 from Log import *
 from StepLR import *
-from utils import *
+from Utils import *
 # --------------------------------------------------------
 
 from net.inception_v3 import Inception3 as Net
@@ -142,11 +142,8 @@ def evaluate( net, test_loader ):
 def run_training():
 
     out_dir  = '../' # s_xx1'
-    initial_checkpoint = None#\
-		# '/home/ck/project/results/inception3-180-02b/checkpoint/00075000_model.pth'
-        # None  #
-
-    pretrained_file = '../trained_models/LB=0.69565_inc3_00075000_model.pth'
+    initial_checkpoint = '../trained_models/LB=0.69565_inc3_00075000_model.pth'
+    pretrained_file = None
     skip = [] #['fc.weight', 'fc.bias']
 
     ## setup  ---------------------------
