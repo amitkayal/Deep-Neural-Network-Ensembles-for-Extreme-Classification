@@ -197,9 +197,7 @@ def run_training():
 
 
     ## dataset ----------------------------------------
-    ####
     log.write('** dataset setting **\n')
-    ####
     batch_size  = 128 #60   #512  #96 #256
     iter_accum  = 4 #2  #448//batch_size
 
@@ -288,6 +286,7 @@ def run_training():
     valid_acc   = 0.0
     batch_loss  = 0.0
     batch_acc   = 0.0
+    best_valid_acc    = sys.maxint
     rate = 0
 
     start =timer()
@@ -339,12 +338,14 @@ def run_training():
 
             #if 1:
             if i in iter_save:
-                torch.save(net.state_dict(),out_dir +'/checkpoint/%08d_model.pth'%(i))
+                # torch.save(net.state_dict(),out_dir +'/checkpoint/%08d_model.pth'%(i))
                 torch.save({
                     'optimizer': optimizer.state_dict(),
                     'iter'     : i,
                     'epoch'    : epoch,
-                }, out_dir +'/checkpoint/%08d_optimizer.pth'%(i))
+                    'state_dict': net.state_dict(),
+                    'best_acc': best_valid_acc
+                }, out_dir +'/checkpoint/%08d_model.pth'%(i))
 
 
             # learning rate schduler -------------
