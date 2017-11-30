@@ -11,7 +11,7 @@ from torch import optim
 from torch.optim.lr_scheduler import StepLR
 import torch.nn.functional as F
 from timeit import default_timer as timer
-os.environ['CUDA_VISIBLE_DEVICES'] = '1,2,3'
+os.environ['CUDA_VISIBLE_DEVICES'] = '0'
 
 from common import *
 # from net.rate import *
