@@ -3,3 +3,4 @@ demo_code/demo_images/*
 .idea/*
 data/*
 test_dir/*
+*.pyc
