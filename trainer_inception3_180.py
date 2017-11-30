@@ -97,7 +97,7 @@ def get_accuracy(probs, labels):
         #print("index ",index.numpy()[0])
         #print("label",labels.data[i])
         indexing = index.numpy()[0]
-        print("indexing:",index)
+        print("indexing:",indexing)
         if indexing == labels[i]:
             correct_num = correct_num + 1.0
             #print("correct!")
