@@ -254,7 +254,7 @@ def run_training():
 
 
     ## resume from previous ----------------------------------
-    start_iter = 75000
+    start_iter = 0
     start_epoch= 0.
     if initial_checkpoint is not None: # load a checkpoint and resume from previous training
         log.write('\tloading @ initial_checkpoint = %s\n' % initial_checkpoint)
@@ -273,10 +273,6 @@ def run_training():
     elif pretrained_file is not None: # load a pretrained model and train from the beginning
         log.write('\tloading @ pretrained_file = %s\n' % pretrained_file)
         net.load_pretrain_pytorch_file( pretrained_file, skip )
-
-    # Custom setting
-    start_iter = 0
-    start_epoch= 2.98
 
     ## start training here! ##############################################
     log.write('** start training here! **\n')
@@ -297,6 +293,11 @@ def run_training():
     start =timer()
     j = 0 # number of iters in total
     i = 0 # number of real iters where bp is conducted
+
+    # Custom setting
+    start_iter = 75000
+    start_epoch= 2.98
+    i = start_iter
 
     #net = torch.nn.DataParallel(net, device_ids=[0, 1, 2])
     while  i<num_iters:
