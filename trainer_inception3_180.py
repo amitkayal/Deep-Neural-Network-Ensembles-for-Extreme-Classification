@@ -127,8 +127,8 @@ def evaluate(net, test_loader, max_iter):
 
     # for iter, (images, labels, indices) in enumerate(test_loader, 0):
     for iter, (images, labels) in enumerate(test_loader, 0):#remove indices for testing
-        if cnt > max_iter:
-            break
+        # if cnt > max_iter:
+        #     break
 
         images = Variable(images.type(torch.FloatTensor)).cuda() if use_cuda else Variable(
         images.type(torch.FloatTensor))
