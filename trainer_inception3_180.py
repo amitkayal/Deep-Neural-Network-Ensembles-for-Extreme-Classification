@@ -190,9 +190,9 @@ def run_training():
 
     ####
     log.write('%s\n\n'%(type(net)))
-    log.write('\n%s\n'%(str(net)), is_terminal=0)
-    log.write(inspect.getsource(net.__init__)+'\n', is_terminal=0)
-    log.write(inspect.getsource(net.forward )+'\n', is_terminal=0)
+    log.write('\n%s\n'%(str(net)))
+    log.write(inspect.getsource(net.__init__)+'\n')
+    log.write(inspect.getsource(net.forward )+'\n')
     log.write('\n')
     ####
 
@@ -264,8 +264,8 @@ def run_training():
     log.write('\tbatch_size*iter_accum  = %d\n'%(batch_size*iter_accum))
     log.write('\n')
 
-    log.write(inspect.getsource(train_augment)+'\n',is_terminal=False)
-    log.write(inspect.getsource(valid_augment)+'\n',is_terminal=False)
+    log.write(inspect.getsource(train_augment)+'\n')
+    log.write(inspect.getsource(valid_augment)+'\n')
     log.write('\n')
     ####
 
