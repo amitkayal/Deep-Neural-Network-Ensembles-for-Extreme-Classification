@@ -319,12 +319,11 @@ def run_training():
     rate = 0
 
     start =timer()
-    j = 0
-    i = 0
+    j = 0 # number of iters in total
+    i = 0 # number of iters where bp is conducted
 
     #net = torch.nn.DataParallel(net, device_ids=[0, 1, 2])
-    while  i<num_iters:  # loop over the dataset multiple times
-
+    while  i<num_iters:
         sum_train_loss = 0.0
         sum_train_acc = 0.0
         sum = 0
@@ -336,7 +335,7 @@ def run_training():
         #for images, labels in train_loader:#delete indices for testing
         ################################
         #print("start iteration")
-        for i, data in enumerate(train_loader, 0):
+        for k, data in enumerate(train_loader, 0):
             #print("Iteration ",str(i))
             images,labels = data
             #print("image type:",type(images))
@@ -357,7 +356,7 @@ def run_training():
             if i % iter_log == 0:
                 print('\r',end='',flush=True)
                 ####
-                log.write('%0.4f  %5.1f k   %4.2f  | %0.4f  %0.4f | %0.4f  %0.4f | %0.4f  %0.4f | %5.0f min \n' % \
+                log.write('rate: %0.4f  iters: %5.1f k   epoch: %4.2f  | %0.4f  %0.4f | %0.4f  %0.4f | %0.4f  %0.4f | %5.0f min \n' % \
                         (rate, i/1000, epoch, valid_loss, valid_acc, train_loss, train_acc, batch_loss, batch_acc, (timer() - start)/60))
                 ####
             #
