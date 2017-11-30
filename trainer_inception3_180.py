@@ -24,7 +24,7 @@ from common import *
 from transform import *
 from Log import *
 from StepLR import *
-from utils import *
+from Utils import *
 # --------------------------------------------------------
 
 from net.inception_v3 import Inception3 as Net
@@ -143,10 +143,7 @@ def evaluate( net, test_loader ):
 def run_training():
 
     out_dir  = '../' # s_xx1'
-    initial_checkpoint = None#\
-		# '/home/ck/project/results/inception3-180-02b/checkpoint/00075000_model.pth'
-        # None  #
-
+    initial_checkpoint = None
     pretrained_file = '../trained_models/LB=0.69565_inc3_00075000_model.pth'
     skip = [] #['fc.weight', 'fc.bias']
 
@@ -186,7 +183,7 @@ def run_training():
 
     ## optimiser ----------------------------------
     #LR = StepLR([ (0, 0.01),  (200, 0.001),  (300, -1)])
-    LR = StepLR([ (0, 0.01), (1, 0.001), (2, 0.0001)])
+    LR = StepLR([ (0, 0.01), (1, 0.001), (3, 0.0001)])
 
     num_iters   = 1000*1000
     iter_smooth = 20
@@ -278,7 +275,6 @@ def run_training():
         log.write('\tloading @ pretrained_file = %s\n' % pretrained_file)
         net.load_pretrain_pytorch_file( pretrained_file, skip )
 
-
     ## start training here! ##############################################
     log.write('** start training here! **\n')
 
@@ -298,6 +294,11 @@ def run_training():
     start =timer()
     j = 0 # number of iters in total
     i = 0 # number of real iters where bp is conducted
+
+    # Custom setting
+    start_iter = 75000
+    start_epoch= 2.98
+    i = start_iter
 
     #net = torch.nn.DataParallel(net, device_ids=[0, 1, 2])
     while  i<num_iters:
