@@ -24,6 +24,7 @@ from common import *
 from transform import *
 from Log import *
 from StepLR import *
+from utils import *
 # --------------------------------------------------------
 
 from net.inception_v3 import Inception3 as Net
@@ -188,8 +189,7 @@ def run_training():
 
     ## optimiser ----------------------------------
     #LR = StepLR([ (0, 0.01),  (200, 0.001),  (300, -1)])
-    #LR = StepLR([ (0, 0.0001),])
-    LR = StepLR()
+    LR = StepLR([ (0, 0.01), (1, 0.001), (2, 0.0001)])
 
     num_iters   = 1000*1000
     iter_smooth = 20
@@ -360,8 +360,8 @@ def run_training():
             lr = LR.get_rate(epoch)
             if lr<0 : break
             ####
-            # adjust_learning_rate(optimizer, lr/iter_accum)
-            # rate = get_learning_rate(optimizer)[0]*iter_accum
+            adjust_learning_rate(optimizer, lr/iter_accum)
+            rate = get_learning_rate(optimizer)[0]*iter_accum
             ####
 
             # one iteration update  -------------
