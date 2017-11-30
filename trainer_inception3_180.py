@@ -107,13 +107,18 @@ def get_accuracy(probs, labels):
 
 
 #--------------------------------------------------------------
-def evaluate( net, test_loader ):
+def evaluate(net, test_loader, max_iter):
 
     test_num  = 0
     test_loss = 0
     test_acc  = 0
+    cnt = 0
+
     # for iter, (images, labels, indices) in enumerate(test_loader, 0):
     for iter, (images, labels) in enumerate(test_loader, 0):#remove indices for testing
+        if cnt > max_iter:
+            break
+
         logits = net(images)
         probs  = F.softmax(logits)
         #print("labels:", labels)
@@ -130,6 +135,8 @@ def evaluate( net, test_loader ):
         ####
         test_loss += batch_size*loss.data[0]
         test_num  += batch_size
+
+        cnt = cnt + 1
 
     assert(test_num == len(test_loader.sampler))
     test_acc  = test_acc/test_num
@@ -318,7 +325,7 @@ def run_training():
 
             if i % iter_valid == 0:
                 net.eval()
-                valid_loss, valid_acc = evaluate(net, valid_loader)
+                valid_loss, valid_acc = evaluate(net, valid_loader, 10)
                 net.train()
 
                 # update best valida_acc and update best model
