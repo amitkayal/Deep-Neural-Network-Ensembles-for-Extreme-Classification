@@ -105,14 +105,14 @@ def get_accuracy(probs, labels):
             #print("correct!")
     return correct_num / batch_size
 
-def save_checkpoint(optimizer, i, epoch, net, best_valid_acc, out_dir, msg):
+def save_checkpoint(optimizer, i, epoch, net, best_valid_acc, out_dir, name):
     torch.save({
         'optimizer': optimizer.state_dict(),
         'iter': i,
         'epoch': epoch,
         'state_dict': net.state_dict(),
         'best_acc': best_valid_acc
-    }, out_dir + '/checkpoint/' + msg + '_%08d_model.pth' % (i))
+    }, out_dir + '/checkpoint/' + name)
 
 
 #--------------------------------------------------------------
@@ -346,7 +346,7 @@ def run_training():
 
                     # update best model
                     # torch.save(net.state_dict(), out_dir + '/checkpoint/best_model.pth')
-                    save_checkpoint(optimizer, i, epoch, net, best_valid_acc, out_dir, "best")
+                    save_checkpoint(optimizer, i, epoch, net, best_valid_acc, out_dir, "best_model.pth")
 
             if i % iter_log == 0:
                 # print('\r',end='',flush=True)
@@ -430,7 +430,7 @@ def run_training():
         #     'iter'     : i,
         #     'epoch'    : epoch,
         # }, out_dir +'/checkpoint/%d_optimizer.pth'%(i))
-        save_checkpoint(optimizer, i, epoch, net, best_valid_acc, out_dir, "")
+        save_checkpoint(optimizer, i, epoch, net, best_valid_acc, out_dir, '%d_optimizer.pth'%(i))
 
     log.write('\n')
 
