@@ -94,8 +94,8 @@ def get_accuracy(probs, labels):
         index = np.argmax(probs[i].reshape(-1))
         #print("index ",index.numpy()[0])
         #print("label",labels.data[i])
-        print("labels", labels[i])
-        print("indexing:",index)
+        #print("labels", labels[i])
+        #print("indexing:",index)
         if index == labels[i]:
             correct_num = correct_num + 1.0
             #print("correct!")

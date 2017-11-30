@@ -29,7 +29,7 @@ def pytorch_image_to_tensor_transform(image):
     std  = [0.229, 0.224, 0.225 ]
     #print("start svtColor")
     image = cv2.cvtColor(image,cv2.COLOR_BGR2RGB)
-    print(image.shape)
+    #print(image.shape)
     image = image.transpose((2,0,1))
     #print("start numpoy to tensor")
     tensor = torch.from_numpy(image).float().div(255)
