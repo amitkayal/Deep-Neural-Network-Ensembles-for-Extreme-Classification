@@ -411,7 +411,6 @@ def run_training():
     pass #-- end of all iterations --
 
 
-
     ## check : load model and re-test
     if 1:
         torch.save(net.state_dict(),out_dir +'/checkpoint/%d_model.pth'%(i))
