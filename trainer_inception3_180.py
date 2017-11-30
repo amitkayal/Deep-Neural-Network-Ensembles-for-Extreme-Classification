@@ -59,7 +59,7 @@ def image_to_tensor_transform(image):
     tensor[ 2] = tensor[ 2] * (0.225 / 0.5) + (0.406 - 0.5) / 0.5
     return tensor
 
- 
+
 
 def train_augment(image):
 
@@ -253,8 +253,8 @@ def run_training():
 
     if valid_loader != None: print("Valid loader loaded!")
     ####
-    log.write('\ttrain_dataset.split = %s\n'%(train_dataset.split))
-    log.write('\tvalid_dataset.split = %s\n'%(valid_dataset.split))
+    # log.write('\ttrain_dataset.split = %s\n'%(train_dataset.split))
+    # log.write('\tvalid_dataset.split = %s\n'%(valid_dataset.split))
     log.write('\tlen(train_dataset)  = %d\n'%(len(train_dataset)))
     log.write('\tlen(valid_dataset)  = %d\n'%(len(valid_dataset)))
     log.write('\tlen(train_loader)   = %d\n'%(len(train_loader)))
@@ -309,7 +309,7 @@ def run_training():
     # log.write('   rate   iter   epoch  | valid_loss/acc | train_loss/acc | batch_loss/acc |  time   \n')
     # log.write('-------------------------------------------------------------------------------------\n')
     ####
- 
+
     train_loss  = 0.0
     train_acc   = 0.0
     valid_loss  = 0.0
@@ -457,14 +457,14 @@ def run_training():
     log.write('\n')
     ####
 
-##to determine best threshold etc ... ## ------------------------------ 
- 
+##to determine best threshold etc ... ## ------------------------------
+
 
 # main #################################################################
 if __name__ == '__main__':
     print( '%s: calling main function ... ' % os.path.basename(__file__))
 
-    run_training() 
+    run_training()
 
 
     print('\nsucess!')
