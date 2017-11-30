@@ -204,8 +204,8 @@ def run_training():
     LR = StepLR([ (0, 0.01), (1, 0.001), (3, 0.0001)])
 
     num_iters   = 1000*1000
-    iter_smooth = 500
-    iter_valid  = 5 #500
+    iter_smooth = 100
+    iter_valid  = 200 #500
     iter_log = 1
     iter_save_freq = 1000
     iter_save   = [0, num_iters-1] + list(range(0,num_iters,1*iter_save_freq)) # first and last iters, then every 1000 iters
@@ -347,7 +347,7 @@ def run_training():
                 if valid_acc > best_valid_acc:
                     best_valid_acc = valid_acc
 
-                    # update best model
+                    # update best model on validation set
                     # torch.save(net.state_dict(), out_dir + '/checkpoint/best_model.pth')
                     save_checkpoint(optimizer, i, epoch, net, best_valid_acc, out_dir, "best_val_model.pth")
                     log.write("=> Best validation model updated\n")
@@ -417,6 +417,12 @@ def run_training():
             if i%iter_smooth == 0: # reset train stats every iter_smooth iters
                 train_loss_meter = AverageMeter()
                 train_acc_meter = AverageMeter()
+
+                if train_acc > best_train_acc:
+                    best_train_acc = train_acc
+                    # update best model on validation set
+                    save_checkpoint(optimizer, i, epoch, net, best_valid_acc, out_dir, "best_train_model.pth")
+                    log.write("=> Best validation model updated\n")
 
             print('\r%0.4f  %5.1f k   %4.2f  | %0.4f  %0.4f | %0.4f  %0.4f | %0.4f  %0.4f | %5.0f min | %d %d,%d' % \
                     (rate, i/1000, epoch, valid_loss, valid_acc, train_loss_meter.avg, train_acc.avg, batch_loss, batch_acc,(timer() - start)/60, iter_time_meter.avg, i, j),\
