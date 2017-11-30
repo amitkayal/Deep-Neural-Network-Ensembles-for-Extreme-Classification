@@ -210,7 +210,7 @@ def run_training():
     ####
     #log.write('** dataset setting **\n')
     ####
-    batch_size  = 4 #60   #512  #96 #256
+    batch_size  = 128 #60   #512  #96 #256
     iter_accum  = 4 #2  #448//batch_size
 
     # train_dataset = CDiscountDataset(#'train_id_v0_5655916', 'train',  mode='train',

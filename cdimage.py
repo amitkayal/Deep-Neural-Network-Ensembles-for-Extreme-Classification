@@ -33,8 +33,7 @@ class CDiscountDataset(Dataset):
         num_train = len(image_data)
         # print(num_train)
         # print("dataset labels",self.labels)
-        for i in range(10):
-        # for i in range(num_train): # set num_train to 1000 for testing
+        for i in range(num_train):
             self.indexes[i] = category_id_to_index[self.labels[i]]
             image_name = '{}/{}.jpg'.format(self.labels[i],image_id[i])
             self.image_names.append(image_name)
