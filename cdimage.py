@@ -50,7 +50,6 @@ class CDiscountDataset(Dataset):
         img = cv2.imread(self.root_dir + self.image_names[idx])
         #plt.imshow(img)
         label = self.indexes[idx]
-        print("image shape",img.shape)
         if self.transform is not None:
             #print("item before transform")
             img = self.transform(img)
