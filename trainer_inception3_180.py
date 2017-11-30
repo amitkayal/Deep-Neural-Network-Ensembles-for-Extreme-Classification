@@ -105,6 +105,15 @@ def get_accuracy(probs, labels):
             #print("correct!")
     return correct_num / batch_size
 
+def save_checkpoint(optimizer, i, epoch, net, best_valid_acc, out_dir, msg):
+    torch.save({
+        'optimizer': optimizer.state_dict(),
+        'iter': i,
+        'epoch': epoch,
+        'state_dict': net.state_dict(),
+        'best_acc': best_valid_acc
+    }, out_dir + '/checkpoint/' + msg + '_%08d_model.pth' % (i))
+
 
 #--------------------------------------------------------------
 def evaluate(net, test_loader, max_iter):
@@ -336,7 +345,8 @@ def run_training():
                     best_valid_acc = valid_acc
 
                     # update best model
-                    torch.save(net.state_dict(), out_dir + '/checkpoint/best_model.pth')
+                    # torch.save(net.state_dict(), out_dir + '/checkpoint/best_model.pth')
+                    save_checkpoint(optimizer, i, epoch, net, best_valid_acc, out_dir, "best")
 
             if i % iter_log == 0:
                 # print('\r',end='',flush=True)
@@ -414,12 +424,13 @@ def run_training():
 
     ## check : load model and re-test
     if 1:
-        torch.save(net.state_dict(),out_dir +'/checkpoint/%d_model.pth'%(i))
-        torch.save({
-            'optimizer': optimizer.state_dict(),
-            'iter'     : i,
-            'epoch'    : epoch,
-        }, out_dir +'/checkpoint/%d_optimizer.pth'%(i))
+        # torch.save(net.state_dict(),out_dir +'/checkpoint/%d_model.pth'%(i))
+        # torch.save({
+        #     'optimizer': optimizer.state_dict(),
+        #     'iter'     : i,
+        #     'epoch'    : epoch,
+        # }, out_dir +'/checkpoint/%d_optimizer.pth'%(i))
+        save_checkpoint(optimizer, i, epoch, net, best_valid_acc, out_dir, "")
 
     log.write('\n')
 
