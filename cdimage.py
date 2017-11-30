@@ -20,12 +20,12 @@ category_id_to_index = {v:k for k,v in label_to_category_id.items()}  # {'001': 
 
 
 class CDiscountDataset(Dataset):
-    def __init__(self, csv_file, root_dir, transform=None):
+    def __init__(self, csv_dir, root_dir, transform=None):
         print("loading CDiscount Dataset...")
         self.image_names=[]
         self.root_dir=root_dir
         self.transform = transform
-        image_data = pd.read_csv(csv_file)
+        image_data = pd.read_csv(csv_dir)
         #train_ids = list(train_images['product_id'])
         image_id = list(image_data['image_id'])
         self.labels = list(image_data['category_id'])
@@ -51,7 +51,7 @@ class CDiscountDataset(Dataset):
         img = cv2.imread(self.root_dir + self.image_names[idx])
         #plt.imshow(img)
         label = self.indexes[idx]
-        #print("image shape",img.shape)
+        print("image shape",img.shape)
         if self.transform is not None:
             #print("item before transform")
             img = self.transform(img)

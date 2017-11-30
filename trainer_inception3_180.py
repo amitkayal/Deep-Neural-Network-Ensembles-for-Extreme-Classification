@@ -36,7 +36,7 @@ CDISCOUNT_NUM_CLASSES = 5270
 
 csv_dir = './data/'
 root_dir = '../output/train/'
-data_file_name = 'train_data.csv'
+data_file_name = 'validation.csv'
 
 learning_rate = 0.001
 
@@ -140,7 +140,7 @@ def run_training():
 
     #pretrained_file = '/home/ck/project/data/pretrain/inception_v3_google-1a9a5a14.pth'
     #pretrained_file = '/root/share/data/models/pytorch/imagenet/inception/inception_v3_google-1a9a5a14.pth'
-    pretrained_file = '../trained_models/LB=0.69565_inc3_00075000_model.pth'
+    pretrained_file = None#'../trained_models/LB=0.69565_inc3_00075000_model.pth'
     #None#'/home/ck/project/results/inception3-299-02a/checkpoint/00040000_model.pth'
     skip = [] #['fc.weight', 'fc.bias']
 
@@ -208,7 +208,7 @@ def run_training():
     ####
     #log.write('** dataset setting **\n')
     ####
-    batch_size  = 1 #60   #512  #96 #256
+    batch_size  = 4 #60   #512  #96 #256
     iter_accum  = 4 #2  #448//batch_size
 
     # train_dataset = CDiscountDataset(#'train_id_v0_5655916', 'train',  mode='train',
