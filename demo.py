@@ -66,7 +66,7 @@ if __name__ == '__main__':
     #model_file ='/root/share/project/kaggle/cdiscount/deliver/release/trained_models/LB=0.69673_se-inc3_00026000_model.pth'
     #net = SEInception3(in_shape=(3,CDISCOUNT_HEIGHT,CDISCOUNT_WIDTH),num_classes=CDISCOUNT_NUM_CLASSES)
 
-    model_file ='../trained_models/LB=0.69565_inc3_00075000_model.pth'
+    model_file ='trained_models/LB=0.69565_inc3_00075000_model.pth'
     net = Inception3(in_shape=(3,CDISCOUNT_HEIGHT,CDISCOUNT_WIDTH),num_classes=CDISCOUNT_NUM_CLASSES)
 
     net.load_state_dict(torch.load(model_file))
