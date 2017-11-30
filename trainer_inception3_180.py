@@ -353,7 +353,7 @@ def run_training():
             if i % iter_log == 0:
                 # print('\r',end='',flush=True)
                 log.write('\r%0.4f  %5.1f k   %4.2f  | %0.4f  %0.4f | %0.4f  %0.4f | %0.4f  %0.4f | %5.0f min | %d %d,%d \n' % \
-                        (rate, i/1000, epoch, valid_loss, valid_acc, train_loss_meter.avg, train_acc.avg, batch_loss, batch_acc,(timer() - start)/60,
+                        (rate, i/1000, epoch, valid_loss, valid_acc, train_loss_meter.avg, train_acc_meter.avg, batch_loss, batch_acc,(timer() - start)/60,
                             iter_time_meter.avg, i, j))
 
             #if 1:
