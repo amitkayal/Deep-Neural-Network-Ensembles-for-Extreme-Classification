@@ -11,7 +11,7 @@ import torch.utils.model_zoo as model_zoo
 
 class Inception3(nn.Module):
 
-    def load_pretrain_pytorch_file(self,pytorch_file, skip=[]):
+    def load_pretrain_pytorch_file(self, pytorch_file, skip=[]):
         pytorch_state_dict = torch.load(pytorch_file)
         state_dict = self.state_dict()
 

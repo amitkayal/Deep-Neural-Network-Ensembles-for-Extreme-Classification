@@ -187,7 +187,7 @@ def run_training():
 
     num_iters   = 1000*1000
     iter_smooth = 20
-    iter_valid  = 100#500
+    iter_valid  = 5 #500
     iter_log = 1
     iter_save_freq = 1000
     iter_save   = [0, num_iters-1] + list(range(0,num_iters,1*iter_save_freq)) # first and last iters, then every 1000 iters
@@ -198,9 +198,7 @@ def run_training():
 
 
     ## dataset ----------------------------------------
-    ####
     log.write('** dataset setting **\n')
-    ####
     batch_size  = 128 #60   #512  #96 #256
     iter_accum  = 4 #2  #448//batch_size
 
@@ -289,6 +287,7 @@ def run_training():
     valid_acc   = 0.0
     batch_loss  = 0.0
     batch_acc   = 0.0
+    best_valid_acc    = 0.0
     rate = 0
 
     start =timer()
@@ -325,6 +324,12 @@ def run_training():
                 valid_loss, valid_acc = evaluate(net, valid_loader)
                 net.train()
 
+                # update best valida_acc and update best model
+                if valid_acc > best_valid_acc:
+                    best_valid_acc = valid_acc
+
+                    # update best model
+                    torch.save(net.state_dict(), out_dir + '/checkpoint/best_model.pth')
 
             if i % iter_log == 0:
                 # print('\r',end='',flush=True)
@@ -332,15 +337,16 @@ def run_training():
                   (rate, i / 1000, epoch, valid_loss, valid_acc, train_loss, train_acc, batch_loss, batch_acc,
                    (timer() - start) / 60, i, j))
 
-
             #if 1:
             if i in iter_save:
-                torch.save(net.state_dict(),out_dir +'/checkpoint/%08d_model.pth'%(i))
+                # torch.save(net.state_dict(),out_dir +'/checkpoint/%08d_model.pth'%(i))
                 torch.save({
                     'optimizer': optimizer.state_dict(),
                     'iter'     : i,
                     'epoch'    : epoch,
-                }, out_dir +'/checkpoint/%08d_optimizer.pth'%(i))
+                    'state_dict': net.state_dict(),
+                    'best_acc': best_valid_acc
+                }, out_dir +'/checkpoint/%08d_model.pth'%(i))
 
 
             # learning rate schduler -------------
