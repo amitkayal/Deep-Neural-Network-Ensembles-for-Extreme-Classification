@@ -13,6 +13,7 @@ from torch import optim
 import torch.nn.functional as F
 from timeit import default_timer as timer
 os.environ['CUDA_VISIBLE_DEVICES'] = '0'
+import time
 
 from common import *
 # from net.rate import *
@@ -25,6 +26,7 @@ from transform import *
 from Log import *
 from StepLR import *
 from Utils import *
+from AverageMeter import *
 # --------------------------------------------------------
 
 from net.inception_v3 import Inception3 as Net
@@ -202,7 +204,7 @@ def run_training():
     LR = StepLR([ (0, 0.01), (1, 0.001), (3, 0.0001)])
 
     num_iters   = 1000*1000
-    iter_smooth = 20
+    iter_smooth = 500
     iter_valid  = 5 #500
     iter_log = 1
     iter_save_freq = 1000
@@ -294,8 +296,8 @@ def run_training():
 
     log.write(' optimizer=%s\n'%str(optimizer) )
     # log.write(' LR=%s\n\n'%str(LR) )
-    log.write('   rate   iter   epoch  | valid_loss/acc | train_loss/acc | batch_loss/acc |  time   \n')
-    log.write('-------------------------------------------------------------------------------------\n')
+    log.write('   rate   iter   epoch  | valid_loss/acc | train_loss/acc | batch_loss/acc | total time | avg iter time \n')
+    log.write('--------------------------------------------------------------------------------------------------------\n')
 
     train_loss  = 0.0
     train_acc   = 0.0
@@ -303,8 +305,13 @@ def run_training():
     valid_acc   = 0.0
     batch_loss  = 0.0
     batch_acc   = 0.0
-    best_valid_acc    = 0.0
+    best_valid_acc  = 0.0
+    best_train_acc  = 0.0
     rate = 0
+
+    iter_time_meter = AverageMeter()
+    train_loss_meter = AverageMeter()
+    train_acc_meter = AverageMeter()
 
     start =timer()
     j = 0 # number of iters in total
@@ -315,12 +322,8 @@ def run_training():
     start_epoch= 2.98
     i = start_iter
 
-    #net = torch.nn.DataParallel(net, device_ids=[0, 1, 2])
+    end = time.time()
     while  i<num_iters:
-        sum_train_loss = 0.0
-        sum_train_acc = 0.0
-        sum = 0
-
         net.train()
         optimizer.zero_grad()
         ##############################
@@ -346,13 +349,14 @@ def run_training():
 
                     # update best model
                     # torch.save(net.state_dict(), out_dir + '/checkpoint/best_model.pth')
-                    save_checkpoint(optimizer, i, epoch, net, best_valid_acc, out_dir, "best_model.pth")
+                    save_checkpoint(optimizer, i, epoch, net, best_valid_acc, out_dir, "best_val_model.pth")
+                    log.write("=> Best validation model updated\n")
 
             if i % iter_log == 0:
                 # print('\r',end='',flush=True)
-                log.write('\r%0.4f  %5.3f k   %4.2f  | %0.4f  %0.4f | %0.4f  %0.4f | %0.4f  %0.4f | %5.0f min  %d,%d \n' % \
-                  (rate, i / 1000, epoch, valid_loss, valid_acc, train_loss, train_acc, batch_loss, batch_acc,
-                   (timer() - start) / 60, i, j))
+                log.write('\r%0.4f  %5.1f k   %4.2f  | %0.4f  %0.4f | %0.4f  %0.4f | %0.4f  %0.4f | %5.0f min | %d %d,%d \n' % \
+                        (rate, i/1000, epoch, valid_loss, valid_acc, train_loss_meter.avg, train_acc.avg, batch_loss, batch_acc,(timer() - start)/60,
+                            iter_time_meter.avg, i, j))
 
             #if 1:
             if i in iter_save:
@@ -380,6 +384,8 @@ def run_training():
             logits = net(images)
             probs  = F.softmax(logits)
             loss = F.cross_entropy(logits, labels)
+            batch_loss = loss.data[0]
+            train_loss_meter.update(batch_loss)
 
             ####
             # loss = FocalLoss()(logits, labels)  #F.cross_entropy(logits, labels)
@@ -400,22 +406,20 @@ def run_training():
                 optimizer.step()
                 optimizer.zero_grad()
 
+            # measure elapsed time
+            iter_time_meter.update(time.time() - end)
+            end = time.time()
+
             # print statistics  ------------
             batch_acc  = get_accuracy(probs, labels)
+            train_acc_meter.update(batch_acc)
 
-            batch_loss = loss.data[0]
-            sum_train_loss += batch_loss
-            sum_train_acc  += batch_acc
-            sum += 1
-            if i%iter_smooth == 0: # update train stats every iter_smooth iters
-                train_loss = sum_train_loss/sum
-                train_acc  = sum_train_acc /sum
-                sum_train_loss = 0.
-                sum_train_acc  = 0.
-                sum = 0
+            if i%iter_smooth == 0: # reset train stats every iter_smooth iters
+                train_loss_meter = AverageMeter()
+                train_acc_meter = AverageMeter()
 
-            print('\r%0.4f  %5.1f k   %4.2f  | %0.4f  %0.4f | %0.4f  %0.4f | %0.4f  %0.4f | %5.0f min  %d,%d' % \
-                    (rate, i/1000, epoch, valid_loss, valid_acc, train_loss, train_acc, batch_loss, batch_acc,(timer() - start)/60 ,i,j),\
+            print('\r%0.4f  %5.1f k   %4.2f  | %0.4f  %0.4f | %0.4f  %0.4f | %0.4f  %0.4f | %5.0f min | %d %d,%d' % \
+                    (rate, i/1000, epoch, valid_loss, valid_acc, train_loss_meter.avg, train_acc.avg, batch_loss, batch_acc,(timer() - start)/60, iter_time_meter.avg, i, j),\
                     end='',flush=True)
             j=j+1
         pass  #-- end of one data loader --
