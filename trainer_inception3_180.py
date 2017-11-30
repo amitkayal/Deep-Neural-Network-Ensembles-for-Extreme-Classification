@@ -41,7 +41,8 @@ log = Log("log.out")
 
 csv_dir = './data/'
 root_dir = '../output/train/'
-data_file_name = 'validation.csv'
+train_data_filename = 'train.csv'
+validation_data_filename = 'validation.csv'
 
 
 label_to_category_id =\
@@ -113,15 +114,12 @@ def evaluate( net, test_loader ):
     test_acc  = 0
     # for iter, (images, labels, indices) in enumerate(test_loader, 0):
     for iter, (images, labels) in enumerate(test_loader, 0):#remove indices for testing
-        images = images.permute(0, 3, 1, 2)  # add this for testing
-        images  = Variable(images.type(torch.FloatTensor),volatile=True).cuda() if use_cuda else Variable(images.type(torch.FloatTensor),volatile=True)
-        #print("evaluate image type:",type(images.data))
-        labels  = Variable(labels).cuda() if use_cuda else Variable(labels)
         logits = net(images)
         probs  = F.softmax(logits)
         #print("labels:", labels)
         #print("probs:",probs)
         loss = F.cross_entropy(logits, labels)
+        test_acc = get_accuracy(probs, labels)
         ####
         #acc  = top_accuracy(probs, labels, top_k=(1,))#1,5
         ####
@@ -186,7 +184,7 @@ def run_training():
 
     num_iters   = 1000*1000
     iter_smooth = 20
-    iter_valid  = 500
+    iter_valid  = 100#500
     iter_log = 1
     iter_save_freq = 1000
     iter_save   = [0, num_iters-1] + list(range(0,num_iters,1*iter_save_freq)) # first and last iters, then every 1000 iters
@@ -206,7 +204,7 @@ def run_training():
         # transforms.ToTensor(): Converts a PIL.Image or numpy.ndarray (H x W x C) in the range [0, 255] to a torch.FloatTensor of shape (C x H x W) in the range [0.0, 1.0].
         transforms.Lambda(lambda x:train_augment(x))
     ])
-    train_dataset = CDiscountDataset(csv_dir+data_file_name,root_dir,transform=transform)
+    train_dataset = CDiscountDataset(csv_dir+train_data_filename,root_dir,transform=transform)
 
     train_loader  = DataLoader(
                         train_dataset,
@@ -218,7 +216,7 @@ def run_training():
                         pin_memory  = False)
     if train_loader != None: print("Train loader loaded!")
 
-    valid_dataset = CDiscountDataset(csv_dir+data_file_name,root_dir,transform=transform)
+    valid_dataset = CDiscountDataset(csv_dir+validation_data_filename,root_dir,transform=transform)
 
     valid_loader  = DataLoader(
                         valid_dataset,
@@ -313,21 +311,16 @@ def run_training():
         #print("start iteration")
         for k, data in enumerate(train_loader, 0):
             images,labels = data
-            #print("image type:",type(images))
-            # images = cv2.cvtColor(images, cv2.COLOR_BGR2RGB)
-            #print("image size:",images.size())
 
-            # images = torch.from_numpy(images).float().div(255).byte()
-            # print("data processing complete")
             i = j/iter_accum + start_iter
             epoch = (i-start_iter)*batch_size*iter_accum/len(train_dataset) + start_epoch
 
-            #### temporaryly removed for testing
-            # if i % iter_valid == 0:
-            #     net.eval()
-            #     valid_loss, valid_acc = evaluate(net, valid_loader)
-            #     net.train()
-            #
+
+            if i % iter_valid == 0:
+                net.eval()
+                valid_loss, valid_acc = evaluate(net, valid_loader)
+                net.train()
+
 
             if i % iter_log == 0:
                 # print('\r',end='',flush=True)
