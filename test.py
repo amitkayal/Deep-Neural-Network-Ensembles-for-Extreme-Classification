@@ -59,8 +59,6 @@ def evaluate(net, test_loader):
 
         np.concatenate((all_image_ids, all_image_ids), axis=0)
         np.concatenate((all_probs, probs), axis=0)
-        all_image_ids += image_ids
-        all_probs += probs
 
         cnt = cnt + 1
 
