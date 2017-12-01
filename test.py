@@ -8,6 +8,7 @@ from transform import *
 from Utils import *
 from cdimage import *
 from torch.utils.data.sampler import RandomSampler
+import operator
 # --------------------------------------------------------
 
 from net.resnet101 import ResNet101 as Net
@@ -41,7 +42,7 @@ def valid_augment(image):
     tensor = image_to_tensor_transform(image)
     return tensor
 
-def evaluate(net, test_loader):
+def evaluate_average_prob(net, test_loader):
     cnt = 0
 
     all_image_ids = np.array([])
@@ -65,9 +66,49 @@ def evaluate(net, test_loader):
 
         cnt = cnt + 1
 
-    product_to_prediction_map = product_predict(all_image_ids, all_probs)
+    product_to_prediction_map = product_predict_average_prob(all_image_ids, all_probs)
 
     return product_to_prediction_map
+
+def evaluate_vote(net, test_loader, path):
+    cnt = 0
+
+    product_to_votes_map = {}
+
+    with open(path, "a") as file:
+        file.write("_id,category_id\n")
+
+        for iter, (images, image_ids) in enumerate(test_loader, 0):#remove indices for testing
+            if cnt > 4:
+                break;
+
+            images = Variable(images.type(torch.FloatTensor)).cuda() if use_cuda else Variable(images.type(torch.FloatTensor))
+            image_ids = np.array(image_ids)
+
+            logits = net(images)
+            probs  = F.softmax(logits)
+            probs = probs.cpu().data.numpy() if use_cuda else probs.data.numpy()
+            probs.astype(float)
+
+            i = 0
+            for image_id in image_ids:
+                product_id = imageid_to_productid(image_id)
+                prediction = np.argmax(probs[i].reshape(-1))
+
+                if product_id in product_to_votes_map:
+                    votes = product_to_votes_map[product_id]
+                    if prediction in votes:
+                        votes[prediction] += 1
+                    else:
+                        votes[prediction] = 1
+                else:
+                    product_to_votes_map[product_id] = {prediction: 1}
+
+                i = i + 1
+
+        for product_id, votes in product_to_votes_map.items():
+            prediction = max(votes.iteritems(), key=operator.itemgetter(1))[0]
+            file.write(str(product_id) + "," + str(prediction) + "\n")
 
 def write_test_result(path, product_to_prediction_map):
     with open(path, "a") as file:
@@ -112,8 +153,6 @@ if __name__ == '__main__':
                         num_workers = 0,
                         pin_memory  = False)
 
-    product_to_prediction_map = evaluate(net, test_loader)
-
-    write_test_result(res_path, product_to_prediction_map)
+    product_to_prediction_map = evaluate_vote(net, test_loader, res_path)
 
     print('\nsucess!')

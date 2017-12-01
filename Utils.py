@@ -16,7 +16,7 @@ def imageid_to_productid(image_id):
 
     return product_id
 
-def product_predict(image_ids, probses):
+def product_predict_average_prob(image_ids, probses):
     """
 
     :param probs: A dictionary: {img_id -> [probability_distribution]} where probability_distribution is an array
