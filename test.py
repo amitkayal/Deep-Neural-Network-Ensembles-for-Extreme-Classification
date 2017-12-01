@@ -49,10 +49,7 @@ def evaluate(net, test_loader):
 
     # for iter, (images, labels, indices) in enumerate(test_loader, 0):
     for iter, (images, image_ids) in enumerate(test_loader, 0):#remove indices for testing
-        print(images)
-        print(image_ids)
         images = Variable(images.type(torch.FloatTensor)).cuda() if use_cuda else Variable(images.type(torch.FloatTensor))
-        image_ids = image_ids.cpu().data if use_cuda else image_ids.data
 
         logits = net(images)
         probs  = F.softmax(logits)
@@ -100,7 +97,6 @@ if __name__ == '__main__':
 
     test_loader  = DataLoader(
                         test_dataset,
-                        #sampler = RandomSampler1(train_dataset,50000),
                         sampler = RandomSampler(test_dataset),
                         batch_size  = validation_batch_size,
                         drop_last   = True,
