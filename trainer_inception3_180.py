@@ -212,7 +212,6 @@ def run_training():
     ## net -------------------------------
     log.write('** net setting **\n')
     net = Net(in_shape = (3, CDISCOUNT_HEIGHT, CDISCOUNT_WIDTH), num_classes=CDISCOUNT_NUM_CLASSES)
-
     if use_cuda: net.cuda()
     ####
     # if 0: #freeze early layers
@@ -226,9 +225,9 @@ def run_training():
     #         p.requires_grad = False
 
     log.write('%s\n\n'%(type(net)))
-    log.write('\n%s\n'%(str(net)))
-    log.write(inspect.getsource(net.__init__)+'\n')
-    log.write(inspect.getsource(net.forward )+'\n')
+    # log.write('\n%s\n'%(str(net)))
+    # log.write(inspect.getsource(net.__init__)+'\n')
+    # log.write(inspect.getsource(net.forward )+'\n')
     log.write('\n')
 
     ## optimiser ----------------------------------
@@ -254,7 +253,7 @@ def run_training():
                         drop_last   = True,
                         num_workers = 0,
                         pin_memory  = False)
-    if train_loader != None: print("Train loader loaded!")
+    # if train_loader != None: print("Train loader loaded!")
 
     valid_dataset = CDiscountDataset(csv_dir+validation_data_filename,root_dir,transform=transform)
 
@@ -266,8 +265,8 @@ def run_training():
                         num_workers = 0,
                         pin_memory  = False)
 
-    if valid_loader != None: print("Valid loader loaded!")
-    ####
+    # if valid_loader != None: print("Valid loader loaded!")
+
     # log.write('\ttrain_dataset.split = %s\n'%(train_dataset.split))
     # log.write('\tvalid_dataset.split = %s\n'%(valid_dataset.split))
     log.write('\tlen(train_dataset)  = %d\n'%(len(train_dataset)))
@@ -306,7 +305,7 @@ def run_training():
             best_valid_acc = checkpoint['best_valid_acc']
             net.load_state_dict(checkpoint['state_dict'])  # load model weights from the checkpoint
             optimizer.load_state_dict(checkpoint['optimizer'])
-            print("=> loaded checkpoint '{}' (epoch: {}, iter: {}, best_train_acc: {}, best_valid_acc: {})"
+            log.write("=> loaded checkpoint '{}' (epoch: {}, iter: {}, best_train_acc: {}, best_valid_acc: {})"
                   .format(initial_checkpoint, start_epoch, start_iter, best_train_acc, best_valid_acc))
         else:
             print("=> no checkpoint found at '{}'".format(initial_checkpoint))
@@ -320,7 +319,7 @@ def run_training():
     ## start training here! ##############################################
     log.write('** start training here! **\n')
 
-    log.write(' optimizer=%s\n'%str(optimizer) )
+    log.write('\toptimizer=%s\n'%str(optimizer) )
     # log.write(' LR=%s\n\n'%str(LR) )
     log.write('   rate   iter   epoch  | valid_loss/acc | train_loss/acc | batch_loss/acc | total time | avg iter time | i j |\n')
     log.write('----------------------------------------------------------------------------------------------------------------\n')
@@ -346,24 +345,9 @@ def run_training():
             i = j/iter_accum + start_iter
             epoch = (i-start_iter)*batch_size*iter_accum/len(train_dataset) + start_epoch
 
-
-            if i % iter_valid == 0 and i != start_iter:
-                net.eval()
-                valid_loss, valid_acc = evaluate(net, valid_loader, validation_num)
-                net.train()
-
-                # update best valida_acc and update best model
-                if valid_acc > best_valid_acc:
-                    best_valid_acc = valid_acc
-
-                    # update best model on validation set
-                    # torch.save(net.state_dict(), out_dir + '/checkpoint/best_model.pth')
-                    save_checkpoint(optimizer, i, epoch, net, best_valid_acc, best_train_acc, out_dir, "best_val_model.pth")
-                    log.write("=> Best validation model updated: iter %d, validation acc %f\n" % (i, best_valid_acc))
-
             if i % iter_log == 0:
                 # print('\r',end='',flush=True)
-                log.write('\r%0.4f  %5.1f k   %4.2f  | %0.4f  %0.4f | %0.4f  %0.4f | %0.4f  %0.4f | %5.0f min | %.2f s | %d,%d \n' % \
+                log.write('\r%0.4f  %5.1f k   %4.2f  | %0.4f  %0.4f | %0.4f  %0.4f | %0.4f  %0.4f | %5.0f min | %5.2f s | %d,%d \n' % \
                         (rate, i/1000, epoch, valid_loss, valid_acc, train_loss_meter.avg, train_acc_meter.avg, batch_loss, batch_acc,(timer() - start)/60,
                             iter_time_meter.avg, i, j))
 
@@ -379,6 +363,19 @@ def run_training():
                 # }, out_dir +'/checkpoint/%08d_model.pth'%(i))
                 save_checkpoint(optimizer, i, epoch, net, best_valid_acc, best_train_acc, out_dir, '%08d_model.pth'%(i))
 
+            if i % iter_valid == 0 and i != start_iter:
+                net.eval()
+                valid_loss, valid_acc = evaluate(net, valid_loader, validation_num)
+                net.train()
+
+                # update best valida_acc and update best model
+                if valid_acc > best_valid_acc:
+                    best_valid_acc = valid_acc
+
+                    # update best model on validation set
+                    # torch.save(net.state_dict(), out_dir + '/checkpoint/best_model.pth')
+                    save_checkpoint(optimizer, i, epoch, net, best_valid_acc, best_train_acc, out_dir, "best_val_model.pth")
+                    log.write("=> Best validation model updated: iter %d, validation acc %f\n" % (i, best_valid_acc))
 
             # learning rate schduler -------------
             lr = LR.get_rate(epoch)
