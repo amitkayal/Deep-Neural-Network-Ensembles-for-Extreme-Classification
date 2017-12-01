@@ -165,6 +165,11 @@ if __name__ == '__main__':
         print("=> no checkpoint found at '{}'".format(initial_checkpoint))
         exit(0)
 
+    transform = transforms.Compose([
+        # transforms.ToTensor(): Converts a PIL.Image or numpy.ndarray (H x W x C) in the range [0, 255] to a torch.FloatTensor of shape (C x H x W) in the range [0.0, 1.0].
+        transforms.Lambda(lambda x:valid_augment(x))
+    ])
+    test_loader = CDiscountDataset(csv_dir + train_data_filename, root_dir, transform=transform)
     product_to_prediction_map = evaluate(net, test_loader)
 
     write_test_result(product_to_prediction_map)
