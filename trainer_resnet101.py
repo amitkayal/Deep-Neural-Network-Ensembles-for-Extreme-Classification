@@ -13,6 +13,7 @@ from torch import optim
 import torch.nn.functional as F
 from timeit import default_timer as timer
 os.environ['CUDA_VISIBLE_DEVICES'] = '0'
+import time
 
 from common import *
 # from net.rate import *
@@ -25,6 +26,7 @@ from transform import *
 from Log import *
 from StepLR import *
 from Utils import *
+from AverageMeter import *
 # --------------------------------------------------------
 
 from net.inception_v3 import Inception3 as Net
@@ -82,8 +84,6 @@ def train_augment(image):
     tensor = image_to_tensor_transform(image)
     return tensor
 
-
-
 def valid_augment(image):
 
     tensor = image_to_tensor_transform(image)
@@ -105,9 +105,19 @@ def get_accuracy(probs, labels):
             #print("correct!")
     return correct_num / batch_size
 
+def save_checkpoint(optimizer, i, epoch, net, best_valid_acc, best_train_acc, out_dir, name):
+    torch.save({
+        'optimizer': optimizer.state_dict(),
+        'iter': i,
+        'epoch': epoch,
+        'state_dict': net.state_dict(),
+        'best_valid_acc': best_valid_acc,
+        'best_train_acc': best_train_acc
+    }, out_dir + '/checkpoint/' + name)
+
 
 #--------------------------------------------------------------
-def evaluate(net, test_loader, max_iter):
+def evaluate(net, test_loader, sample_num):
 
     test_num  = 0
     test_loss = 0
@@ -116,7 +126,7 @@ def evaluate(net, test_loader, max_iter):
 
     # for iter, (images, labels, indices) in enumerate(test_loader, 0):
     for iter, (images, labels) in enumerate(test_loader, 0):#remove indices for testing
-        if cnt > max_iter:
+        if test_num > sample_num:
             break
 
         images = Variable(images.type(torch.FloatTensor)).cuda() if use_cuda else Variable(
@@ -149,27 +159,58 @@ def evaluate(net, test_loader, max_iter):
 #--------------------------------------------------------------
 def run_training():
 
+    #-------------------------------------------- Training settings --------------------------------------------
     out_dir  = '../' # s_xx1'
-    initial_checkpoint = None
-    pretrained_file = '../trained_models/00243000_model.pth'
+    # initial_checkpoint = None
+    initial_checkpoint = '../checkpoint/best_train_model.pth'
+    # pretrained_file = '../trained_models/LB=0.69565_inc3_00075000_model.pth'
+    pretrained_file = None
     skip = [] #['fc.weight', 'fc.bias']
+
+    num_iters   = 1000*1000
+    iter_smooth = 50
+    iter_valid  = 100 #500
+    iter_log = 5
+    iter_save_freq = 50
+    iter_save   = [0, num_iters-1] + list(range(0,num_iters,1*iter_save_freq)) # first and last iters, then every 1000 iters
+
+    validation_num = 10000
+
+    batch_size  = 128 #60   #512  #96 #256
+    validation_batch_size = 128
+    iter_accum  = 4 #2  #448//batch_size
+
+    valid_loss  = 0.0
+    valid_acc   = 0.0
+    batch_loss  = 0.0
+    batch_acc   = 0.0
+    best_valid_acc  = 0.0
+    best_train_acc  = 0.0
+    rate = 0
+
+    iter_time_meter = AverageMeter()
+    train_loss_meter = AverageMeter()
+    train_acc_meter = AverageMeter()
+
+
+    j = 0 # number of iters in total
+    i = 0 # number of real iters where bp is conducted
+
+    #-----------------------------------------------------------------------------------------------------------
 
     ## setup  ---------------------------
     os.makedirs(out_dir +'/checkpoint', exist_ok=True)
     os.makedirs(out_dir +'/backup', exist_ok=True)
-    ####
 
     log.write('\n--- [START %s] %s\n\n' % (datetime.now().strftime('%Y-%m-%d %H:%M:%S'), '-' * 64))
     log.write('** some experiment setting **\n')
     log.write('\tSEED         = %u\n' % SEED)
     log.write('\tPROJECT_PATH = %s\n' % PROJECT_PATH)
     log.write('\tout_dir      = %s\n' % out_dir)
-    log.write('\n')
 
     ## net -------------------------------
     log.write('** net setting **\n')
     net = Net(in_shape = (3, CDISCOUNT_HEIGHT, CDISCOUNT_WIDTH), num_classes=CDISCOUNT_NUM_CLASSES)
-
     if use_cuda: net.cuda()
     ####
     # if 0: #freeze early layers
@@ -183,33 +224,20 @@ def run_training():
     #         p.requires_grad = False
 
     log.write('%s\n\n'%(type(net)))
-    log.write('\n%s\n'%(str(net)))
-    log.write(inspect.getsource(net.__init__)+'\n')
-    log.write(inspect.getsource(net.forward )+'\n')
+    # log.write('\n%s\n'%(str(net)))
+    # log.write(inspect.getsource(net.__init__)+'\n')
+    # log.write(inspect.getsource(net.forward )+'\n')
     log.write('\n')
 
     ## optimiser ----------------------------------
     #LR = StepLR([ (0, 0.01),  (200, 0.001),  (300, -1)])
     LR = StepLR([ (0, 0.01), (1, 0.001), (3, 0.0001)])
 
-    num_iters   = 1000*1000
-    iter_smooth = 20
-    iter_valid  = 5 #500
-    iter_log = 1
-    iter_save_freq = 1000
-    iter_save   = [0, num_iters-1] + list(range(0,num_iters,1*iter_save_freq)) # first and last iters, then every 1000 iters
-
-
     ## optimizer = optim.SGD(net.parameters(), lr=0.01, momentum=0.9, weight_decay=0.0005)  ###0.0005
     optimizer = optim.SGD(filter(lambda p: p.requires_grad, net.parameters()), lr=0.01, momentum=0.1, weight_decay=0.0001)
 
-
     ## dataset ----------------------------------------
     log.write('** dataset setting **\n')
-    batch_size  = 128 #60   #512  #96 #256
-    iter_accum  = 4 #2  #448//batch_size
-
-
     transform = transforms.Compose([
         # transforms.ToTensor(): Converts a PIL.Image or numpy.ndarray (H x W x C) in the range [0, 255] to a torch.FloatTensor of shape (C x H x W) in the range [0.0, 1.0].
         transforms.Lambda(lambda x:train_augment(x)),
@@ -225,20 +253,20 @@ def run_training():
                         drop_last   = True,
                         num_workers = 0,
                         pin_memory  = False)
-    if train_loader != None: print("Train loader loaded!")
+    # if train_loader != None: print("Train loader loaded!")
 
     valid_dataset = CDiscountDataset(csv_dir+validation_data_filename,root_dir,transform=transform)
 
     valid_loader  = DataLoader(
                         valid_dataset,
                         sampler     = SequentialSampler(valid_dataset),
-                        batch_size  = batch_size,
+                        batch_size  = validation_batch_size,
                         drop_last   = False,
                         num_workers = 0,
                         pin_memory  = False)
 
-    if valid_loader != None: print("Valid loader loaded!")
-    ####
+    # if valid_loader != None: print("Valid loader loaded!")
+
     # log.write('\ttrain_dataset.split = %s\n'%(train_dataset.split))
     # log.write('\tvalid_dataset.split = %s\n'%(valid_dataset.split))
     log.write('\tlen(train_dataset)  = %d\n'%(len(train_dataset)))
@@ -266,53 +294,44 @@ def run_training():
     if initial_checkpoint is not None: # load a checkpoint and resume from previous training
         log.write('\tloading @ initial_checkpoint = %s\n' % initial_checkpoint)
 
-        # load model
-        net.load_state_dict(torch.load(initial_checkpoint, map_location=lambda storage, loc: storage))
-
-        # load other info
-        checkpoint  = torch.load(initial_checkpoint.replace('_model.pth','_optimizer.pth'),\
-					  map_location=lambda storage, loc: storage)
-        start_iter  = checkpoint['iter' ]
-        start_epoch = checkpoint['epoch']
-        #optimizer.load_state_dict(checkpoint['optimizer'])
-
+        # load
+        checkpoint  = torch.load(initial_checkpoint, map_location=lambda storage, loc: storage)
+        if os.path.isfile(initial_checkpoint):
+            print("=> loading checkpoint '{}'".format(initial_checkpoint))
+            checkpoint = torch.load(initial_checkpoint)
+            start_epoch = checkpoint['epoch']
+            start_iter = checkpoint['iter']
+            best_train_acc = checkpoint['best_train_acc']
+            best_valid_acc = checkpoint['best_valid_acc']
+            net.load_state_dict(checkpoint['state_dict'])  # load model weights from the checkpoint
+            optimizer.load_state_dict(checkpoint['optimizer'])
+            log.write("=> loaded checkpoint '{}' (epoch: {}, iter: {}, best_train_acc: {}, best_valid_acc: {})"
+                  .format(initial_checkpoint, start_epoch, start_iter, best_train_acc, best_valid_acc))
+        else:
+            print("=> no checkpoint found at '{}'".format(initial_checkpoint))
+            exit(0)
 
     elif pretrained_file is not None: # load a pretrained model and train from the beginning
         log.write('\tloading @ pretrained_file = %s\n' % pretrained_file)
         net.load_pretrain_pytorch_file( pretrained_file, skip )
 
+
     ## start training here! ##############################################
     log.write('** start training here! **\n')
 
-    log.write(' optimizer=%s\n'%str(optimizer) )
+    log.write('\toptimizer=%s\n'%str(optimizer) )
     # log.write(' LR=%s\n\n'%str(LR) )
-    log.write('   rate   iter   epoch  | valid_loss/acc | train_loss/acc | batch_loss/acc |  time   \n')
-    log.write('-------------------------------------------------------------------------------------\n')
-
-    train_loss  = 0.0
-    train_acc   = 0.0
-    valid_loss  = 0.0
-    valid_acc   = 0.0
-    batch_loss  = 0.0
-    batch_acc   = 0.0
-    best_valid_acc    = 0.0
-    rate = 0
-
-    start =timer()
-    j = 0 # number of iters in total
-    i = 0 # number of real iters where bp is conducted
+    log.write('   rate   iter   epoch  | valid_loss/acc | train_loss/acc | batch_loss/acc | total time | avg iter time | i j |\n')
+    log.write('----------------------------------------------------------------------------------------------------------------\n')
 
     # Custom setting
-    start_iter = 75000
-    start_epoch= 2.98
+    # start_iter = 75000
+    # start_epoch= 2.98
     i = start_iter
 
-    #net = torch.nn.DataParallel(net, device_ids=[0, 1, 2])
+    start = timer()
+    end = time.time()
     while  i<num_iters:
-        sum_train_loss = 0.0
-        sum_train_acc = 0.0
-        sum = 0
-
         net.train()
         optimizer.zero_grad()
         ##############################
@@ -322,55 +341,57 @@ def run_training():
         #print("start iteration")
         for k, data in enumerate(train_loader, 0):
             images,labels = data
-            print(images.size())
+
             i = j/iter_accum + start_iter
             epoch = (i-start_iter)*batch_size*iter_accum/len(train_dataset) + start_epoch
 
+            if i % iter_log == 0:
+                # print('\r',end='',flush=True)
+                log.write('\r%0.4f  %5.1f k   %4.2f  | %0.4f  %0.4f | %0.4f  %0.4f | %0.4f  %0.4f | %5.0f min | %5.2f s | %d,%d \n' % \
+                        (rate, i/1000, epoch, valid_loss, valid_acc, train_loss_meter.avg, train_acc_meter.avg, batch_loss, batch_acc,(timer() - start)/60,
+                            iter_time_meter.avg, i, j))
 
-            if i % iter_valid == 0:
+            #if 1:
+            if i in iter_save and i != start_iter:
+                # torch.save(net.state_dict(),out_dir +'/checkpoint/%08d_model.pth'%(i))
+                # torch.save({
+                #     'optimizer': optimizer.state_dict(),
+                #     'iter'     : i,
+                #     'epoch'    : epoch,
+                #     'state_dict': net.state_dict(),
+                #     'best_valid_acc': best_valid_acc
+                # }, out_dir +'/checkpoint/%08d_model.pth'%(i))
+                save_checkpoint(optimizer, i, epoch, net, best_valid_acc, best_train_acc, out_dir, '%08d_model.pth'%(i))
+
+            if i % iter_valid == 0 and i != start_iter:
                 net.eval()
-                valid_loss, valid_acc = evaluate(net, valid_loader, 10)
+                valid_loss, valid_acc = evaluate(net, valid_loader, validation_num)
                 net.train()
 
                 # update best valida_acc and update best model
                 if valid_acc > best_valid_acc:
                     best_valid_acc = valid_acc
 
-                    # update best model
-                    torch.save(net.state_dict(), out_dir + '/checkpoint/best_model.pth')
-
-            if i % iter_log == 0:
-                # print('\r',end='',flush=True)
-                log.write('\r%0.4f  %5.3f k   %4.2f  | %0.4f  %0.4f | %0.4f  %0.4f | %0.4f  %0.4f | %5.0f min  %d,%d \n' % \
-                  (rate, i / 1000, epoch, valid_loss, valid_acc, train_loss, train_acc, batch_loss, batch_acc,
-                   (timer() - start) / 60, i, j))
-
-            #if 1:
-            if i in iter_save:
-                # torch.save(net.state_dict(),out_dir +'/checkpoint/%08d_model.pth'%(i))
-                torch.save({
-                    'optimizer': optimizer.state_dict(),
-                    'iter'     : i,
-                    'epoch'    : epoch,
-                    'state_dict': net.state_dict(),
-                    'best_acc': best_valid_acc
-                }, out_dir +'/checkpoint/%08d_model.pth'%(i))
-
+                    # update best model on validation set
+                    # torch.save(net.state_dict(), out_dir + '/checkpoint/best_model.pth')
+                    save_checkpoint(optimizer, i, epoch, net, best_valid_acc, best_train_acc, out_dir, "best_val_model.pth")
+                    log.write("=> Best validation model updated: iter %d, validation acc %f\n" % (i, best_valid_acc))
 
             # learning rate schduler -------------
             lr = LR.get_rate(epoch)
             if lr<0 : break
-            ####
             adjust_learning_rate(optimizer, lr/iter_accum)
             rate = get_learning_rate(optimizer)[0]*iter_accum
-            ####
 
+            end = time.time()
             # one iteration update  -------------
             images = Variable(images.type(torch.FloatTensor)).cuda() if use_cuda else Variable(images.type(torch.FloatTensor))
             labels = Variable(labels).cuda() if use_cuda else Variable(labels)
             logits = net(images)
             probs  = F.softmax(logits)
             loss = F.cross_entropy(logits, labels)
+            batch_loss = loss.data[0]
+            train_loss_meter.update(batch_loss)
 
             ####
             # loss = FocalLoss()(logits, labels)  #F.cross_entropy(logits, labels)
@@ -391,22 +412,26 @@ def run_training():
                 optimizer.step()
                 optimizer.zero_grad()
 
+            # measure elapsed time
+            iter_time_meter.update(time.time() - end)
+
             # print statistics  ------------
             batch_acc  = get_accuracy(probs, labels)
+            train_acc_meter.update(batch_acc)
 
-            batch_loss = loss.data[0]
-            sum_train_loss += batch_loss
-            sum_train_acc  += batch_acc
-            sum += 1
-            if i%iter_smooth == 0: # update train stats every iter_smooth iters
-                train_loss = sum_train_loss/sum
-                train_acc  = sum_train_acc /sum
-                sum_train_loss = 0.
-                sum_train_acc  = 0.
-                sum = 0
+            if i%iter_smooth == 0: # reset train stats every iter_smooth iters
+                if train_acc_meter.avg > best_train_acc:
+                    best_train_acc = train_acc_meter.avg
+                    # update best model on train set
+                    save_checkpoint(optimizer, i, epoch, net, best_valid_acc, best_train_acc, out_dir, "best_train_model.pth")
+                    log.write("=> Best train model updated: iter %d, train acc %f\n"%(i, best_train_acc))
 
-            print('\r%0.4f  %5.1f k   %4.2f  | %0.4f  %0.4f | %0.4f  %0.4f | %0.4f  %0.4f | %5.0f min  %d,%d' % \
-                    (rate, i/1000, epoch, valid_loss, valid_acc, train_loss, train_acc, batch_loss, batch_acc,(timer() - start)/60 ,i,j),\
+                train_loss_meter = AverageMeter()
+                train_acc_meter = AverageMeter()
+
+
+            print('\r%0.4f  %5.1f k   %4.2f  | %0.4f  %0.4f | %0.4f  %0.4f | %0.4f  %0.4f | %5.0f min | %5.2f s | %d,%d' % \
+                    (rate, i/1000, epoch, valid_loss, valid_acc, train_loss_meter.avg, train_acc_meter.avg, batch_loss, batch_acc,(timer() - start)/60, iter_time_meter.avg, i, j),\
                     end='',flush=True)
             j=j+1
         pass  #-- end of one data loader --
@@ -415,12 +440,13 @@ def run_training():
 
     ## check : load model and re-test
     if 1:
-        torch.save(net.state_dict(),out_dir +'/checkpoint/%d_model.pth'%(i))
-        torch.save({
-            'optimizer': optimizer.state_dict(),
-            'iter'     : i,
-            'epoch'    : epoch,
-        }, out_dir +'/checkpoint/%d_optimizer.pth'%(i))
+        # torch.save(net.state_dict(),out_dir +'/checkpoint/%d_model.pth'%(i))
+        # torch.save({
+        #     'optimizer': optimizer.state_dict(),
+        #     'iter'     : i,
+        #     'epoch'    : epoch,
+        # }, out_dir +'/checkpoint/%d_optimizer.pth'%(i))
+        save_checkpoint(optimizer, i, epoch, net, best_valid_acc, best_train_acc, out_dir, '%d_optimizer.pth'%(i))
 
     log.write('\n')
 
