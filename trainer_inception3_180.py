@@ -207,7 +207,6 @@ def run_training():
     log.write('\tSEED         = %u\n' % SEED)
     log.write('\tPROJECT_PATH = %s\n' % PROJECT_PATH)
     log.write('\tout_dir      = %s\n' % out_dir)
-    log.write('\n')
 
     ## net -------------------------------
     log.write('** net setting **\n')
