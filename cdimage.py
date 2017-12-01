@@ -63,13 +63,12 @@ class CDiscountTestDataset(Dataset):
         self.root_dir=root_dir
         self.transform = transform
         image_data = pd.read_csv(csv_dir)
-        self.product_ids = list(image_data['product_id'])
         self.image_id = list(image_data['image_id'])
         num_train = len(image_data)
         # print(num_train)
         # print("dataset labels",self.labels)
         for i in range(num_train):
-            image_name = '{}-{}.jpg'.format(self.product_it,self.image_id[i])
+            image_name = '{}.jpg'.format(self.image_id[i])
             self.image_names.append(image_name)
         # print("label type:",type(self.labels))
         # print("label size:",len(self.labels))
