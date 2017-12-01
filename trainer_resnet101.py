@@ -166,8 +166,8 @@ def run_training():
 
     validation_num = 10000
 
-    batch_size  = 128 #60   #512  #96 #256
-    validation_batch_size = 128
+    batch_size  = 64 #60   #512  #96 #256
+    validation_batch_size = 64
     iter_accum  = 4 #2  #448//batch_size
 
     valid_loss  = 0.0
