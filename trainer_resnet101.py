@@ -33,7 +33,7 @@ from net.inception_v3 import Inception3 as Net
 
 use_cuda = True
 
-
+identifier = "resnet"
 SEED = 123456
 PROJECT_PATH = './project'
 CDISCOUNT_HEIGHT = 180
@@ -113,7 +113,7 @@ def save_checkpoint(optimizer, i, epoch, net, best_valid_acc, best_train_acc, ou
         'state_dict': net.state_dict(),
         'best_valid_acc': best_valid_acc,
         'best_train_acc': best_train_acc
-    }, out_dir + '/checkpoint/' + name)
+    }, out_dir + '/checkpoint/' + identifier + "/" + name)
 
 
 #--------------------------------------------------------------
@@ -160,10 +160,9 @@ def evaluate(net, test_loader, sample_num):
 def run_training():
 
     #-------------------------------------------- Training settings --------------------------------------------
-    identifier = "resnet"
     out_dir  = '../' # s_xx1'
     # initial_checkpoint = None
-    initial_checkpoint = '../checkpoint/resnet_00243000_model.pth'
+    initial_checkpoint = '../trained_models/resnet_00243000_model.pth'
     # pretrained_file = '../trained_models/LB=0.69565_inc3_00075000_model.pth'
     pretrained_file = None
     skip = [] #['fc.weight', 'fc.bias']
