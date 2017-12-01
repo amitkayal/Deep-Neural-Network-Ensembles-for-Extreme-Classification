@@ -1,32 +1,12 @@
 from __future__ import print_function
 
 import os
-import random
-import cv2
-import inspect
-from datetime import *
 from cdimage import CDiscountDataset
-from torch.utils.data.sampler import RandomSampler
-from logging import Logger
 from torch.autograd import Variable
-from torch import optim
 import torch.nn.functional as F
-from timeit import default_timer as timer
 os.environ['CUDA_VISIBLE_DEVICES'] = '0'
-import time
-
-from common import *
-# from net.rate import *
-# from net.loss import *
-# from utility.file import *
-
-# from dataset.cdimage import *
-# from dataset.sampler import *
 from transform import *
-from Log import *
-from StepLR import *
 from Utils import *
-from AverageMeter import *
 # --------------------------------------------------------
 
 from net.resnet101 import ResNet101 as Net
@@ -41,7 +21,7 @@ CDISCOUNT_NUM_CLASSES = 5270
 
 csv_dir = './data/'
 root_dir = '../output/train/'
-train_data_filename = 'train.csv'
+test_data_filename = 'test.csv'
 validation_data_filename = 'validation.csv'
 
 ####################################################################################################
@@ -111,7 +91,7 @@ if __name__ == '__main__':
         exit(0)
 
     transform_valid = transforms.Compose([transforms.Lambda(lambda x: valid_augment(x))])
-    test_loader = CDiscountDataset(csv_dir + train_data_filename, root_dir, transform=transform_valid)
+    test_loader = CDiscountDataset(csv_dir + test_data_filename, root_dir, transform=transform_valid)
     product_to_prediction_map = evaluate(net, test_loader)
 
     write_test_result(res_path, product_to_prediction_map)
