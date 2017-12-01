@@ -151,7 +151,7 @@ def run_training():
 
     out_dir  = '../' # s_xx1'
     initial_checkpoint = None
-    pretrained_file = '../trained_models/LB=0.69565_inc3_00075000_model.pth'
+    pretrained_file = '../trained_models/00243000_model.pth'
     skip = [] #['fc.weight', 'fc.bias']
 
     ## setup  ---------------------------
