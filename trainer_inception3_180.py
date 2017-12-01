@@ -33,7 +33,7 @@ from net.inception_v3 import Inception3 as Net
 
 use_cuda = True
 
-
+IDENTIFIER = "inception"
 SEED = 123456
 PROJECT_PATH = './project'
 CDISCOUNT_HEIGHT = 180
@@ -113,7 +113,7 @@ def save_checkpoint(optimizer, i, epoch, net, best_valid_acc, best_train_acc, ou
         'state_dict': net.state_dict(),
         'best_valid_acc': best_valid_acc,
         'best_train_acc': best_train_acc
-    }, out_dir + '/checkpoint/' + name)
+    }, out_dir + '/checkpoint/' + IDENTIFIER + "/" + name)
 
 
 #--------------------------------------------------------------
@@ -199,11 +199,12 @@ def run_training():
     #-----------------------------------------------------------------------------------------------------------
 
     ## setup  ---------------------------
-    os.makedirs(out_dir +'/checkpoint', exist_ok=True)
-    os.makedirs(out_dir +'/backup', exist_ok=True)
+    os.makedirs(out_dir +'/checkpoint/' + IDENTIFIER, exist_ok=True)
+    os.makedirs(out_dir +'/backup/' + IDENTIFIER, exist_ok=True)
 
     log.write('\n--- [START %s] %s\n\n' % (datetime.now().strftime('%Y-%m-%d %H:%M:%S'), '-' * 64))
     log.write('** some experiment setting **\n')
+    log.write('\tIDENTIFIER   = %s\n' % IDENTIFIER)
     log.write('\tSEED         = %u\n' % SEED)
     log.write('\tPROJECT_PATH = %s\n' % PROJECT_PATH)
     log.write('\tout_dir      = %s\n' % out_dir)
