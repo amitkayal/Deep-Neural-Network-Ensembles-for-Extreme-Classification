@@ -44,8 +44,8 @@ def valid_augment(image):
 def evaluate(net, test_loader):
     cnt = 0
 
-    all_image_ids = []
-    all_probs = []
+    all_image_ids = np.array([])
+    all_probs = np.array([])
 
     # for iter, (images, labels, indices) in enumerate(test_loader, 0):
     for iter, (images, image_ids) in enumerate(test_loader, 0):#remove indices for testing
@@ -55,6 +55,8 @@ def evaluate(net, test_loader):
         probs  = F.softmax(logits)
         probs = probs.cpu().data.numpy() if use_cuda else probs.data.numpy()
 
+        np.concatenate((all_image_ids, all_image_ids), axis=0)
+        np.concatenate((all_probs, probs), axis=0)
         all_image_ids += image_ids
         all_probs += probs
 
