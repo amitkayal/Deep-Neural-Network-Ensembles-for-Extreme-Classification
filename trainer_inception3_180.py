@@ -326,8 +326,8 @@ def run_training():
     log.write('----------------------------------------------------------------------------------------------------------------\n')
 
     # Custom setting
-    start_iter = 75000
-    start_epoch= 2.98
+    # start_iter = 75000
+    # start_epoch= 2.98
     i = start_iter
 
     start = timer()
@@ -368,7 +368,7 @@ def run_training():
                             iter_time_meter.avg, i, j))
 
             #if 1:
-            if i in iter_save:
+            if i in iter_save and i != start_iter:
                 # torch.save(net.state_dict(),out_dir +'/checkpoint/%08d_model.pth'%(i))
                 # torch.save({
                 #     'optimizer': optimizer.state_dict(),
