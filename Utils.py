@@ -30,8 +30,8 @@ def product_predict(image_ids, probses):
     size = len(image_ids)
     probssum_map = {}
     for i in range(size):
-        print("image_id: " + image_id)
         image_id = image_ids[i]
+        print("image_id: " + image_id)
         probs = probses[i]
         product_id = imageid_to_productid(image_id)
 
