@@ -173,7 +173,7 @@ def run_training():
     iter_save_freq = 50
     iter_save   = [0, num_iters-1] + list(range(0,num_iters,1*iter_save_freq)) # first and last iters, then every 1000 iters
 
-    validation_num = 1000
+    validation_num = 10000
 
     batch_size  = 128 #60   #512  #96 #256
     validation_batch_size = 128
