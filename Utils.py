@@ -52,3 +52,5 @@ def product_predict(image_ids, probses):
     #
     # return res
 
+    return product_to_prediction_map
+
