@@ -230,7 +230,6 @@ def run_training():
     log.write('** dataset setting **\n')
     transform = transforms.Compose([
         # transforms.ToTensor(): Converts a PIL.Image or numpy.ndarray (H x W x C) in the range [0, 255] to a torch.FloatTensor of shape (C x H x W) in the range [0.0, 1.0].
-        transforms.RandomCrop((160, 160)),
         transforms.Lambda(lambda x:train_augment(x))
 
     ])
