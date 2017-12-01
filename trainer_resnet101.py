@@ -160,9 +160,10 @@ def evaluate(net, test_loader, sample_num):
 def run_training():
 
     #-------------------------------------------- Training settings --------------------------------------------
+    identifier = "resnet"
     out_dir  = '../' # s_xx1'
     # initial_checkpoint = None
-    initial_checkpoint = '../checkpoint/best_train_model.pth'
+    initial_checkpoint = '../checkpoint/resnet_00243000_model.pth'
     # pretrained_file = '../trained_models/LB=0.69565_inc3_00075000_model.pth'
     pretrained_file = None
     skip = [] #['fc.weight', 'fc.bias']
@@ -199,8 +200,8 @@ def run_training():
     #-----------------------------------------------------------------------------------------------------------
 
     ## setup  ---------------------------
-    os.makedirs(out_dir +'/checkpoint', exist_ok=True)
-    os.makedirs(out_dir +'/backup', exist_ok=True)
+    os.makedirs(out_dir +'/checkpoint/' + identifier, exist_ok=True)
+    os.makedirs(out_dir +'/backup/' + identifier, exist_ok=True)
 
     log.write('\n--- [START %s] %s\n\n' % (datetime.now().strftime('%Y-%m-%d %H:%M:%S'), '-' * 64))
     log.write('** some experiment setting **\n')
@@ -297,16 +298,24 @@ def run_training():
         # load
         checkpoint  = torch.load(initial_checkpoint, map_location=lambda storage, loc: storage)
         if os.path.isfile(initial_checkpoint):
-            print("=> loading checkpoint '{}'".format(initial_checkpoint))
-            checkpoint = torch.load(initial_checkpoint)
-            start_epoch = checkpoint['epoch']
+            # print("=> loading checkpoint '{}'".format(initial_checkpoint))
+            # checkpoint = torch.load(initial_checkpoint)
+            # start_epoch = checkpoint['epoch']
+            # start_iter = checkpoint['iter']
+            # best_train_acc = checkpoint['best_train_acc']
+            # best_valid_acc = checkpoint['best_valid_acc']
+            # net.load_state_dict(checkpoint['state_dict'])  # load model weights from the checkpoint
+            # optimizer.load_state_dict(checkpoint['optimizer'])
+            # log.write("=> loaded checkpoint '{}' (epoch: {}, iter: {}, best_train_acc: {}, best_valid_acc: {})"
+            #       .format(initial_checkpoint, start_epoch, start_iter, best_train_acc, best_valid_acc))
+
+            log.write('\tinitial_checkpoint = %s\n' % initial_checkpoint)
+            net.load_state_dict(torch.load(initial_checkpoint, map_location=lambda storage, loc: storage))
+
+            checkpoint = torch.load(initial_checkpoint.replace('_model.pth', '_optimizer.pth'))
             start_iter = checkpoint['iter']
-            best_train_acc = checkpoint['best_train_acc']
-            best_valid_acc = checkpoint['best_valid_acc']
-            net.load_state_dict(checkpoint['state_dict'])  # load model weights from the checkpoint
-            optimizer.load_state_dict(checkpoint['optimizer'])
-            log.write("=> loaded checkpoint '{}' (epoch: {}, iter: {}, best_train_acc: {}, best_valid_acc: {})"
-                  .format(initial_checkpoint, start_epoch, start_iter, best_train_acc, best_valid_acc))
+            start_epoch = checkpoint['epoch']
+
         else:
             print("=> no checkpoint found at '{}'".format(initial_checkpoint))
             exit(0)
