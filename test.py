@@ -29,7 +29,7 @@ from Utils import *
 from AverageMeter import *
 # --------------------------------------------------------
 
-from net.inception_v3 import Inception3 as Net
+from net.resnet101 import ResNet101 as Net
 
 use_cuda = True
 IDENTIFIER = "resnet"
