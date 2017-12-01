@@ -72,7 +72,7 @@ def evaluate(net, test_loader):
 def write_test_result(path, product_to_prediction_map):
     with open(path, "a") as file:
         file.write("_id,category_id\n")
-        for product_id, prediction in product_to_prediction_map.iteritems():
+        for product_id, prediction in product_to_prediction_map.items():
             file.write(product_id + "," + prediction + "\n")
 
 
