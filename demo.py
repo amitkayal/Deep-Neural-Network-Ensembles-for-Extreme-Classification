@@ -73,7 +73,8 @@ if __name__ == '__main__':
         print("=> loading checkpoint '{}'".format(model_file))
         checkpoint = torch.load(model_file)
         start_epoch = checkpoint['epoch']
-        best_edit_dist = checkpoint['best_acc']
+        best_train_acc = checkpoint['best_train_acc']
+        best_valid_acc = checkpoint['best_valid_acc']
         net.load_state_dict(checkpoint['state_dict']) # load model weights from the checkpoint
         print("=> loaded checkpoint '{}' (epoch {})"
               .format(model_file, checkpoint['epoch']))

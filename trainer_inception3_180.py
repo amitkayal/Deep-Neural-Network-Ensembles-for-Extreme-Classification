@@ -105,13 +105,14 @@ def get_accuracy(probs, labels):
             #print("correct!")
     return correct_num / batch_size
 
-def save_checkpoint(optimizer, i, epoch, net, best_valid_acc, out_dir, name):
+def save_checkpoint(optimizer, i, epoch, net, best_valid_acc, best_train_acc, out_dir, name):
     torch.save({
         'optimizer': optimizer.state_dict(),
         'iter': i,
         'epoch': epoch,
         'state_dict': net.state_dict(),
-        'best_valid_acc': best_valid_acc
+        'best_valid_acc': best_valid_acc,
+        'best_train_acc': best_train_acc
     }, out_dir + '/checkpoint/' + name)
 
 
@@ -161,14 +162,15 @@ def run_training():
     # settings
     out_dir  = '../' # s_xx1'
     initial_checkpoint = None
-    pretrained_file = '../trained_models/LB=0.69565_inc3_00075000_model.pth'
+    # pretrained_file = '../trained_models/LB=0.69565_inc3_00075000_model.pth'
+    pretrained_file = '../checkpoint/best_val_model.pth'
     skip = [] #['fc.weight', 'fc.bias']
 
     num_iters   = 1000*1000
     iter_smooth = 50
     iter_valid  = 100 #500
     iter_log = 5
-    iter_save_freq = 1000
+    iter_save_freq = 50
     iter_save   = [0, num_iters-1] + list(range(0,num_iters,1*iter_save_freq)) # first and last iters, then every 1000 iters
 
     validation_num = 1000
@@ -176,6 +178,22 @@ def run_training():
     batch_size  = 128 #60   #512  #96 #256
     validation_batch_size = 128
     iter_accum  = 4 #2  #448//batch_size
+
+    valid_loss  = 0.0
+    valid_acc   = 0.0
+    batch_loss  = 0.0
+    batch_acc   = 0.0
+    best_valid_acc  = 0.0
+    best_train_acc  = 0.0
+    rate = 0
+
+    iter_time_meter = AverageMeter()
+    train_loss_meter = AverageMeter()
+    train_acc_meter = AverageMeter()
+
+
+    j = 0 # number of iters in total
+    i = 0 # number of real iters where bp is conducted
 
     ## setup  ---------------------------
     os.makedirs(out_dir +'/checkpoint', exist_ok=True)
@@ -274,20 +292,30 @@ def run_training():
     if initial_checkpoint is not None: # load a checkpoint and resume from previous training
         log.write('\tloading @ initial_checkpoint = %s\n' % initial_checkpoint)
 
-        # load model
-        net.load_state_dict(torch.load(initial_checkpoint, map_location=lambda storage, loc: storage))
+        # load
+        checkpoint  = torch.load(initial_checkpoint, map_location=lambda storage, loc: storage)
+        if os.path.isfile(initial_checkpoint):
+            print("=> loading checkpoint '{}'".format(initial_checkpoint))
+            checkpoint = torch.load(initial_checkpoint)
+            start_epoch = checkpoint['epoch']
+            start_iter = checkpoint['iter']
+            best_train_acc = checkpoint['best_train_acc']
+            best_valid_acc = checkpoint['best_valid_acc']
+            net.load_state_dict(checkpoint['state_dict'])  # load model weights from the checkpoint
+            optimizer.load_state_dict(checkpoint['optimizer'])
+            print("=> loaded checkpoint '{}' (epoch: {}, iter: {}, best_train_acc: {}, best_valid_acc: {})"
+                  .format(initial_checkpoint, start_epoch, start_iter, best_train_acc, best_valid_acc))
+        else:
+            print("=> no checkpoint found at '{}'".format(initial_checkpoint))
+            exit(0)
 
-        # load other info
-        checkpoint  = torch.load(initial_checkpoint.replace('_model.pth','_optimizer.pth'),\
-					  map_location=lambda storage, loc: storage)
-        start_iter  = checkpoint['iter' ]
-        start_epoch = checkpoint['epoch']
-        #optimizer.load_state_dict(checkpoint['optimizer'])
+
 
 
     elif pretrained_file is not None: # load a pretrained model and train from the beginning
         log.write('\tloading @ pretrained_file = %s\n' % pretrained_file)
         net.load_pretrain_pytorch_file( pretrained_file, skip )
+
 
     ## start training here! ##############################################
     log.write('** start training here! **\n')
@@ -297,27 +325,12 @@ def run_training():
     log.write('   rate   iter   epoch  | valid_loss/acc | train_loss/acc | batch_loss/acc | total time | avg iter time | i j |\n')
     log.write('----------------------------------------------------------------------------------------------------------------\n')
 
-    valid_loss  = 0.0
-    valid_acc   = 0.0
-    batch_loss  = 0.0
-    batch_acc   = 0.0
-    best_valid_acc  = 0.0
-    best_train_acc  = 0.0
-    rate = 0
-
-    iter_time_meter = AverageMeter()
-    train_loss_meter = AverageMeter()
-    train_acc_meter = AverageMeter()
-
-    start =timer()
-    j = 0 # number of iters in total
-    i = 0 # number of real iters where bp is conducted
-
     # Custom setting
-    start_iter = 75000
-    start_epoch= 2.98
+    # start_iter = 75000
+    # start_epoch= 2.98
     i = start_iter
 
+    start = timer()
     end = time.time()
     while  i<num_iters:
         net.train()
@@ -345,7 +358,7 @@ def run_training():
 
                     # update best model on validation set
                     # torch.save(net.state_dict(), out_dir + '/checkpoint/best_model.pth')
-                    save_checkpoint(optimizer, i, epoch, net, best_valid_acc, out_dir, "best_val_model.pth")
+                    save_checkpoint(optimizer, i, epoch, net, best_valid_acc, best_train_acc, out_dir, "best_val_model.pth")
                     log.write("=> Best validation model updated: iter %d, validation acc %f\n" % (i, best_valid_acc))
 
             if i % iter_log == 0:
@@ -364,7 +377,7 @@ def run_training():
                 #     'state_dict': net.state_dict(),
                 #     'best_valid_acc': best_valid_acc
                 # }, out_dir +'/checkpoint/%08d_model.pth'%(i))
-                save_checkpoint(optimizer, i, epoch, net, best_valid_acc, out_dir, '%08d_model.pth'%(i))
+                save_checkpoint(optimizer, i, epoch, net, best_valid_acc, best_train_acc, out_dir, '%08d_model.pth'%(i))
 
 
             # learning rate schduler -------------
@@ -413,7 +426,7 @@ def run_training():
                 if train_acc_meter.avg > best_train_acc:
                     best_train_acc = train_acc_meter.avg
                     # update best model on train set
-                    save_checkpoint(optimizer, i, epoch, net, best_valid_acc, out_dir, "best_train_model.pth")
+                    save_checkpoint(optimizer, i, epoch, net, best_valid_acc, best_train_acc, out_dir, "best_train_model.pth")
                     log.write("=> Best train model updated: iter %d, train acc %f\n"%(i, best_train_acc))
 
                 train_loss_meter = AverageMeter()
@@ -436,7 +449,7 @@ def run_training():
         #     'iter'     : i,
         #     'epoch'    : epoch,
         # }, out_dir +'/checkpoint/%d_optimizer.pth'%(i))
-        save_checkpoint(optimizer, i, epoch, net, best_valid_acc, out_dir, '%d_optimizer.pth'%(i))
+        save_checkpoint(optimizer, i, epoch, net, best_valid_acc, best_train_acc, out_dir, '%d_optimizer.pth'%(i))
 
     log.write('\n')
 
