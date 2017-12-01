@@ -111,7 +111,7 @@ def save_checkpoint(optimizer, i, epoch, net, best_valid_acc, out_dir, name):
         'iter': i,
         'epoch': epoch,
         'state_dict': net.state_dict(),
-        'best_acc': best_valid_acc
+        'best_valid_acc': best_valid_acc
     }, out_dir + '/checkpoint/' + name)
 
 
@@ -346,7 +346,7 @@ def run_training():
                     # update best model on validation set
                     # torch.save(net.state_dict(), out_dir + '/checkpoint/best_model.pth')
                     save_checkpoint(optimizer, i, epoch, net, best_valid_acc, out_dir, "best_val_model.pth")
-                    log.write("=> Best validation model updated\n")
+                    log.write("=> Best validation model updated: iter %d, validation acc %f\n" % (i, best_valid_acc))
 
             if i % iter_log == 0:
                 # print('\r',end='',flush=True)
@@ -357,13 +357,14 @@ def run_training():
             #if 1:
             if i in iter_save:
                 # torch.save(net.state_dict(),out_dir +'/checkpoint/%08d_model.pth'%(i))
-                torch.save({
-                    'optimizer': optimizer.state_dict(),
-                    'iter'     : i,
-                    'epoch'    : epoch,
-                    'state_dict': net.state_dict(),
-                    'best_acc': best_valid_acc
-                }, out_dir +'/checkpoint/%08d_model.pth'%(i))
+                # torch.save({
+                #     'optimizer': optimizer.state_dict(),
+                #     'iter'     : i,
+                #     'epoch'    : epoch,
+                #     'state_dict': net.state_dict(),
+                #     'best_valid_acc': best_valid_acc
+                # }, out_dir +'/checkpoint/%08d_model.pth'%(i))
+                save_checkpoint(optimizer, i, epoch, net, best_valid_acc, out_dir, '%08d_model.pth'%(i))
 
 
             # learning rate schduler -------------
@@ -413,7 +414,7 @@ def run_training():
                     best_train_acc = train_acc_meter.avg
                     # update best model on train set
                     save_checkpoint(optimizer, i, epoch, net, best_valid_acc, out_dir, "best_train_model.pth")
-                    log.write("=> Best train model updated\n")
+                    log.write("=> Best train model updated: iter %d, train acc %f\n"%(i, best_train_acc))
 
                 train_loss_meter = AverageMeter()
                 train_acc_meter = AverageMeter()
