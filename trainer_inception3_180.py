@@ -239,11 +239,17 @@ def run_training():
 
     ## dataset ----------------------------------------
     log.write('** dataset setting **\n')
-    transform = transforms.Compose([
+    transform_train = transforms.Compose([
         # transforms.ToTensor(): Converts a PIL.Image or numpy.ndarray (H x W x C) in the range [0, 255] to a torch.FloatTensor of shape (C x H x W) in the range [0.0, 1.0].
         transforms.Lambda(lambda x:train_augment(x))
     ])
-    train_dataset = CDiscountDataset(csv_dir+train_data_filename,root_dir,transform=transform)
+
+    transform_valid = transforms.Compose([
+        # transforms.ToTensor(): Converts a PIL.Image or numpy.ndarray (H x W x C) in the range [0, 255] to a torch.FloatTensor of shape (C x H x W) in the range [0.0, 1.0].
+        transforms.Lambda(lambda x: valid_augment(x))
+    ])
+
+    train_dataset = CDiscountDataset(csv_dir+train_data_filename,root_dir,transform=transform_train)
 
     train_loader  = DataLoader(
                         train_dataset,
@@ -255,7 +261,7 @@ def run_training():
                         pin_memory  = False)
     # if train_loader != None: print("Train loader loaded!")
 
-    valid_dataset = CDiscountDataset(csv_dir+validation_data_filename,root_dir,transform=transform)
+    valid_dataset = CDiscountDataset(csv_dir+validation_data_filename,root_dir,transform=transform_valid)
 
     valid_loader  = DataLoader(
                         valid_dataset,
