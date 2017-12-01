@@ -74,7 +74,8 @@ def read_bson(bson_path, num_records, with_categories):
             num_imgs = len(item["imgs"])
 
             for i in range(num_imgs):
-                row = [product_id, i, offset, length]
+                image_id = str(product_id)+'-'+str(i)
+                row = [image_id]
                 if with_categories:
                     row += [item["category_id"]]
                 rows[index] = row
@@ -84,7 +85,7 @@ def read_bson(bson_path, num_records, with_categories):
             f.seek(offset)
             pbar.update()
 
-    columns = ["product_id", "image_id", "offset", "length"]
+    columns = ["image_id"]
     if with_categories:
         columns += ["category_id"]
 
@@ -94,5 +95,5 @@ def read_bson(bson_path, num_records, with_categories):
     df.sort_index(inplace=True)
     return df
 
-train_offsets_df = read_bson(train_bson_path, num_records=num_train_products, with_categories=True)
-train_offsets_df.to_csv("./data/train_data.csv")
+train_offsets_df = read_bson(test_bson_path, num_records=num_test_products, with_categories=False)
+train_offsets_df.to_csv("./data/test_data.csv")
