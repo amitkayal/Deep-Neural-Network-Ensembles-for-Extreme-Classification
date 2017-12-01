@@ -6,3 +6,4 @@ test_dir/*
 *.pyc
 __pycache__
 output/*
+test/*
