@@ -322,7 +322,7 @@ def run_training():
         #print("start iteration")
         for k, data in enumerate(train_loader, 0):
             images,labels = data
-
+            print(images.size())
             i = j/iter_accum + start_iter
             epoch = (i-start_iter)*batch_size*iter_accum/len(train_dataset) + start_epoch
 
