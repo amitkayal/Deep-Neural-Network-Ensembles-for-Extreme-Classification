@@ -21,7 +21,7 @@ category_id_to_index = {v:k for k,v in label_to_category_id.items()}  # {'001': 
 
 class CDiscountDataset(Dataset):
     def __init__(self, csv_dir, root_dir, transform=None):
-        print("loading CDiscount Dataset...")
+        # print("loading CDiscount Dataset...")
         self.image_names=[]
         self.root_dir=root_dir
         self.transform = transform
