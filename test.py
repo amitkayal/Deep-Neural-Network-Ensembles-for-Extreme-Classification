@@ -60,8 +60,8 @@ def evaluate(net, test_loader):
         probs = probs.cpu().data.numpy() if use_cuda else probs.data.numpy()
         probs.astype(float)
 
-        np.concatenate((all_image_ids, all_image_ids), axis=0)
-        np.concatenate((all_probs, probs), axis=0)
+        all_image_ids = np.concatenate((all_image_ids, all_image_ids), axis=0)
+        all_probs = np.concatenate((all_probs, probs), axis=0)
 
         cnt = cnt + 1
 
