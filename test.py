@@ -47,14 +47,14 @@ def evaluate(net, test_loader):
     all_probs = []
 
     # for iter, (images, labels, indices) in enumerate(test_loader, 0):
-    for iter, (images, images_id) in enumerate(test_loader, 0):#remove indices for testing
+    for iter, (images, image_ids) in enumerate(test_loader, 0):#remove indices for testing
         images = Variable(images.type(torch.FloatTensor)).cuda() if use_cuda else Variable(images.type(torch.FloatTensor))
-        images_id = images_id.cpu().data if use_cuda else images_id.data
+        image_ids = image_ids.cpu().data if use_cuda else image_ids.data
 
         logits = net(images)
         probs  = F.softmax(logits)
 
-        all_image_ids += images_id
+        all_image_ids += image_ids
         all_probs += probs
 
         cnt = cnt + 1
