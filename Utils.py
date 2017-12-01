@@ -40,7 +40,7 @@ def product_predict(image_ids, probses):
             probssum_map[product_id] = probs
 
     product_to_prediction_map = {}
-    for product_id, probs_sum in probssum_map.iteritems():
+    for product_id, probs_sum in probssum_map.items():
         prediction = np.argmax(probs_sum.reshape(-1))
         product_to_prediction_map[product_id] = prediction
 

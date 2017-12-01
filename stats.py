@@ -55,7 +55,7 @@ val_rows = {}
 train_rows = {}
 val_cnt = 0
 train_cnt = 0
-for cate_id, images in map.iteritems():
+for cate_id, images in map.items():
     val_images = []
     train_images = []
     split = 0
