@@ -33,13 +33,13 @@ from net.resnet101 import ResNet101 as Net
 
 use_cuda = True
 
-identifier = "resnet"
+IDENTIFIER = "resnet"
 SEED = 123456
 PROJECT_PATH = './project'
 CDISCOUNT_HEIGHT = 180
 CDISCOUNT_WIDTH = 180
 CDISCOUNT_NUM_CLASSES = 5270
-log = Log("log.out")
+log = Log(IDENTIFIER + "_log.out")
 
 csv_dir = './data/'
 root_dir = '../output/train/'
@@ -113,7 +113,7 @@ def save_checkpoint(optimizer, i, epoch, net, best_valid_acc, best_train_acc, ou
         'state_dict': net.state_dict(),
         'best_valid_acc': best_valid_acc,
         'best_train_acc': best_train_acc
-    }, out_dir + '/checkpoint/' + identifier + "/" + name)
+    }, out_dir + '/checkpoint/' + IDENTIFIER + "/" + name)
 
 
 #--------------------------------------------------------------
@@ -199,8 +199,8 @@ def run_training():
     #-----------------------------------------------------------------------------------------------------------
 
     ## setup  ---------------------------
-    os.makedirs(out_dir +'/checkpoint/' + identifier, exist_ok=True)
-    os.makedirs(out_dir +'/backup/' + identifier, exist_ok=True)
+    os.makedirs(out_dir +'/checkpoint/' + IDENTIFIER, exist_ok=True)
+    os.makedirs(out_dir +'/backup/' + IDENTIFIER, exist_ok=True)
 
     log.write('\n--- [START %s] %s\n\n' % (datetime.now().strftime('%Y-%m-%d %H:%M:%S'), '-' * 64))
     log.write('** some experiment setting **\n')
