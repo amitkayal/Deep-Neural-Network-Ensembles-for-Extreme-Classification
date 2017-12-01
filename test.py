@@ -20,7 +20,7 @@ CDISCOUNT_WIDTH = 180
 CDISCOUNT_NUM_CLASSES = 5270
 
 csv_dir = './data/'
-root_dir = '../output/train/'
+root_dir = '../output/'
 test_data_filename = 'test.csv'
 validation_data_filename = 'validation.csv'
 
