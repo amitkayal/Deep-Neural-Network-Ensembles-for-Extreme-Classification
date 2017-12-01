@@ -42,7 +42,7 @@ CDISCOUNT_NUM_CLASSES = 5270
 log = Log("log.out")
 
 csv_dir = './data/'
-root_dir = '../output/train/'
+root_dir = '../output/'
 train_data_filename = 'train.csv'
 validation_data_filename = 'validation.csv'
 
