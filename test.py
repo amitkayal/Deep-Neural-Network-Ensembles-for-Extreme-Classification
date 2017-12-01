@@ -79,8 +79,8 @@ def evaluate_vote(net, test_loader, path):
         file.write("_id,category_id\n")
 
         for iter, (images, image_ids) in enumerate(test_loader, 0):#remove indices for testing
-            if cnt > 4:
-                break;
+            # if cnt > 4:
+            #     break;
 
             images = Variable(images.type(torch.FloatTensor)).cuda() if use_cuda else Variable(images.type(torch.FloatTensor))
             image_ids = np.array(image_ids)
