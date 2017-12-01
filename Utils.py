@@ -12,7 +12,7 @@ def adjust_learning_rate(optimizer, lr):
 
 def imageid_to_productid(image_id):
     splitted = image_id.split("-")
-    product_id = splitted[1]
+    product_id = splitted[0]
 
     return product_id
 
