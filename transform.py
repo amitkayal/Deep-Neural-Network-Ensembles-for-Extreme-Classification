@@ -76,6 +76,40 @@ def random_horizontal_flip(image, u=0.5):
     return image
 
 
+def random_resize(image, scale_x_limits=[0.9,1.1], scale_y_limits=[0.9,1.1], u=0.5):
+
+    if random.random() < u:
+        height,width=image.shape[0:2]
+
+        scale_x  = random.uniform(scale_x_limits[0],scale_x_limits[1])
+        if scale_y_limits is not None:
+            scale_y  = random.uniform(scale_y_limits[0],scale_y_limits[1])
+        else:
+            scale_y = scale_x
+
+        w = int(scale_x*width )
+        h = int(scale_y*height)
+
+        image = cv2.resize(image,(w,h))
+    return image
+
+
+def random_crop(image, size=(160, 160), u=0.5):
+    height, width = image.shape[0:2]
+    w, h = size
+
+    if random.random() < u:
+        x0 = np.random.choice(width - w)
+        y0 = np.random.choice(height - h)
+    else:
+        x0 = (width - w) // 2
+        y0 = (height - h) // 2
+
+    x1 = x0 + w
+    y1 = y0 + h
+    image = image[y0:y1, x0:x1]
+
+    return image
 
 def random_shift_scale_rotate(image, shift_limit=[-0.0625,0.0625], scale_limit=[1/1.2,1.2],
                                rotate_limit=[-15,15], aspect_limit = [1,1],  size=[-1,-1], borderMode=cv2.BORDER_REFLECT_101 , u=0.5):
