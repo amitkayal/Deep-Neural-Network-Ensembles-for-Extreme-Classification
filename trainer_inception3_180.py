@@ -165,7 +165,7 @@ def run_training():
     skip = [] #['fc.weight', 'fc.bias']
 
     num_iters   = 1000*1000
-    iter_smooth = 100
+    iter_smooth = 50
     iter_valid  = 100 #500
     iter_log = 5
     iter_save_freq = 1000
@@ -294,7 +294,7 @@ def run_training():
 
     log.write(' optimizer=%s\n'%str(optimizer) )
     # log.write(' LR=%s\n\n'%str(LR) )
-    log.write('   rate   iter   epoch  | valid_loss/acc | train_loss/acc | batch_loss/acc | total time | avg iter time \n')
+    log.write('   rate   iter   epoch  | valid_loss/acc | train_loss/acc | batch_loss/acc | total time | avg iter time | i j |\n')
     log.write('--------------------------------------------------------------------------------------------------------\n')
 
     train_loss  = 0.0
@@ -416,11 +416,11 @@ def run_training():
 
                 if train_acc > best_train_acc:
                     best_train_acc = train_acc
-                    # update best model on validation set
+                    # update best model on train set
                     save_checkpoint(optimizer, i, epoch, net, best_valid_acc, out_dir, "best_train_model.pth")
                     log.write("=> Best train model updated\n")
 
-            print('\r%0.4f  %5.1f k   %4.2f  | %0.4f  %0.4f | %0.4f  %0.4f | %0.4f  %0.4f | %5.0f min | %.2f s | %d %d,%d' % \
+            print('\r%0.4f  %5.1f k   %4.2f  | %0.4f  %0.4f | %0.4f  %0.4f | %0.4f  %0.4f | %5.0f min | %.2f s | %d,%d' % \
                     (rate, i/1000, epoch, valid_loss, valid_acc, train_loss_meter.avg, train_acc_meter.avg, batch_loss, batch_acc,(timer() - start)/60, iter_time_meter.avg, i, j),\
                     end='',flush=True)
             j=j+1
