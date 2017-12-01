@@ -352,7 +352,7 @@ def run_training():
 
             if i % iter_log == 0:
                 # print('\r',end='',flush=True)
-                log.write('\r%0.4f  %5.1f k   %4.2f  | %0.4f  %0.4f | %0.4f  %0.4f | %0.4f  %0.4f | %5.0f min | %d %d,%d \n' % \
+                log.write('\r%0.4f  %5.1f k   %4.2f  | %0.4f  %0.4f | %0.4f  %0.4f | %0.4f  %0.4f | %5.0f min | %.2f s | %d,%d \n' % \
                         (rate, i/1000, epoch, valid_loss, valid_acc, train_loss_meter.avg, train_acc_meter.avg, batch_loss, batch_acc,(timer() - start)/60,
                             iter_time_meter.avg, i, j))
 
@@ -420,7 +420,7 @@ def run_training():
                     save_checkpoint(optimizer, i, epoch, net, best_valid_acc, out_dir, "best_train_model.pth")
                     log.write("=> Best train model updated\n")
 
-            print('\r%0.4f  %5.1f k   %4.2f  | %0.4f  %0.4f | %0.4f  %0.4f | %0.4f  %0.4f | %5.0f min | %d %d,%d' % \
+            print('\r%0.4f  %5.1f k   %4.2f  | %0.4f  %0.4f | %0.4f  %0.4f | %0.4f  %0.4f | %5.0f min | %.2f s | %d %d,%d' % \
                     (rate, i/1000, epoch, valid_loss, valid_acc, train_loss_meter.avg, train_acc_meter.avg, batch_loss, batch_acc,(timer() - start)/60, iter_time_meter.avg, i, j),\
                     end='',flush=True)
             j=j+1
