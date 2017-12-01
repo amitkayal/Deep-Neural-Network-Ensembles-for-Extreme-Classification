@@ -50,10 +50,14 @@ def evaluate(net, test_loader):
     # for iter, (images, labels, indices) in enumerate(test_loader, 0):
     for iter, (images, image_ids) in enumerate(test_loader, 0):#remove indices for testing
         images = Variable(images.type(torch.FloatTensor)).cuda() if use_cuda else Variable(images.type(torch.FloatTensor))
+        image_ids = np.array(image_ids)
 
         logits = net(images)
         probs  = F.softmax(logits)
         probs = probs.cpu().data.numpy() if use_cuda else probs.data.numpy()
+
+        print(probs)
+        print(probs.shape)
 
         np.concatenate((all_image_ids, all_image_ids), axis=0)
         np.concatenate((all_probs, probs), axis=0)
