@@ -76,6 +76,18 @@ def random_horizontal_flip(image, u=0.5):
     return image
 
 
+def fix_center_crop(image, size=(160, 160)):
+    height, width = image.shape[0:2]
+    w, h = size
+
+    x0 = (width - w) // 2
+    y0 = (height - h) // 2
+    x1 = x0 + w
+    y1 = y0 + h
+    image = image[y0:y1, x0:x1]
+
+    return image
+
 def random_resize(image, scale_x_limits=[0.9,1.1], scale_y_limits=[0.9,1.1], u=0.5):
 
     if random.random() < u:
