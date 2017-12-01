@@ -32,7 +32,7 @@ from AverageMeter import *
 from net.inception_v3 import Inception3 as Net
 
 use_cuda = True
-IDENTIFIER = "inception"
+IDENTIFIER = "resnet"
 SEED = 123456
 PROJECT_PATH = './project'
 CDISCOUNT_HEIGHT = 180
