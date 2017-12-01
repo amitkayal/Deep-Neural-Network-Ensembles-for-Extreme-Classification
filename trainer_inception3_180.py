@@ -161,9 +161,9 @@ def run_training():
 
     # settings
     out_dir  = '../' # s_xx1'
-    initial_checkpoint = None
+    initial_checkpoint = '../checkpoint/best_val_model.pth'
     # pretrained_file = '../trained_models/LB=0.69565_inc3_00075000_model.pth'
-    pretrained_file = '../checkpoint/best_val_model.pth'
+    pretrained_file = None
     skip = [] #['fc.weight', 'fc.bias']
 
     num_iters   = 1000*1000
@@ -308,9 +308,6 @@ def run_training():
         else:
             print("=> no checkpoint found at '{}'".format(initial_checkpoint))
             exit(0)
-
-
-
 
     elif pretrained_file is not None: # load a pretrained model and train from the beginning
         log.write('\tloading @ pretrained_file = %s\n' % pretrained_file)
