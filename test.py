@@ -91,7 +91,7 @@ if __name__ == '__main__':
         exit(0)
 
     transform_valid = transforms.Compose([transforms.Lambda(lambda x: valid_augment(x))])
-    test_loader = CDiscountDataset(csv_dir + test_data_filename, root_dir, transform=transform_valid)
+    test_loader = CDiscountTestDataset(csv_dir + test_data_filename, root_dir, transform=transform_valid)
     product_to_prediction_map = evaluate(net, test_loader)
 
     write_test_result(res_path, product_to_prediction_map)
