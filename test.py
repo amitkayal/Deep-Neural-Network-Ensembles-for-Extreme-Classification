@@ -96,7 +96,7 @@ if __name__ == '__main__':
     print( '%s: calling main function ... ' % os.path.basename(__file__))
 
     initial_checkpoint = "../checkpoint/"+ IDENTIFIER + "/best_val_model.pth"
-    res_path = "../test/" + IDENTIFIER + "_test.res"
+    res_path = "../test_res/" + IDENTIFIER + "_test.res"
 
     net = Net(in_shape = (3, CDISCOUNT_HEIGHT, CDISCOUNT_WIDTH), num_classes=CDISCOUNT_NUM_CLASSES)
     if use_cuda: net.cuda()
