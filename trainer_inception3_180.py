@@ -347,7 +347,7 @@ def run_training():
             epoch = (i-start_iter)*batch_size*iter_accum/len(train_dataset) + start_epoch
 
 
-            if i % iter_valid == 0:
+            if i % iter_valid == 0 and i != start_iter:
                 net.eval()
                 valid_loss, valid_acc = evaluate(net, valid_loader, validation_num)
                 net.train()
