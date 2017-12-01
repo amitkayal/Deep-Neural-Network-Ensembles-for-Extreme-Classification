@@ -106,9 +106,12 @@ def evaluate_vote(net, test_loader, path):
 
                 i = i + 1
 
+            cnt += 1
+
         for product_id, votes in product_to_votes_map.items():
             prediction = max(votes.iteritems(), key=operator.itemgetter(1))[0]
             file.write(str(product_id) + "," + str(prediction) + "\n")
+
 
 def write_test_result(path, product_to_prediction_map):
     with open(path, "a") as file:
@@ -118,8 +121,6 @@ def write_test_result(path, product_to_prediction_map):
             print(product_id)
             print(prediction)
             file.write(str(product_id) + "," + str(prediction) + "\n")
-
-
 
 # main #################################################################
 if __name__ == '__main__':
