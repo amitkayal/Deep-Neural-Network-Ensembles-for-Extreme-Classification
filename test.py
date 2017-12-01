@@ -45,7 +45,7 @@ def evaluate(net, test_loader):
     cnt = 0
 
     all_image_ids = np.array([])
-    all_probs = np.array([])
+    all_probs = np.array([]).reshape(0,5270)
 
     # for iter, (images, labels, indices) in enumerate(test_loader, 0):
     for iter, (images, image_ids) in enumerate(test_loader, 0):#remove indices for testing
