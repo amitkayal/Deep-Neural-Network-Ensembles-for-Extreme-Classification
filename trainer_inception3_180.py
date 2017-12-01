@@ -5,7 +5,7 @@ import random
 import cv2
 import inspect
 from datetime import *
-from cdimage import CDiscountDataset
+from cdimage import *
 from torch.utils.data.sampler import RandomSampler
 from logging import Logger
 from torch.autograd import Variable

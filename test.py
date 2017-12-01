@@ -1,12 +1,12 @@
 from __future__ import print_function
 
 import os
-from cdimage import CDiscountDataset
 from torch.autograd import Variable
 import torch.nn.functional as F
 os.environ['CUDA_VISIBLE_DEVICES'] = '0'
 from transform import *
 from Utils import *
+from cdimage import *
 # --------------------------------------------------------
 
 from net.resnet101 import ResNet101 as Net
