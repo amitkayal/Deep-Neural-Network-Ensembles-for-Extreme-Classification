@@ -109,7 +109,7 @@ def evaluate_vote(net, test_loader, path):
             cnt += 1
 
         for product_id, votes in product_to_votes_map.items():
-            prediction = max(votes.iteritems(), key=operator.itemgetter(1))[0]
+            prediction = max(votes.items(), key=operator.itemgetter(1))[0]
             file.write(str(product_id) + "," + str(prediction) + "\n")
 
 
