@@ -7,6 +7,7 @@ os.environ['CUDA_VISIBLE_DEVICES'] = '0'
 from transform import *
 from Utils import *
 from cdimage import *
+from torch.utils.data.sampler import RandomSampler
 # --------------------------------------------------------
 
 from net.resnet101 import ResNet101 as Net
@@ -48,6 +49,7 @@ def evaluate(net, test_loader):
 
     # for iter, (images, labels, indices) in enumerate(test_loader, 0):
     for iter, (images, image_ids) in enumerate(test_loader, 0):#remove indices for testing
+        print(images)
         print(image_ids)
         images = Variable(images.type(torch.FloatTensor)).cuda() if use_cuda else Variable(images.type(torch.FloatTensor))
         image_ids = image_ids.cpu().data if use_cuda else image_ids.data
@@ -78,6 +80,7 @@ if __name__ == '__main__':
 
     initial_checkpoint = "../checkpoint/"+ IDENTIFIER + "/best_val_model.pth"
     res_path = "../test_res/" + IDENTIFIER + "_test.res"
+    validation_batch_size = 64
 
     net = Net(in_shape = (3, CDISCOUNT_HEIGHT, CDISCOUNT_WIDTH), num_classes=CDISCOUNT_NUM_CLASSES)
     if use_cuda: net.cuda()
@@ -92,7 +95,18 @@ if __name__ == '__main__':
         exit(0)
 
     transform_valid = transforms.Compose([transforms.Lambda(lambda x: valid_augment(x))])
-    test_loader = CDiscountTestDataset(csv_dir + test_data_filename, root_dir, transform=transform_valid)
+
+    test_dataset = CDiscountTestDataset(csv_dir + test_data_filename, root_dir, transform=transform_valid)
+
+    test_loader  = DataLoader(
+                        test_dataset,
+                        #sampler = RandomSampler1(train_dataset,50000),
+                        sampler = RandomSampler(test_dataset),
+                        batch_size  = validation_batch_size,
+                        drop_last   = True,
+                        num_workers = 0,
+                        pin_memory  = False)
+
     product_to_prediction_map = evaluate(net, test_loader)
 
     write_test_result(res_path, product_to_prediction_map)
