@@ -53,6 +53,7 @@ def evaluate(net, test_loader):
 
         logits = net(images)
         probs  = F.softmax(logits)
+        probs = probs.cpu().data.numpy() if use_cuda else probs.data.numpy()
 
         all_image_ids += image_ids
         all_probs += probs
