@@ -295,7 +295,6 @@ def run_training():
         log.write('\tloading @ initial_checkpoint = %s\n' % initial_checkpoint)
 
         # load
-        checkpoint  = torch.load(initial_checkpoint, map_location=lambda storage, loc: storage)
         if os.path.isfile(initial_checkpoint):
             print("=> loading checkpoint '{}'".format(initial_checkpoint))
             checkpoint = torch.load(initial_checkpoint)
