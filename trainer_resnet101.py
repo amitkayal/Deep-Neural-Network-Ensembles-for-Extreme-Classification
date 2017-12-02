@@ -41,8 +41,8 @@ def run_training():
     #-------------------------------------------- Training settings --------------------------------------------
     out_dir  = '../' # s_xx1'
     # initial_checkpoint = None
-    # initial_checkpoint = "../checkpoint/"+ IDENTIFIER + "/00243050_model.pth"
-    initial_checkpoint = '../trained_models/resnet_00243000_model.pth'
+    initial_checkpoint = "../checkpoint/"+ IDENTIFIER + "/latest.pth"
+    # initial_checkpoint = '../trained_models/resnet_00243000_model.pth'
     # pretrained_file = '../trained_models/LB=0.69565_inc3_00075000_model.pth'
     pretrained_file = None
     skip = [] #['fc.weight', 'fc.bias']
@@ -114,7 +114,7 @@ def run_training():
 
     ## optimiser ----------------------------------
     #LR = StepLR([ (0, 0.01),  (200, 0.001),  (300, -1)])
-    LR = StepLR([ (0, 0.01), (1, 0.001), (3, 0.0001)])
+    LR = StepLR([ (0, 0.01), (1, 0.005), (3, 0.0005)])
 
     ## optimizer = optim.SGD(net.parameters(), lr=0.01, momentum=0.9, weight_decay=0.0005)  ###0.0005
     optimizer = optim.SGD(filter(lambda p: p.requires_grad, net.parameters()), lr=0.01, momentum=0.1, weight_decay=0.0001)
@@ -164,17 +164,21 @@ def run_training():
         # load
         if os.path.isfile(initial_checkpoint):
             print("=> loading checkpoint '{}'".format(initial_checkpoint))
-            checkpoint = torch.load(initial_checkpoint)
-            # start_epoch = checkpoint['epoch']
-            # start_iter = checkpoint['iter']
-            # best_train_acc = checkpoint['best_train_acc']
-            # best_valid_acc = checkpoint['best_valid_acc']
-            # train_acc_meter.update(checkpoint['train_acc'])
-            # valid_acc_meter.update(checkpoint['valid_acc'])
-            # net.load_state_dict(checkpoint['state_dict'])  # load model weights from the checkpoint
-            # optimizer.load_state_dict(checkpoint['optimizer'])
 
-            net.load_state_dict(checkpoint)
+            checkpoint = torch.load(initial_checkpoint)
+
+            start_epoch = checkpoint['epoch']
+            start_iter = checkpoint['iter']
+            best_train_acc = checkpoint['best_train_acc']
+            best_valid_acc = checkpoint['best_valid_acc']
+            train_acc_meter.update(checkpoint['train_acc'])
+            valid_acc_meter.update(checkpoint['valid_acc'])
+            net.load_state_dict(checkpoint['state_dict'])  # load model weights from the checkpoint
+            optimizer.load_state_dict(checkpoint['optimizer'])
+
+            # # load original checkpoint
+            # net.load_state_dict(checkpoint)
+
             log.write("=> loaded checkpoint '{}' (epoch: {}, iter: {}, best_train_acc: {}, best_valid_acc: {})"
                   .format(initial_checkpoint, start_epoch, start_iter, best_train_acc, best_valid_acc))
             get_gpu_stats()
