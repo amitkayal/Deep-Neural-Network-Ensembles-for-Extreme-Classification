@@ -304,12 +304,14 @@ def run_training():
         if os.path.isfile(initial_checkpoint):
             print("=> loading checkpoint '{}'".format(initial_checkpoint))
             checkpoint = torch.load(initial_checkpoint)
-            start_epoch = checkpoint['epoch']
-            start_iter = checkpoint['iter']
-            best_train_acc = checkpoint['best_train_acc']
-            best_valid_acc = checkpoint['best_valid_acc']
-            net.load_state_dict(checkpoint['state_dict'])  # load model weights from the checkpoint
-            optimizer.load_state_dict(checkpoint['optimizer'])
+            # start_epoch = checkpoint['epoch']
+            # start_iter = checkpoint['iter']
+            # best_train_acc = checkpoint['best_train_acc']
+            # best_valid_acc = checkpoint['best_valid_acc']
+            # net.load_state_dict(checkpoint['state_dict'])  # load model weights from the checkpoint
+            # optimizer.load_state_dict(checkpoint['optimizer'])
+
+            net.load_state_dict(checkpoint)
             log.write("=> loaded checkpoint '{}' (epoch: {}, iter: {}, best_train_acc: {}, best_valid_acc: {})"
                   .format(initial_checkpoint, start_epoch, start_iter, best_train_acc, best_valid_acc))
         else:
