@@ -162,7 +162,7 @@ def run_training():
     #-------------------------------------------- Training settings --------------------------------------------
     out_dir  = '../' # s_xx1'
     # initial_checkpoint = None
-    initial_checkpoint = "../checkpoint/"+ IDENTIFIER + "/00243300_model.pth"
+    initial_checkpoint = "../checkpoint/"+ IDENTIFIER + "/latest.pth"
     # initial_checkpoint = '../trained_models/resnet_00243000_model.pth'
     # pretrained_file = '../trained_models/LB=0.69565_inc3_00075000_model.pth'
     pretrained_file = None
