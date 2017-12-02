@@ -44,7 +44,7 @@ def run_training():
     # initial_checkpoint = "../checkpoint/"+ IDENTIFIER + "/00243050_model.pth"
     initial_checkpoint = '../trained_models/resnet_00243000_model.pth'
     # pretrained_file = '../trained_models/LB=0.69565_inc3_00075000_model.pth'
-    # pretrained_file = None
+    pretrained_file = None
     skip = [] #['fc.weight', 'fc.bias']
 
     num_iters   = 1000*1000
@@ -205,9 +205,9 @@ def run_training():
     log.write('----------------------------------------------------------------------------------------------------------------\n')
 
     # Custom setting
-    # start_iter = 75000
-    # start_epoch= 2.98
+    start_iter = 243000
     i = start_iter
+    start_epoch= start_iter*batch_size*iter_accum/len(train_dataset)
 
     start = timer()
     end = time.time()
