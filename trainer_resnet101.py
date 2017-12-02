@@ -253,6 +253,7 @@ def run_training():
                 save_checkpoint(optimizer, i, epoch, net, best_valid_acc, best_train_acc, out_dir, IDENTIFIER + "/%08d_model.pth"%(i))
 
             if i % iter_valid == 0 and i != start_iter:
+                print("=> Start validating ...")
                 net.eval()
                 valid_loss, valid_acc = evaluate(net, valid_loader, validation_num, use_cuda)
                 net.train()
