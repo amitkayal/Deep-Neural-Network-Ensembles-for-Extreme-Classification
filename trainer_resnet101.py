@@ -130,7 +130,7 @@ def run_training():
                         sampler = RandomSampler(train_dataset),
                         batch_size  = batch_size,
                         drop_last   = True,
-                        num_workers = 4,
+                        num_workers = 8,
                         pin_memory  = False)
     print("=> Inited training set")
     get_gpu_stats()
@@ -143,7 +143,7 @@ def run_training():
                         sampler     = SequentialSampler(valid_dataset),
                         batch_size  = validation_batch_size,
                         drop_last   = False,
-                        num_workers = 4,
+                        num_workers = 8,
                         pin_memory  = False)
     print("=> Inited validation set")
     get_gpu_stats()
