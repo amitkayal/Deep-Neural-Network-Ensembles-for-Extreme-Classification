@@ -161,3 +161,8 @@ def evaluate(net, test_loader, sample_num, use_cuda):
     test_acc  = test_acc/cnt
     test_loss = test_loss/test_num
     return test_loss, test_acc
+
+def get_gpu_stats():
+    from subprocess import call
+    command = ["nvidia-smi"]
+    call(command)

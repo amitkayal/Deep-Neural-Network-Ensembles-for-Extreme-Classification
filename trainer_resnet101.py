@@ -90,8 +90,11 @@ def run_training():
 
     ## net -------------------------------
     log.write('** net setting **\n')
+    print("=> Initing net ...")
     net = Net(in_shape = (3, CDISCOUNT_HEIGHT, CDISCOUNT_WIDTH), num_classes=CDISCOUNT_NUM_CLASSES)
     if use_cuda: net.cuda()
+    print("=> Inited net ...")
+    get_gpu_stats()
     ####
     # if 0: #freeze early layers
     #     for p in net.layer0.parameters():
@@ -130,6 +133,7 @@ def run_training():
                         num_workers = 1,
                         pin_memory  = False)
     print("=> Inited training set")
+    get_gpu_stats()
 
     print("=> Initing validation set ...")
     transform_valid = transforms.Compose([transforms.Lambda(lambda x: valid_augment(x))])
@@ -142,9 +146,8 @@ def run_training():
                         num_workers = 1,
                         pin_memory  = False)
     print("=> Inited validation set")
+    get_gpu_stats()
 
-    # log.write('\ttrain_dataset.split = %s\n'%(train_dataset.split))
-    # log.write('\tvalid_dataset.split = %s\n'%(valid_dataset.split))
     log.write('\tlen(train_dataset)  = %d\n'%(len(train_dataset)))
     log.write('\tlen(valid_dataset)  = %d\n'%(len(valid_dataset)))
     log.write('\tlen(train_loader)   = %d\n'%(len(train_loader)))
@@ -152,17 +155,6 @@ def run_training():
     log.write('\tbatch_size  = %d\n'%(batch_size))
     log.write('\titer_accum  = %d\n'%(iter_accum))
     log.write('\tbatch_size*iter_accum  = %d\n'%(batch_size*iter_accum))
-    # log.write('\n')
-
-    # log.write(inspect.getsource(train_augment)+'\n')
-    # log.write(inspect.getsource(valid_augment)+'\n')
-    # log.write('\n')
-    ####
-
-    # if 0:  ## check data
-    #     check_dataset(train_dataset, train_loader)
-    #     exit(0)
-
 
     ## resume from previous ----------------------------------
     start_iter = 0
@@ -182,6 +174,7 @@ def run_training():
             optimizer.load_state_dict(checkpoint['optimizer'])
             log.write("=> loaded checkpoint '{}' (epoch: {}, iter: {}, best_train_acc: {}, best_valid_acc: {})"
                   .format(initial_checkpoint, start_epoch, start_iter, best_train_acc, best_valid_acc))
+            get_gpu_stats()
 
             # # load original model
             # log.write('\tinitial_checkpoint = %s\n' % initial_checkpoint)
