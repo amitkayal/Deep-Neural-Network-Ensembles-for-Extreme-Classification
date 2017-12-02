@@ -49,7 +49,7 @@ def run_training():
 
     num_iters   = 1000*1000
     iter_smooth = 50
-    iter_valid  = 1 #500
+    iter_valid  = 20 #500
     iter_log = 5
     iter_save_freq = 50
     iter_save   = [0, num_iters-1] + list(range(0,num_iters,1*iter_save_freq)) # first and last iters, then every 1000 iters
@@ -130,7 +130,7 @@ def run_training():
                         sampler = RandomSampler(train_dataset),
                         batch_size  = batch_size,
                         drop_last   = True,
-                        num_workers = 1,
+                        num_workers = 4,
                         pin_memory  = False)
     print("=> Inited training set")
     get_gpu_stats()
@@ -143,7 +143,7 @@ def run_training():
                         sampler     = SequentialSampler(valid_dataset),
                         batch_size  = validation_batch_size,
                         drop_last   = False,
-                        num_workers = 1,
+                        num_workers = 4,
                         pin_memory  = False)
     print("=> Inited validation set")
     get_gpu_stats()
@@ -241,7 +241,7 @@ def run_training():
                 save_checkpoint(optimizer, i, epoch, net, best_valid_acc, best_train_acc, out_dir, IDENTIFIER + "/%08d_model.pth"%(i))
 
             if i % iter_valid == 0 and i != start_iter:
-                print("=> Start validating ...")
+                print("\n=> Start validating ...")
                 net.eval()
                 valid_loss, valid_acc = evaluate(net, valid_loader, validation_num, use_cuda)
                 net.train()
