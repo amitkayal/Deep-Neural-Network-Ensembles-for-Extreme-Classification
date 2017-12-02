@@ -133,7 +133,7 @@ def run_training():
                         batch_size  = batch_size,
                         drop_last   = True,
                         num_workers = 4,
-                        pin_memory  = True)
+                        pin_memory  = False)
     # if train_loader != None: print("Train loader loaded!")
 
     valid_dataset = CDiscountDataset(csv_dir+validation_data_filename,root_dir,transform=transform_valid)
@@ -144,7 +144,7 @@ def run_training():
                         batch_size  = validation_batch_size,
                         drop_last   = False,
                         num_workers = 4,
-                        pin_memory  = True)
+                        pin_memory  = False)
 
     # if valid_loader != None: print("Valid loader loaded!")
 
