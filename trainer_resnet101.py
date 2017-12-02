@@ -60,8 +60,6 @@ def run_training():
     validation_batch_size = 64
     iter_accum  = 4 #2  #448//batch_size
 
-    valid_loss  = 0.0
-    valid_acc   = 0.0
     batch_loss  = 0.0
     batch_acc   = 0.0
     best_valid_acc  = 0.0
@@ -71,6 +69,8 @@ def run_training():
     iter_time_meter = AverageMeter()
     train_loss_meter = AverageMeter()
     train_acc_meter = AverageMeter()
+    valid_acc_meter = AverageMeter()
+    valid_loss_meter = AverageMeter()
 
 
     j = 0 # number of iters in total
@@ -170,6 +170,8 @@ def run_training():
             start_iter = checkpoint['iter']
             best_train_acc = checkpoint['best_train_acc']
             best_valid_acc = checkpoint['best_valid_acc']
+            # train_acc_meter.update(checkpoint['train_acc'])
+            # valid_acc_meter.update(checkpoint['valid_acc'])
             net.load_state_dict(checkpoint['state_dict'])  # load model weights from the checkpoint
             optimizer.load_state_dict(checkpoint['optimizer'])
             log.write("=> loaded checkpoint '{}' (epoch: {}, iter: {}, best_train_acc: {}, best_valid_acc: {})"
@@ -225,7 +227,7 @@ def run_training():
             if i % iter_log == 0:
                 # print('\r',end='',flush=True)
                 log.write('\r%0.4f  %5.1f k   %4.2f  | %0.4f  %0.4f | %0.4f  %0.4f | %0.4f  %0.4f | %5.0f min | %5.2f s | %d,%d \n' % \
-                        (rate, i/1000, epoch, valid_loss, valid_acc, train_loss_meter.avg, train_acc_meter.avg, batch_loss, batch_acc,(timer() - start)/60,
+                        (rate, i/1000, epoch, valid_loss_meter.val, valid_acc_meter.val, train_loss_meter.avg, train_acc_meter.avg, batch_loss, batch_acc,(timer() - start)/60,
                             iter_time_meter.avg, i, j))
 
             #if 1:
@@ -238,22 +240,24 @@ def run_training():
                 #     'state_dict': net.state_dict(),
                 #     'best_valid_acc': best_valid_acc
                 # }, out_dir +'/checkpoint/%08d_model.pth'%(i))
-                save_checkpoint(optimizer, i, epoch, net, best_valid_acc, best_train_acc, out_dir, IDENTIFIER + "/%08d_model.pth"%(i))
+                save_checkpoint(optimizer, i, epoch, net, best_valid_acc, best_train_acc, train_acc_meter.val, valid_acc_meter.val, out_dir, IDENTIFIER + "/%08d_model.pth"%(i))
 
             if i % iter_valid == 0 and i != start_iter:
                 print("\n=> Validating ...")
                 net.eval()
-                valid_loss, valid_acc = evaluate(net, valid_loader, validation_num, use_cuda)
+                loss, acc = evaluate(net, valid_loader, validation_num, use_cuda)
+                valid_loss_meter.updae(loss)
+                valid_acc_meter.updae(acc)
                 net.train()
                 print("\n=> Validated")
 
                 # update best valida_acc and update best model
-                if valid_acc > best_valid_acc:
-                    best_valid_acc = valid_acc
+                if valid_acc_meter.val > best_valid_acc:
+                    best_valid_acc = valid_acc_meter.val
 
                     # update best model on validation set
                     # torch.save(net.state_dict(), out_dir + '/checkpoint/best_model.pth')
-                    save_checkpoint(optimizer, i, epoch, net, best_valid_acc, best_train_acc, out_dir, IDENTIFIER + "/best_val_model.pth")
+                    save_checkpoint(optimizer, i, epoch, net, best_valid_acc, best_train_acc, train_acc_meter.val, valid_acc_meter.val, out_dir, IDENTIFIER + "/best_val_model.pth")
                     log.write("=> Best validation model updated: iter %d, validation acc %f\n" % (i, best_valid_acc))
 
             # learning rate schduler -------------
@@ -302,7 +306,7 @@ def run_training():
                 if train_acc_meter.avg > best_train_acc:
                     best_train_acc = train_acc_meter.avg
                     # update best model on train set
-                    save_checkpoint(optimizer, i, epoch, net, best_valid_acc, best_train_acc, out_dir, IDENTIFIER + "/best_train_model.pth")
+                    save_checkpoint(optimizer, i, epoch, net, best_valid_acc, best_train_acc, train_acc_meter.val, valid_acc_meter.val, out_dir, IDENTIFIER + "/best_train_model.pth")
                     log.write("=> Best train model updated: iter %d, train acc %f\n"%(i, best_train_acc))
 
                 train_loss_meter = AverageMeter()
@@ -310,7 +314,7 @@ def run_training():
 
 
             print('\r%0.4f  %5.1f k   %4.2f  | %0.4f  %0.4f | %0.4f  %0.4f | %0.4f  %0.4f | %5.0f min | %5.2f s | %d,%d' % \
-                    (rate, i/1000, epoch, valid_loss, valid_acc, train_loss_meter.avg, train_acc_meter.avg, batch_loss, batch_acc,(timer() - start)/60, iter_time_meter.avg, i, j),\
+                    (rate, i/1000, epoch, valid_loss_meter.val, valid_acc_meter.val, train_loss_meter.avg, train_acc_meter.avg, batch_loss, batch_acc,(timer() - start)/60, iter_time_meter.avg, i, j),\
                     end='',flush=True)
             j=j+1
         pass  #-- end of one data loader --
@@ -325,7 +329,7 @@ def run_training():
         #     'iter'     : i,
         #     'epoch'    : epoch,
         # }, out_dir +'/checkpoint/%d_optimizer.pth'%(i))
-        save_checkpoint(optimizer, i, epoch, net, best_valid_acc, best_train_acc, out_dir, IDENTIFIER + "/%d_optimizer.pth"%(i))
+        save_checkpoint(optimizer, i, epoch, net, best_valid_acc, best_train_acc, train_acc_meter.val, valid_acc_meter.val, out_dir, IDENTIFIER + "/%d_optimizer.pth"%(i))
 
     log.write('\n')
 
