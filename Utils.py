@@ -54,4 +54,3 @@ def product_predict_average_prob(image_ids, probses):
     # return res
 
     return product_to_prediction_map
-
