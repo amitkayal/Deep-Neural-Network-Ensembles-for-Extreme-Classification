@@ -124,6 +124,8 @@ def save_checkpoint(optimizer, i, epoch, net, best_valid_acc, best_train_acc, ou
         'best_train_acc': best_train_acc
     }, out_dir + '/checkpoint/' + "/latest.pth")
 
+    print("=> Checkpoint saved")
+
 def evaluate(net, test_loader, sample_num, use_cuda):
 
     test_num  = 0
