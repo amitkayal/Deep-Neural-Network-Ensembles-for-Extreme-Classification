@@ -49,9 +49,9 @@ def run_training():
 
     num_iters   = 1000*1000
     iter_smooth = 50
-    iter_valid  = 20 #500
-    iter_log = 5
-    iter_save_freq = 50
+    iter_valid  = 100 # i
+    iter_log = 5 # i
+    iter_save_freq = 50 # j
     iter_save   = [0, num_iters-1] + list(range(0,num_iters,1*iter_save_freq)) # first and last iters, then every 1000 iters
 
     validation_num = 10000
@@ -170,8 +170,8 @@ def run_training():
             start_iter = checkpoint['iter']
             best_train_acc = checkpoint['best_train_acc']
             best_valid_acc = checkpoint['best_valid_acc']
-            # train_acc_meter.update(checkpoint['train_acc'])
-            # valid_acc_meter.update(checkpoint['valid_acc'])
+            train_acc_meter.update(checkpoint['train_acc'])
+            valid_acc_meter.update(checkpoint['valid_acc'])
             net.load_state_dict(checkpoint['state_dict'])  # load model weights from the checkpoint
             optimizer.load_state_dict(checkpoint['optimizer'])
             log.write("=> loaded checkpoint '{}' (epoch: {}, iter: {}, best_train_acc: {}, best_valid_acc: {})"
