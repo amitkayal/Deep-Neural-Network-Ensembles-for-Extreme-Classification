@@ -1,13 +1,4 @@
-from common import *
 import cv2
-import os
-import torch
-import numpy as np
-import random
-import math
-
-from torch.utils.data import DataLoader
-from torch.utils.data.sampler import SequentialSampler
 
 ## for debug
 def dummy_transform(img,text='dummy_transform'):
