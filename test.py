@@ -127,7 +127,7 @@ if __name__ == '__main__':
     print( '%s: calling main function ... ' % os.path.basename(__file__))
 
     initial_checkpoint = "../checkpoint/"+ IDENTIFIER + "/best_val_model.pth"
-    res_path = "../test_res/" + IDENTIFIER + "_test.res"
+    res_path = "./test_res/" + IDENTIFIER + "_test.res"
     validation_batch_size = 64
 
     net = Net(in_shape = (3, CDISCOUNT_HEIGHT, CDISCOUNT_WIDTH), num_classes=CDISCOUNT_NUM_CLASSES)
@@ -150,9 +150,9 @@ if __name__ == '__main__':
                         test_dataset,
                         sampler = RandomSampler(test_dataset),
                         batch_size  = validation_batch_size,
-                        drop_last   = True,
-                        num_workers = 0,
-                        pin_memory  = False)
+                        drop_last   = False,
+                        num_workers = 4,
+                        pin_memory  = True)
 
     product_to_prediction_map = evaluate_vote(net, test_loader, res_path)
 
