@@ -144,7 +144,7 @@ def evaluate(net, test_loader, sample_num, use_cuda):
         #print("labels:", labels)
         #print("probs:",probs)
         loss = F.cross_entropy(logits, labels)
-        test_acc += get_accuracy(probs, labels)
+        test_acc += get_accuracy(probs, labels, use_cuda)
         ####
         #acc  = top_accuracy(probs, labels, top_k=(1,))#1,5
         ####
