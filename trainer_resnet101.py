@@ -132,7 +132,7 @@ def run_training():
                         sampler = RandomSampler(train_dataset),
                         batch_size  = batch_size,
                         drop_last   = True,
-                        num_workers = 4,
+                        num_workers = 1,
                         pin_memory  = False)
     # if train_loader != None: print("Train loader loaded!")
 
@@ -143,7 +143,7 @@ def run_training():
                         sampler     = SequentialSampler(valid_dataset),
                         batch_size  = validation_batch_size,
                         drop_last   = False,
-                        num_workers = 4,
+                        num_workers = 1,
                         pin_memory  = False)
 
     # if valid_loader != None: print("Valid loader loaded!")
