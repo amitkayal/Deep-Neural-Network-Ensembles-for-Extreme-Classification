@@ -118,14 +118,9 @@ def run_training():
 
     ## dataset ----------------------------------------
     log.write('** dataset setting **\n')
-    transform_train = transforms.Compose([
-        # transforms.ToTensor(): Converts a PIL.Image or numpy.ndarray (H x W x C) in the range [0, 255] to a torch.FloatTensor of shape (C x H x W) in the range [0.0, 1.0].
-        transforms.Lambda(lambda x:train_augment(x))
-
-    ])
-    transform_valid = transforms.Compose([transforms.Lambda(lambda x:valid_augment(x))])
+    print("=> Initing training set ...")
+    transform_train = transforms.Compose([transforms.Lambda(lambda x:train_augment(x))])
     train_dataset = CDiscountDataset(csv_dir+train_data_filename,root_dir,transform=transform_train)
-
     train_loader  = DataLoader(
                         train_dataset,
                         #sampler = RandomSampler1(train_dataset,50000),
@@ -134,10 +129,11 @@ def run_training():
                         drop_last   = True,
                         num_workers = 1,
                         pin_memory  = False)
-    # if train_loader != None: print("Train loader loaded!")
+    print("=> Inited training set")
 
+    print("=> Initing validation set ...")
+    transform_valid = transforms.Compose([transforms.Lambda(lambda x: valid_augment(x))])
     valid_dataset = CDiscountDataset(csv_dir+validation_data_filename,root_dir,transform=transform_valid)
-
     valid_loader  = DataLoader(
                         valid_dataset,
                         sampler     = SequentialSampler(valid_dataset),
@@ -145,8 +141,7 @@ def run_training():
                         drop_last   = False,
                         num_workers = 1,
                         pin_memory  = False)
-
-    # if valid_loader != None: print("Valid loader loaded!")
+    print("=> Inited validation set")
 
     # log.write('\ttrain_dataset.split = %s\n'%(train_dataset.split))
     # log.write('\tvalid_dataset.split = %s\n'%(valid_dataset.split))
