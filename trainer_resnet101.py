@@ -41,10 +41,10 @@ def run_training():
     #-------------------------------------------- Training settings --------------------------------------------
     out_dir  = '../' # s_xx1'
     # initial_checkpoint = None
-    initial_checkpoint = "../checkpoint/"+ IDENTIFIER + "/00243050_model.pth"
-    # initial_checkpoint = '../trained_models/resnet_00243000_model.pth'
+    # initial_checkpoint = "../checkpoint/"+ IDENTIFIER + "/00243050_model.pth"
+    initial_checkpoint = '../trained_models/resnet_00243000_model.pth'
     # pretrained_file = '../trained_models/LB=0.69565_inc3_00075000_model.pth'
-    pretrained_file = None
+    # pretrained_file = None
     skip = [] #['fc.weight', 'fc.bias']
 
     num_iters   = 1000*1000
@@ -167,8 +167,8 @@ def run_training():
             checkpoint = torch.load(initial_checkpoint)
             start_epoch = checkpoint['epoch']
             start_iter = checkpoint['iter']
-            best_train_acc = checkpoint['best_train_acc']
-            best_valid_acc = checkpoint['best_valid_acc']
+            # best_train_acc = checkpoint['best_train_acc']
+            # best_valid_acc = checkpoint['best_valid_acc']
             # train_acc_meter.update(checkpoint['train_acc'])
             # valid_acc_meter.update(checkpoint['valid_acc'])
             net.load_state_dict(checkpoint['state_dict'])  # load model weights from the checkpoint
