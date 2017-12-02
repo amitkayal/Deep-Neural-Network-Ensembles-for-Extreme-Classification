@@ -49,7 +49,7 @@ def run_training():
 
     num_iters   = 1000*1000
     iter_smooth = 50
-    iter_valid  = 100 #500
+    iter_valid  = 1 #500
     iter_log = 5
     iter_save_freq = 50
     iter_save   = [0, num_iters-1] + list(range(0,num_iters,1*iter_save_freq)) # first and last iters, then every 1000 iters
@@ -132,8 +132,8 @@ def run_training():
                         sampler = RandomSampler(train_dataset),
                         batch_size  = batch_size,
                         drop_last   = True,
-                        num_workers = 0,
-                        pin_memory  = False)
+                        num_workers = 4,
+                        pin_memory  = True)
     # if train_loader != None: print("Train loader loaded!")
 
     valid_dataset = CDiscountDataset(csv_dir+validation_data_filename,root_dir,transform=transform_valid)
@@ -143,8 +143,8 @@ def run_training():
                         sampler     = SequentialSampler(valid_dataset),
                         batch_size  = validation_batch_size,
                         drop_last   = False,
-                        num_workers = 0,
-                        pin_memory  = False)
+                        num_workers = 4,
+                        pin_memory  = True)
 
     # if valid_loader != None: print("Valid loader loaded!")
 
