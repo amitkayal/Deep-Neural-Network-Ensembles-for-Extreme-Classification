@@ -246,8 +246,8 @@ def run_training():
                 print("\n=> Validating ...")
                 net.eval()
                 loss, acc = evaluate(net, valid_loader, validation_num, use_cuda)
-                valid_loss_meter.updae(loss)
-                valid_acc_meter.updae(acc)
+                valid_loss_meter.update(loss)
+                valid_acc_meter.update(acc)
                 net.train()
                 print("\n=> Validated")
 
