@@ -302,7 +302,7 @@ def run_training():
             batch_acc  = get_accuracy(probs, labels, use_cuda)
             train_acc_meter.update(batch_acc)
 
-            if i%iter_smooth == 0: # reset train stats every iter_smooth iters
+            if i%iter_smooth == 0 and i != start_iter: # reset train stats every iter_smooth iters
                 if train_acc_meter.avg > best_train_acc:
                     best_train_acc = train_acc_meter.avg
                     # update best model on train set

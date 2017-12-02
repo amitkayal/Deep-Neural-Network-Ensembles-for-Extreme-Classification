@@ -106,6 +106,8 @@ def get_accuracy(probs, labels, use_cuda):
     return correct_num / batch_size
 
 def save_checkpoint(optimizer, i, epoch, net, best_valid_acc, best_train_acc, train_acc, valid_acc, out_dir, name):
+    print("=> Saving checkpoint")
+
     torch.save({
         'optimizer': optimizer.state_dict(),
         'iter': i,
@@ -128,7 +130,7 @@ def save_checkpoint(optimizer, i, epoch, net, best_valid_acc, best_train_acc, tr
         'valid_acc': valid_acc
     }, out_dir + '/checkpoint/' + "/latest.pth")
 
-    print("=> Checkpoint saved")
+    print("=> Saved checkpoint")
 
 def evaluate(net, test_loader, sample_num, use_cuda):
 
