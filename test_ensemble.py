@@ -38,8 +38,8 @@ def evaluate_average_prob(net, test_loader):
 
     # for iter, (images, labels, indices) in enumerate(test_loader, 0):
     for iter, (images, image_ids) in enumerate(test_loader, 0):#remove indices for testing
-        if cnt > 4:
-            break;
+        # if cnt > 4:
+        #     break;
 
         images = Variable(images.type(torch.FloatTensor)).cuda() if use_cuda else Variable(images.type(torch.FloatTensor))
         image_ids = np.array(image_ids)
