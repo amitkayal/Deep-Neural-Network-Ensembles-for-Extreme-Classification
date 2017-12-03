@@ -123,7 +123,7 @@ def evaluate_sequential_ensemble(net, test_loader, path):
                     ## get probs in range [start, end)
                     for probs in probs_list:
                         print(probs)
-                        np.concatenate((cur_procuct_probs, np.array(probs[start:end])), axis=0)
+                        cur_procuct_probs = np.concatenate((cur_procuct_probs, np.array(probs[start:end])), axis=0)
 
                     print(cur_procuct_probs)
                     # do predictions
