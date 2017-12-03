@@ -1,0 +1,113 @@
+
+--- [START 2017-12-03 04:12:38] ----------------------------------------------------------------
+
+** some experiment setting **
+	IDENTIFIER   = xception
+	SEED         = 123456
+	PROJECT_PATH = ./project
+	out_dir      = ../
+** net setting **
+
+--- [START 2017-12-03 04:42:47] ----------------------------------------------------------------
+
+** some experiment setting **
+	IDENTIFIER   = xception
+	SEED         = 123456
+	PROJECT_PATH = ./project
+	out_dir      = ../
+** net setting **
+<class 'net.xception.Xception'>
+
+
+** dataset setting **
+	len(train_dataset)  = 12118359
+	len(valid_dataset)  = 252934
+	len(train_loader)   = 189349
+	len(valid_loadernum_iters)   = 3953
+	batch_size  = 64
+	iter_accum  = 4
+	batch_size*iter_accum  = 256
+	loading @ pretrained_file = ../trained_models/LB=0.69422_xception_00158000_model.pth
+** start training here! **
+	optimizer=<torch.optim.sgd.SGD object at 0x7f548d1aa5f8>
+   rate   iter   epoch  | valid_loss/acc | train_loss/acc | batch_loss/acc | total time | avg iter time | i j |
+----------------------------------------------------------------------------------------------------------------
+0.0000    0.0 k   0.00  | 0.0000  0.0000 | 0.0000  0.0000 | 0.0000  0.0000 |     0 min |  0.00 s | 0,0 
+0.0100    0.0 k   0.00  | 0.0000  0.0000 | 1.4589  0.6828 | 1.4451  0.6562 |     1 min |  1.22 s | 5,20 
+0.0100    0.0 k   0.00  | 0.0000  0.0000 | 1.3896  0.6930 | 1.4293  0.6875 |     1 min |  0.90 s | 10,40 
+0.0100    0.0 k   0.00  | 0.0000  0.0000 | 1.3851  0.6948 | 1.4947  0.6250 |     2 min |  0.79 s | 15,60 
+0.0100    0.0 k   0.00  | 0.0000  0.0000 | 1.3863  0.6918 | 1.7390  0.6562 |     2 min |  0.74 s | 20,80 
+0.0100    0.0 k   0.00  | 0.0000  0.0000 | 1.3752  0.6941 | 1.1747  0.7188 |     3 min |  0.71 s | 25,100 
+
+--- [START 2017-12-03 04:49:16] ----------------------------------------------------------------
+
+** some experiment setting **
+	IDENTIFIER   = xception
+	SEED         = 123456
+	PROJECT_PATH = ./project
+	out_dir      = ../
+** net setting **
+
+--- [START 2017-12-03 04:51:00] ----------------------------------------------------------------
+
+** some experiment setting **
+	IDENTIFIER   = xception
+	SEED         = 123456
+	PROJECT_PATH = ./project
+	out_dir      = ../
+** net setting **
+<class 'net.xception.Xception'>
+
+
+** dataset setting **
+	len(train_dataset)  = 12118359
+	len(valid_dataset)  = 252934
+	len(train_loader)   = 189349
+	len(valid_loadernum_iters)   = 3953
+	batch_size  = 64
+	iter_accum  = 4
+	batch_size*iter_accum  = 256
+	loading @ pretrained_file = ../trained_models/LB=0.69422_xception_00158000_model.pth
+** start training here! **
+	optimizer=<torch.optim.sgd.SGD object at 0x7f106721d6a0>
+   rate   iter   epoch  | valid_loss/acc | train_loss/acc | batch_loss/acc | total time | avg iter time | i j |
+----------------------------------------------------------------------------------------------------------------
+0.0000  158.0 k   3.34  | 0.0000  0.0000 | 0.0000  0.0000 | 0.0000  0.0000 |     0 min |  0.00 s | 158000,0 
+=> Best validation model updated: iter 158001, validation acc 0.027966
+=> Best validation model updated: iter 158002, validation acc 0.183021
+=> Best validation model updated: iter 158003, validation acc 0.460689
+
+--- [START 2017-12-03 04:58:26] ----------------------------------------------------------------
+
+** some experiment setting **
+	IDENTIFIER   = xception
+	SEED         = 123456
+	PROJECT_PATH = ./project
+	out_dir      = ../
+** net setting **
+<class 'net.xception.Xception'>
+
+
+** dataset setting **
+	len(train_dataset)  = 12118359
+	len(valid_dataset)  = 252934
+	len(train_loader)   = 189349
+	len(valid_loadernum_iters)   = 3953
+	batch_size  = 64
+	iter_accum  = 4
+	batch_size*iter_accum  = 256
+	loading @ pretrained_file = ../trained_models/LB=0.69422_xception_00158000_model.pth
+** start training here! **
+	optimizer=<torch.optim.sgd.SGD object at 0x7fde29e79668>
+   rate   iter   epoch  | valid_loss/acc | train_loss/acc | batch_loss/acc | total time | avg iter time | i j |
+----------------------------------------------------------------------------------------------------------------
+0.0000  158.0 k   3.34  | 0.0000  0.0000 | 0.0000  0.0000 | 0.0000  0.0000 |     0 min |  0.00 s | 158000,0 
+0.0005  158.0 k   3.34  | 0.0000  0.0000 | 1.3046  0.7008 | 1.4135  0.7188 |     1 min |  0.69 s | 158005,20 
+0.0005  158.0 k   3.34  | 0.0000  0.0000 | 1.3841  0.6898 | 1.5484  0.7031 |     1 min |  0.63 s | 158010,40 
+=> Best validation model updated: iter 158010, validation acc 0.665307
+0.0005  158.0 k   3.34  | 1.5027  0.6653 | 1.3955  0.6891 | 1.4263  0.6406 |     3 min |  0.62 s | 158015,60 
+0.0005  158.0 k   3.34  | 1.5027  0.6653 | 1.3920  0.6920 | 1.4669  0.6406 |     3 min |  0.61 s | 158020,80 
+0.0005  158.0 k   3.34  | 1.5071  0.6643 | 1.3999  0.6913 | 1.9171  0.6094 |     5 min |  0.60 s | 158025,100 
+0.0005  158.0 k   3.34  | 1.5071  0.6643 | 1.4157  0.6889 | 1.1596  0.7188 |     6 min |  0.60 s | 158030,120 
+=> Best validation model updated: iter 158030, validation acc 0.667894
+0.0005  158.0 k   3.34  | 1.5057  0.6679 | 1.4185  0.6885 | 1.1333  0.7188 |     7 min |  0.60 s | 158035,140 
