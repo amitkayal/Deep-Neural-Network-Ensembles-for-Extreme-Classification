@@ -23,7 +23,7 @@ from net.resnet101 import ResNet101 as Net
 # from net.xception import Xception as Net
 
 
-IDENTIFIER = "xception"
+IDENTIFIER = "resnet"
 
 # Not change
 use_cuda = True
