@@ -59,6 +59,7 @@ def TTA(images):
     for transform in TTA_list:
         cur_images = []
         for image in images:
+            print(image)
             cur_images.append(transform(image))
 
         images_TTA_list.append(cur_images)
