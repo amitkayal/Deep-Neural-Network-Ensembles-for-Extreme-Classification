@@ -1,9 +1,0 @@
-
---- [START 2017-12-03 05:02:50] ----------------------------------------------------------------
-
-** some experiment setting **
-	IDENTIFIER   = xception
-	SEED         = 123456
-	PROJECT_PATH = ./project
-	out_dir      = ../
-** net setting **
