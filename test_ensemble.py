@@ -161,7 +161,7 @@ def write_test_result(path, product_to_prediction_map):
 if __name__ == '__main__':
     print( '%s: calling main function ... ' % os.path.basename(__file__))
 
-    initial_checkpoint = "../checkpoint/"+ IDENTIFIER + "/best_val_model.pth"
+    initial_checkpoint = "../checkpoint/"+ IDENTIFIER + "/latest.pth"
     res_path = "./test_res/" + IDENTIFIER + "_test_TTA.res"
     validation_batch_size = 64
 
