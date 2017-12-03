@@ -82,7 +82,7 @@ def evaluate_sequential_ensemble(net, test_loader, path):
     cnt = 0
     product_to_prediction_map = {}
     cur_procuct_probs = np.array([]).reshape(0,CDISCOUNT_NUM_CLASSES)
-    cur_product_id = ""
+    cur_product_id = None
     transform_num = 3
 
     with open(path, "a") as file:
@@ -104,13 +104,16 @@ def evaluate_sequential_ensemble(net, test_loader, path):
 
                 logits = net(images)
                 probs  = ((F.softmax(logits)).cpu().data.numpy()).astype(float)
-                print(probs.shape)
                 probs_list.append(probs)
 
             start = 0
             end = 0
             for image_id in image_ids:
                 product_id = imageid_to_productid(image_id)
+
+                if cur_product_id == None:
+                    cur_product_id = product_id
+
                 if product_id != cur_product_id:
                     # a new product
 
