@@ -34,7 +34,6 @@ def general_train_augment(image):
 
 
 def general_valid_augment(image):
-
     tensor = general_image_to_tensor_transform(image)
     return tensor
 
