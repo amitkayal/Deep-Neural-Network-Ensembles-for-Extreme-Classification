@@ -134,7 +134,7 @@ def evaluate_sequential_ensemble(net, test_loader, path):
                     # update
                     start = end
                     cur_product_id = product_id
-                    cur_procuct_probs = []
+                    cur_procuct_probs = np.array([]).reshape(0,CDISCOUNT_NUM_CLASSES)
 
                 end += 1
             cnt += 1
