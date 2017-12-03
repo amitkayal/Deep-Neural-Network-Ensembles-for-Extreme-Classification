@@ -13,6 +13,8 @@ import operator
 
 from net.resnet101 import ResNet101 as Net
 
+TTA_list = [random_shift_scale_rotate, random_crop]
+
 use_cuda = True
 IDENTIFIER = "resnet"
 SEED = 123456
@@ -28,7 +30,7 @@ validation_data_filename = 'validation.csv'
 
 initial_checkpoint = "../checkpoint/" + IDENTIFIER + "/latest.pth"
 res_path = "./test_res/" + IDENTIFIER + "_test_TTA.res"
-validation_batch_size = 32
+validation_batch_size = 50
 
 def ensemble_predict(cur_procuct_probs, num):
     candidates = np.argmax(cur_procuct_probs, axis=1)
@@ -52,7 +54,16 @@ def ensemble_predict(cur_procuct_probs, num):
     return winner
 
 def TTA(images):
-    return [images]
+    images_TTA_list = []
+
+    for transform in TTA_list:
+        cur_images = []
+        for image in images:
+            cur_images.append(transform(image))
+
+        images_TTA_list.append(cur_images)
+
+    return images_TTA_list
 
 def evaluate_sequential_ensemble(net, test_loader, path):
     cnt = 0
@@ -98,7 +109,7 @@ def evaluate_sequential_ensemble(net, test_loader, path):
                     num = (end - start) * transform_num # total number of instances for current product
                     ## get probs in range [start, end)
                     for probs in probs_list:
-                        print(probs)
+                        # print(probs)
                         cur_procuct_probs = np.concatenate((cur_procuct_probs, np.array(probs[start:end])), axis=0)
 
                     print(cur_procuct_probs)
