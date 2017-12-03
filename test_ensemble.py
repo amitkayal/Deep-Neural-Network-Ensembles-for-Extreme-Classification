@@ -115,7 +115,7 @@ def evaluate_sequential_ensemble(net, test_loader, path):
                 if product_id != cur_product_id:
                     # a new product
                     print("new product: " + str(product_id))
-                    
+
                     # find winner for previous product
                     num = (end - start) * transform_num # total number of instances for current product
                     ## get probs in range [start, end)
@@ -135,6 +135,8 @@ def evaluate_sequential_ensemble(net, test_loader, path):
 
                 end += 1
             cnt += 1
+
+            np.concatenate((cur_procuct_probs, np.array(probs[start:end])), axis=0)
 
         # find winner for previous product
         num = (end - start) * transform_num  # total number of instances for current product
