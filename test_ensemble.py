@@ -60,7 +60,7 @@ def TTA(images):
         cur_images = []
         for image in images:
             print(image)
-            cur_images.append(transform(image))
+            cur_images.append(pytorch_image_to_tensor_transform(transform(image)))
 
         images_TTA_list.append(cur_images)
 
@@ -172,10 +172,7 @@ if __name__ == '__main__':
         print("=> no checkpoint found at '{}'".format(initial_checkpoint))
         exit(0)
 
-    transform_valid = transforms.Compose([transforms.Lambda(lambda x: general_valid_augment(x))])
-
-    test_dataset = CDiscountTestDataset(csv_dir + test_data_filename, root_dir, transform=transform_valid)
-
+    test_dataset = CDiscountTestDataset(csv_dir + test_data_filename, root_dir)
     test_loader  = DataLoader(
                         test_dataset,
                         sampler=SequentialSampler(test_dataset),
