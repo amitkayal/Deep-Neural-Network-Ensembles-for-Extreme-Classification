@@ -9,6 +9,7 @@ from torch.utils.data.sampler import RandomSampler
 import operator
 
 
+
 from net.resnet101 import ResNet101 as Net
 
 
@@ -29,7 +30,7 @@ validation_data_filename = 'validation.csv'
 validation_batch_size = 128
 
 
-transform_valid = transforms.Compose([transforms.Lambda(lambda x: valid_augment(x))])
+transform_valid = transforms.Compose([transforms.Lambda(lambda x: general_valid_augment(x))])
 
 test_dataset = CDiscountTestDataset(csv_dir + test_data_filename, root_dir, transform=transform_valid)
 
@@ -45,4 +46,5 @@ for iter, (images, image_ids) in enumerate(test_loader, 0):
     images = Variable(images.type(torch.FloatTensor)).cuda() if use_cuda else Variable(images.type(torch.FloatTensor))
     image_ids = np.array(image_ids)
     print(image_ids)
+    print("-----------------------------------------------------------------------------------")
 

@@ -5,6 +5,38 @@ from torch.autograd import Variable
 import torch.nn.functional as F
 
 
+def general_image_to_tensor_transform(image):
+    tensor = pytorch_image_to_tensor_transform(image)
+    tensor[ 0] = tensor[ 0] * (0.229 / 0.5) + (0.485 - 0.5) / 0.5
+    tensor[ 1] = tensor[ 1] * (0.224 / 0.5) + (0.456 - 0.5) / 0.5
+    tensor[ 2] = tensor[ 2] * (0.225 / 0.5) + (0.406 - 0.5) / 0.5
+    return tensor
+
+def general_train_augment(image):
+
+    if random.random() < 0.5:
+        image = random_shift_scale_rotate(image,
+                #shift_limit  = [0, 0],
+                shift_limit  = [-0.06,  0.06],
+                scale_limit  = [0.9, 1.2],
+                rotate_limit = [-10,10],
+                aspect_limit = [1,1],
+                #size=[1,299],
+        borderMode=cv2.BORDER_REFLECT_101 , u=1)
+    else:
+        pass
+
+    # flip  random ---------
+    image = random_horizontal_flip(image, u=0.5)
+    #print("enter image_to_tensor_transform")
+    tensor = general_image_to_tensor_transform(image)
+    return tensor
+
+
+def general_valid_augment(image):
+
+    tensor = general_image_to_tensor_transform(image)
+    return tensor
 
 
 def get_learning_rate(optimizer):
