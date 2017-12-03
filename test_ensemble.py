@@ -26,6 +26,10 @@ root_dir = '../output/'
 test_data_filename = 'test.csv'
 validation_data_filename = 'validation.csv'
 
+initial_checkpoint = "../checkpoint/" + IDENTIFIER + "/latest.pth"
+res_path = "./test_res/" + IDENTIFIER + "_test_TTA.res"
+validation_batch_size = 64
+
 def evaluate_average_prob(net, test_loader):
     cnt = 0
 
@@ -128,6 +132,7 @@ def evaluate_sequential_ensemble(net, test_loader, path):
                     print(cur_procuct_probs)
                     # do predictions
                     winner = ensemble_predict(cur_procuct_probs, num)
+                    print("winner: ", str(winner))
 
                     # save winner
                     product_to_prediction_map[cur_product_id] = winner
@@ -142,7 +147,7 @@ def evaluate_sequential_ensemble(net, test_loader, path):
 
             np.concatenate((cur_procuct_probs, np.array(probs[start:end])), axis=0)
 
-        # find winner for previous product
+        # find winner for current product
         num = (end - start) * transform_num  # total number of instances for current product
         ## get probs in range [start, end)
         for probs in probs_list:
@@ -170,12 +175,9 @@ def write_test_result(path, product_to_prediction_map):
 if __name__ == '__main__':
     print( '%s: calling main function ... ' % os.path.basename(__file__))
 
-    initial_checkpoint = "../checkpoint/"+ IDENTIFIER + "/latest.pth"
-    res_path = "./test_res/" + IDENTIFIER + "_test_TTA.res"
-    validation_batch_size = 64
-
     net = Net(in_shape = (3, CDISCOUNT_HEIGHT, CDISCOUNT_WIDTH), num_classes=CDISCOUNT_NUM_CLASSES)
-    if use_cuda: net.cuda()
+    net.cuda()
+    net.eval()
 
     if os.path.isfile(initial_checkpoint):
         print("=> loading checkpoint '{}'".format(initial_checkpoint))

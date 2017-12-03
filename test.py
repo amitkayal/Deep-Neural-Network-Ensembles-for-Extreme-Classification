@@ -132,6 +132,7 @@ if __name__ == '__main__':
 
     net = Net(in_shape = (3, CDISCOUNT_HEIGHT, CDISCOUNT_WIDTH), num_classes=CDISCOUNT_NUM_CLASSES)
     if use_cuda: net.cuda()
+    net.eval()
 
     if os.path.isfile(initial_checkpoint):
         print("=> loading checkpoint '{}'".format(initial_checkpoint))
