@@ -79,6 +79,7 @@ def TTA(images):
     return [images]
 
 def evaluate_sequential_ensemble(net, test_loader, path):
+    cnt = 0
     product_to_prediction_map = {}
     cur_procuct_probs = np.array([]).reshape(0,5270)
     cur_product_id = ""
@@ -88,8 +89,8 @@ def evaluate_sequential_ensemble(net, test_loader, path):
         file.write("_id,category_id\n")
 
         for iter, (images, image_ids) in enumerate(test_loader, 0):
-            # if cnt > 4:
-            #     break;
+            if cnt > 4:
+                break;
 
             # images = Variable(images.type(torch.FloatTensor)).cuda() if use_cuda else Variable(images.type(torch.FloatTensor))
             image_ids = np.array(image_ids)
@@ -130,6 +131,7 @@ def evaluate_sequential_ensemble(net, test_loader, path):
                     cur_procuct_probs = []
 
                 end += 1
+            cnt += 1
 
         # find winner for previous product
         num = (end - start) * transform_num  # total number of instances for current product
@@ -160,7 +162,7 @@ if __name__ == '__main__':
     print( '%s: calling main function ... ' % os.path.basename(__file__))
 
     initial_checkpoint = "../checkpoint/"+ IDENTIFIER + "/best_val_model.pth"
-    res_path = "./test_res/" + IDENTIFIER + "_test.res"
+    res_path = "./test_res/" + IDENTIFIER + "_test_TTA.res"
     validation_batch_size = 64
 
     net = Net(in_shape = (3, CDISCOUNT_HEIGHT, CDISCOUNT_WIDTH), num_classes=CDISCOUNT_NUM_CLASSES)
