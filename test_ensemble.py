@@ -122,6 +122,7 @@ def evaluate_sequential_ensemble(net, test_loader, path):
                     num = (end - start) * transform_num # total number of instances for current product
                     ## get probs in range [start, end)
                     for probs in probs_list:
+                        print(probs)
                         np.concatenate((cur_procuct_probs, np.array(probs[start:end])), axis=0)
 
                     print(cur_procuct_probs)
