@@ -28,7 +28,7 @@ validation_data_filename = 'validation.csv'
 
 initial_checkpoint = "../checkpoint/" + IDENTIFIER + "/latest.pth"
 res_path = "./test_res/" + IDENTIFIER + "_test_TTA.res"
-validation_batch_size = 64
+validation_batch_size = 1
 
 def evaluate_average_prob(net, test_loader):
     cnt = 0
