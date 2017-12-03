@@ -30,7 +30,7 @@ def evaluate_average_prob(net, test_loader):
     cnt = 0
 
     all_image_ids = np.array([])
-    all_probs = np.array([]).reshape(0,5270)
+    all_probs = np.array([]).reshape(0,CDISCOUNT_NUM_CLASSES)
 
     # for iter, (images, labels, indices) in enumerate(test_loader, 0):
     for iter, (images, image_ids) in enumerate(test_loader, 0):#remove indices for testing
@@ -81,7 +81,7 @@ def TTA(images):
 def evaluate_sequential_ensemble(net, test_loader, path):
     cnt = 0
     product_to_prediction_map = {}
-    cur_procuct_probs = np.array([]).reshape(0,5270)
+    cur_procuct_probs = np.array([]).reshape(0,CDISCOUNT_NUM_CLASSES)
     cur_product_id = ""
     transform_num = 3
 
@@ -104,6 +104,7 @@ def evaluate_sequential_ensemble(net, test_loader, path):
 
                 logits = net(images)
                 probs  = ((F.softmax(logits)).cpu().data.numpy()).astype(float)
+                print(probs.shape)
                 probs_list.append(probs)
 
             start = 0
