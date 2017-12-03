@@ -30,18 +30,26 @@ CDISCOUNT_WIDTH = 180
 CDISCOUNT_NUM_CLASSES = 5270
 log = Log(IDENTIFIER + "_log.out")
 
+
+# Dirs/Paths
+out_dir  = '../' # s_xx1'
 csv_dir = './data/'
 root_dir = '../output/'
 train_data_filename = 'train.csv'
 validation_data_filename = 'validation.csv'
+checkpoint_dir = "../checkpoint/" + IDENTIFIER + "/"
+
+## Create output folder
+os.makedirs(checkpoint_dir, exist_ok=True)
+os.makedirs(out_dir +'/backup/' + IDENTIFIER, exist_ok=True)
 
 
 def run_training():
 
     #-------------------------------------------- Training settings --------------------------------------------
-    out_dir  = '../' # s_xx1'
+
     # initial_checkpoint = None
-    initial_checkpoint = "../checkpoint/"+ IDENTIFIER + "/latest.pth"
+    initial_checkpoint = checkpoint_dir + "latest.pth"
     # initial_checkpoint = '../trained_models/resnet_00243000_model.pth'
     # pretrained_file = '../trained_models/LB=0.69565_inc3_00075000_model.pth'
     pretrained_file = None
@@ -77,10 +85,6 @@ def run_training():
     i = 0 # number of real iters where bp is conducted
 
     #-----------------------------------------------------------------------------------------------------------
-
-    ## setup  ---------------------------
-    os.makedirs(out_dir +'/checkpoint/' + IDENTIFIER, exist_ok=True)
-    os.makedirs(out_dir +'/backup/' + IDENTIFIER, exist_ok=True)
 
     log.write('\n--- [START %s] %s\n\n' % (datetime.now().strftime('%Y-%m-%d %H:%M:%S'), '-' * 64))
     log.write('** some experiment setting **\n')
