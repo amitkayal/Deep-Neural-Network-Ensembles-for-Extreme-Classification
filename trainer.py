@@ -60,7 +60,7 @@ def run_training():
 
     num_iters   = 1000*1000
     iter_smooth = 50
-    iter_valid  = 50 # i
+    iter_valid  = 1200 # about 30 mins
     iter_log = 5 # i
     iter_save_freq = 50 # i
     iter_save   = [0, num_iters-1] + list(range(0,num_iters,1*iter_save_freq)) # first and last iters, then every 1000 iters
