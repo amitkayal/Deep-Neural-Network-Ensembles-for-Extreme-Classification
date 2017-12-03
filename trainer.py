@@ -89,6 +89,7 @@ def run_training():
 
     log.write('\n--- [START %s] %s\n\n' % (datetime.now().strftime('%Y-%m-%d %H:%M:%S'), '-' * 64))
     log.write('** some experiment setting **\n')
+    log.write('\tIDENTIFIER         = %u\n' % IDENTIFIER)
     log.write('\tSEED         = %u\n' % SEED)
     log.write('\tPROJECT_PATH = %s\n' % PROJECT_PATH)
     log.write('\tout_dir      = %s\n' % out_dir)
