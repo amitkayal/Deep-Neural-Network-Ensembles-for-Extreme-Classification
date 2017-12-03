@@ -83,7 +83,7 @@ def evaluate_sequential_ensemble(net, test_loader, path):
     product_to_prediction_map = {}
     cur_procuct_probs = np.array([]).reshape(0,CDISCOUNT_NUM_CLASSES)
     cur_product_id = None
-    transform_num = 3
+    transform_num = 1
 
     with open(path, "a") as file:
         file.write("_id,category_id\n")
