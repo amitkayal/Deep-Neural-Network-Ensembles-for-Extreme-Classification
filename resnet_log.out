@@ -1005,3 +1005,29 @@
    rate   iter   epoch  | valid_loss/acc | train_loss/acc | batch_loss/acc | total time | avg iter time | i j |
 ----------------------------------------------------------------------------------------------------------------
 0.0000  243.0 k   5.13  | 0.0000  0.0000 | 0.0000  0.7500 | 0.0000  0.0000 |     0 min |  0.00 s | 243000,0 
+
+--- [START 2017-12-03 05:10:50] ----------------------------------------------------------------
+
+** some experiment setting **
+	IDENTIFIER   = resnet
+	SEED         = 123456
+	PROJECT_PATH = ./project
+	out_dir      = ../
+** net setting **
+<class 'net.resnet101.ResNet101'>
+
+
+** dataset setting **
+	len(train_dataset)  = 12118359
+	len(valid_dataset)  = 252934
+	len(train_loader)   = 189349
+	len(valid_loadernum_iters)   = 3953
+	batch_size  = 64
+	iter_accum  = 4
+	batch_size*iter_accum  = 256
+	loading @ initial_checkpoint = ../checkpoint/resnet/latest.pth
+=> loaded checkpoint '../checkpoint/resnet/latest.pth' (epoch: 5.134424553687508, iter: 243050.0, best_train_acc: 0.6524409203980099, best_valid_acc: 0.0)** start training here! **
+	optimizer=<torch.optim.sgd.SGD object at 0x7fb2dde914e0>
+   rate   iter   epoch  | valid_loss/acc | train_loss/acc | batch_loss/acc | total time | avg iter time | i j |
+----------------------------------------------------------------------------------------------------------------
+0.0000  243.1 k   5.13  | 0.0000  0.0000 | 0.0000  0.7500 | 0.0000  0.0000 |     0 min |  0.00 s | 243050,0 
