@@ -99,7 +99,7 @@ def evaluate_sequential_ensemble(net, test_loader, path):
             images_list = TTA(images) # a list of image batch using different transforms
             probs_list = []
             for images in images_list:
-                images = Variable(images.type(torch.FloatTensor)).cuda
+                images = Variable(images.type(torch.FloatTensor)).cuda()
                 logits = net(images)
                 probs  = ((F.softmax(logits)).cpu().data.numpy()).astype(float)
                 probs_list.append(probs)
@@ -115,7 +115,7 @@ def evaluate_sequential_ensemble(net, test_loader, path):
                 if product_id != cur_product_id:
                     # a new product
                     print("new product: " + str(product_id))
-
+                    
                     # find winner for previous product
                     num = (end - start) * transform_num # total number of instances for current product
                     ## get probs in range [start, end)
