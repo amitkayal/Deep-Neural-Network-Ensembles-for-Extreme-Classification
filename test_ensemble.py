@@ -121,9 +121,9 @@ def evaluate_sequential_ensemble(net, test_loader, path):
                     num = (end - start) * transform_num # total number of instances for current product
                     ## get probs in range [start, end)
                     for probs in probs_list:
-                        print(probs[start:end].shape)
+                        print(len(probs[start:end]))
                         print(cur_procuct_probs.shape)
-                        np.concatenate((cur_procuct_probs, probs[start:end]), axis=0)
+                        np.concatenate((cur_procuct_probs, np.array(probs[start:end])), axis=0)
 
                     # do predictions
                     winner = ensemble_predict(cur_procuct_probs, num)
