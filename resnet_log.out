@@ -1006,6 +1006,13 @@
 ----------------------------------------------------------------------------------------------------------------
 0.0000  243.0 k   5.13  | 0.0000  0.0000 | 0.0000  0.7500 | 0.0000  0.0000 |     0 min |  0.00 s | 243000,0 
 <<<<<<< HEAD
+
+--- [START 2017-12-03 05:10:50] ----------------------------------------------------------------
+
+** some experiment setting **
+	IDENTIFIER   = resnet
+=======
+<<<<<<< HEAD
 0.0005  243.0 k   5.13  | 0.0000  0.0000 | 1.6126  0.6548 | 1.4936  0.6406 |     1 min |  1.67 s | 243005,20 
 0.0005  243.0 k   5.13  | 0.0000  0.0000 | 1.5737  0.6604 | 1.1376  0.7656 |     1 min |  1.65 s | 243010,40 
 0.0005  243.0 k   5.13  | 0.0000  0.0000 | 1.5865  0.6593 | 1.4581  0.6875 |     2 min |  1.64 s | 243015,60 
@@ -1407,6 +1414,7 @@
 --- [START 2017-12-03 03:15:53] ----------------------------------------------------------------
 
 ** some experiment setting **
+>>>>>>> 5c6b180342172c4f9d6513a7f49e4ced78f8af58
 	SEED         = 123456
 	PROJECT_PATH = ./project
 	out_dir      = ../
@@ -1423,6 +1431,13 @@
 	iter_accum  = 4
 	batch_size*iter_accum  = 256
 	loading @ initial_checkpoint = ../checkpoint/resnet/latest.pth
+<<<<<<< HEAD
+=> loaded checkpoint '../checkpoint/resnet/latest.pth' (epoch: 5.134424553687508, iter: 243050.0, best_train_acc: 0.6524409203980099, best_valid_acc: 0.0)** start training here! **
+	optimizer=<torch.optim.sgd.SGD object at 0x7fb2dde914e0>
+   rate   iter   epoch  | valid_loss/acc | train_loss/acc | batch_loss/acc | total time | avg iter time | i j |
+----------------------------------------------------------------------------------------------------------------
+0.0000  243.1 k   5.13  | 0.0000  0.0000 | 0.0000  0.7500 | 0.0000  0.0000 |     0 min |  0.00 s | 243050,0 
+=======
 => loaded checkpoint '../checkpoint/resnet/latest.pth' (epoch: 5.17350575271784, iter: 244900.0, best_train_acc: 0.694296875, best_valid_acc: 0.6776472929936306)** start training here! **
 	optimizer=<torch.optim.sgd.SGD object at 0x7fd65a36a780>
    rate   iter   epoch  | valid_loss/acc | train_loss/acc | batch_loss/acc | total time | avg iter time | i j |
@@ -1515,5 +1530,3 @@
 0.0005  245.2 k   5.18  | 1.3825  0.6836 | 1.2357  0.6891 | 1.4033  0.7344 |    18 min |  1.22 s | 245155,620 
 0.0005  245.2 k   5.18  | 1.3825  0.6836 | 1.2690  0.7047 | 2.0061  0.5000 |    19 min |  1.22 s | 245160,640 
 0.0005  245.2 k   5.18  | 1.3825  0.6836 | 1.3135  0.7002 | 1.2555  0.7344 |    19 min |  1.22 s | 245165,660 
-=======
->>>>>>> 60eda54c8f228f9be1284dca74f3dac0c66c122c
