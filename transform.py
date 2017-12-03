@@ -53,10 +53,6 @@ def pytorch_tensor_to_image_transform(tensor):
     image = cv2.cvtColor(image , cv2.COLOR_BGR2RGB)
     return image
 
-
-
-
-
 #--------------------------------------------
 def fix_crop(image, roi=[0,0,256,256]):
     x0,y0,x1,y1 = roi

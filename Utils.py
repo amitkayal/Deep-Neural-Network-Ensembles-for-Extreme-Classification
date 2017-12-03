@@ -64,31 +64,6 @@ def product_predict_average_prob(image_ids, probses):
 
 ## common functions ##
 
-def image_to_tensor_transform(image):
-    tensor = pytorch_image_to_tensor_transform(image)
-    tensor[ 0] = tensor[ 0] * (0.229 / 0.5) + (0.485 - 0.5) / 0.5
-    tensor[ 1] = tensor[ 1] * (0.224 / 0.5) + (0.456 - 0.5) / 0.5
-    tensor[ 2] = tensor[ 2] * (0.225 / 0.5) + (0.406 - 0.5) / 0.5
-    return tensor
-
-
-
-def train_augment(image):
-
-    image = random_resize(image, scale_x_limits=[0.9,1.1], scale_y_limits=[0.9,1.1], u=0.5)
-
-    # flip  random ---------
-    image = random_crop(image, size=(160,160), u=0.5)
-    image = random_horizontal_flip(image, u=0.5)
-    tensor = image_to_tensor_transform(image)
-    return tensor
-
-def valid_augment(image):
-
-    image  = fix_center_crop(image, size=(160,160))
-    tensor = image_to_tensor_transform(image)
-    return tensor
-
 def get_accuracy(probs, labels, use_cuda):
     probs = probs.cpu().data.numpy() if use_cuda else probs.data.numpy()
     labels = labels.cpu().data if use_cuda else labels.data
@@ -120,7 +95,7 @@ def save_checkpoint(optimizer, i, epoch, net, best_valid_acc, best_train_acc, tr
     }, out_dir + '/checkpoint/' + "/" + IDENTIFIER + "/" + name)
     print("=> Saved checkpoint")
 
-    print("=> Update checkpoint: " + IDENTIFIER + "/" + "/latest.pth")
+    print("=> Update checkpoint: " + IDENTIFIER + "/" + "latest.pth")
     torch.save({
         'optimizer': optimizer.state_dict(),
         'iter': i,

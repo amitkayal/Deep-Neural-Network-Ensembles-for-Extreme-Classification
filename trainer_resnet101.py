@@ -51,7 +51,7 @@ def run_training():
     iter_smooth = 50
     iter_valid  = 100 # i
     iter_log = 5 # i
-    iter_save_freq = 50 # j
+    iter_save_freq = 50 # i
     iter_save   = [0, num_iters-1] + list(range(0,num_iters,1*iter_save_freq)) # first and last iters, then every 1000 iters
 
     validation_num = 10000
@@ -122,7 +122,7 @@ def run_training():
     ## dataset ----------------------------------------
     log.write('** dataset setting **\n')
     print("=> Initing training set ...")
-    transform_train = transforms.Compose([transforms.Lambda(lambda x:train_augment(x))])
+    transform_train = transforms.Compose([transforms.Lambda(lambda x: net.train_augment(x))])
     train_dataset = CDiscountDataset(csv_dir+train_data_filename,root_dir,transform=transform_train)
     train_loader  = DataLoader(
                         train_dataset,
@@ -135,7 +135,7 @@ def run_training():
     get_gpu_stats()
 
     print("=> Initing validation set ...")
-    transform_valid = transforms.Compose([transforms.Lambda(lambda x: valid_augment(x))])
+    transform_valid = transforms.Compose([transforms.Lambda(lambda x: net.valid_augment(x))])
     valid_dataset = CDiscountDataset(csv_dir+validation_data_filename,root_dir,transform=transform_valid)
     valid_loader  = DataLoader(
                         valid_dataset,
@@ -209,9 +209,9 @@ def run_training():
     log.write('----------------------------------------------------------------------------------------------------------------\n')
 
     # Custom setting
-    start_iter = 243000
-    i = start_iter
-    start_epoch= start_iter*batch_size*iter_accum/len(train_dataset)
+    # start_iter = 243000
+    # i = start_iter
+    # start_epoch= start_iter*batch_size*iter_accum/len(train_dataset)
 
     start = timer()
     end = time.time()
