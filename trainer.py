@@ -18,7 +18,8 @@ from AverageMeter import *
 from cdimage import *
 
 # --------------------------------------------------------
-from net.resnet101 import ResNet101 as Net
+# from net.resnet101 import ResNet101 as Net
+from net.excited_inception_v3 import SEInception3 as Net
 
 use_cuda = True
 
@@ -32,7 +33,7 @@ log = Log(IDENTIFIER + "_log.out")
 
 
 # Dirs/Paths
-out_dir  = '../' # s_xx1'
+out_dir  = '../'
 csv_dir = './data/'
 root_dir = '../output/'
 train_data_filename = 'train.csv'
@@ -48,11 +49,11 @@ def run_training():
 
     #-------------------------------------------- Training settings --------------------------------------------
 
-    # initial_checkpoint = None
-    initial_checkpoint = checkpoint_dir + "latest.pth"
+    initial_checkpoint = None
+    # initial_checkpoint = checkpoint_dir + "latest.pth"
     # initial_checkpoint = '../trained_models/resnet_00243000_model.pth'
-    # pretrained_file = '../trained_models/LB=0.69565_inc3_00075000_model.pth'
-    pretrained_file = None
+    pretrained_file = '../trained_models/LB=0.69673_se-inc3_00026000_model.pth'
+    # pretrained_file = None
     skip = [] #['fc.weight', 'fc.bias']
 
     num_iters   = 1000*1000
@@ -198,10 +199,9 @@ def run_training():
         else:
             print("=> no checkpoint found at '{}'".format(initial_checkpoint))
             exit(0)
-
     elif pretrained_file is not None: # load a pretrained model and train from the beginning
         log.write('\tloading @ pretrained_file = %s\n' % pretrained_file)
-        net.load_pretrain_pytorch_file( pretrained_file, skip )
+        net.load_pretrain_pytorch_file( pretrained_file, skip)
 
 
     ## start training here! ##############################################
