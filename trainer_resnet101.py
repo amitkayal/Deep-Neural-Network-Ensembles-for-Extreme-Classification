@@ -22,7 +22,7 @@ from net.resnet101 import ResNet101 as Net
 
 use_cuda = True
 
-IDENTIFIER = "resnet"
+IDENTIFIER = "resnet_once_norm"
 SEED = 123456
 PROJECT_PATH = './project'
 CDISCOUNT_HEIGHT = 180
