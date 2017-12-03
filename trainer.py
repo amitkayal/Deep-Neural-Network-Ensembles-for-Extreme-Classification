@@ -60,7 +60,7 @@ def run_training():
 
     num_iters   = 1000*1000
     iter_smooth = 50
-    iter_valid  = 100 # i
+    iter_valid  = 1 # i
     iter_log = 5 # i
     iter_save_freq = 50 # i
     iter_save   = [0, num_iters-1] + list(range(0,num_iters,1*iter_save_freq)) # first and last iters, then every 1000 iters
@@ -216,9 +216,9 @@ def run_training():
     log.write('----------------------------------------------------------------------------------------------------------------\n')
 
     # Custom setting
-    # start_iter = 243000
-    # i = start_iter
-    # start_epoch= start_iter*batch_size*iter_accum/len(train_dataset)
+    start_iter = 158000
+    i = start_iter
+    start_epoch= start_iter*batch_size*iter_accum/len(train_dataset)
 
     start = timer()
     end = time.time()
