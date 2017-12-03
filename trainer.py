@@ -19,18 +19,20 @@ from cdimage import *
 
 # --------------------------------------------------------
 # from net.resnet101 import ResNet101 as Net
-from net.excited_inception_v3 import SEInception3 as Net
+# from net.excited_inception_v3 import SEInception3 as Net
+from net.xception import Xception as Net
 
+
+IDENTIFIER = "xception"
+
+# Not change
 use_cuda = True
-
-IDENTIFIER = "se-inc3"
 SEED = 123456
 PROJECT_PATH = './project'
 CDISCOUNT_HEIGHT = 180
 CDISCOUNT_WIDTH = 180
 CDISCOUNT_NUM_CLASSES = 5270
 log = Log(IDENTIFIER + "_log.out")
-
 
 # Dirs/Paths
 out_dir  = '../'
@@ -52,7 +54,7 @@ def run_training():
     initial_checkpoint = None
     # initial_checkpoint = checkpoint_dir + "latest.pth"
     # initial_checkpoint = '../trained_models/resnet_00243000_model.pth'
-    pretrained_file = '../trained_models/LB=0.69673_se-inc3_00026000_model.pth'
+    pretrained_file = '../trained_models/LB=0.69422_xception_00158000_model.pth'
     # pretrained_file = None
     skip = [] #['fc.weight', 'fc.bias']
 
