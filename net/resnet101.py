@@ -6,6 +6,7 @@ import torch
 import torch.nn as nn
 import torch.nn.functional as F
 import torch.utils.model_zoo as model_zoo
+from transform import *
 
 
 #https://github.com/pytorch/vision/blob/master/torchvision/models/resnet.py
@@ -186,7 +187,28 @@ class ResNet101(nn.Module):
         x = self.fc (x)
         return x #logits
 
+    def image_to_tensor_transform(self, image):
+        tensor = pytorch_image_to_tensor_transform(image)
+        tensor[0] = tensor[0] * (0.229 / 0.5) + (0.485 - 0.5) / 0.5
+        tensor[1] = tensor[1] * (0.224 / 0.5) + (0.456 - 0.5) / 0.5
+        tensor[2] = tensor[2] * (0.225 / 0.5) + (0.406 - 0.5) / 0.5
+        return tensor
 
+    def train_augment(self, image):
+
+        image = random_resize(image, scale_x_limits=[0.9, 1.1], scale_y_limits=[0.9, 1.1], u=0.5)
+
+        # flip  random ---------
+        image = random_crop(image, size=(160, 160), u=0.5)
+        image = random_horizontal_flip(image, u=0.5)
+        tensor = image_to_tensor_transform(image)
+        return tensor
+
+    def valid_augment(self, image):
+
+        image = fix_center_crop(image, size=(160, 160))
+        tensor = image_to_tensor_transform(image)
+        return tensor
 
 ########################################################################################################
 
