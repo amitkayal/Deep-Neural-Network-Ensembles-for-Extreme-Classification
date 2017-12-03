@@ -30,34 +30,6 @@ initial_checkpoint = "../checkpoint/" + IDENTIFIER + "/latest.pth"
 res_path = "./test_res/" + IDENTIFIER + "_test_TTA.res"
 validation_batch_size = 1
 
-def evaluate_average_prob(net, test_loader):
-    cnt = 0
-
-    all_image_ids = np.array([])
-    all_probs = np.array([]).reshape(0,CDISCOUNT_NUM_CLASSES)
-
-    # for iter, (images, labels, indices) in enumerate(test_loader, 0):
-    for iter, (images, image_ids) in enumerate(test_loader, 0):#remove indices for testing
-        # if cnt > 4:
-        #     break;
-
-        images = Variable(images.type(torch.FloatTensor)).cuda() if use_cuda else Variable(images.type(torch.FloatTensor))
-        image_ids = np.array(image_ids)
-
-        logits = net(images)
-        probs  = F.softmax(logits)
-        probs = probs.cpu().data.numpy() if use_cuda else probs.data.numpy()
-        probs.astype(float)
-
-        all_image_ids = np.concatenate((all_image_ids, image_ids), axis=0)
-        all_probs = np.concatenate((all_probs, probs), axis=0)
-
-        cnt = cnt + 1
-
-    product_to_prediction_map = product_predict_average_prob(all_image_ids, all_probs)
-
-    return product_to_prediction_map
-
 def ensemble_predict(cur_procuct_probs, num):
     candidates = np.argmax(cur_procuct_probs, axis=1)
     probs_means = np.mean(cur_procuct_probs, axis=0)
@@ -94,8 +66,8 @@ def evaluate_sequential_ensemble(net, test_loader, path):
 
         for iter, (images, image_ids) in enumerate(test_loader, 0):
             print("iter: ", str(cnt))
-            if cnt > 4:
-                break;
+            # if cnt > 4:
+            #     break;
 
             # images = Variable(images.type(torch.FloatTensor)).cuda() if use_cuda else Variable(images.type(torch.FloatTensor))
             image_ids = np.array(image_ids)
