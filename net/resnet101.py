@@ -201,13 +201,13 @@ class ResNet101(nn.Module):
         # flip  random ---------
         image = random_crop(image, size=(160, 160), u=0.5)
         image = random_horizontal_flip(image, u=0.5)
-        tensor = image_to_tensor_transform(image)
+        tensor = self.image_to_tensor_transform(image)
         return tensor
 
     def valid_augment(self, image):
 
         image = fix_center_crop(image, size=(160, 160))
-        tensor = image_to_tensor_transform(image)
+        tensor = self.image_to_tensor_transform(image)
         return tensor
 
 ########################################################################################################
