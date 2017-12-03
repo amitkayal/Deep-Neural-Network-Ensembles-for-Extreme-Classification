@@ -104,6 +104,7 @@ def evaluate_sequential_ensemble(net, test_loader, path):
                 logits = net(images)
                 probs  = ((F.softmax(logits)).cpu().data.numpy()).astype(float)
                 probs_list.append(probs)
+                print(probs)
 
             start = 0
             end = 0
@@ -115,7 +116,7 @@ def evaluate_sequential_ensemble(net, test_loader, path):
 
                 if product_id != cur_product_id:
                     # a new product
-                    print("new product: " + str(product_id))
+                    print("cur product: " + str(cur_product_id))
 
                     # find winner for previous product
                     num = (end - start) * transform_num # total number of instances for current product
