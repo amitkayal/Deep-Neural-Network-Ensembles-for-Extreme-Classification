@@ -104,7 +104,7 @@ def evaluate_sequential_ensemble(net, test_loader, path):
                 logits = net(images)
                 probs  = ((F.softmax(logits)).cpu().data.numpy()).astype(float)
                 probs_list.append(probs)
-                print(probs)
+                # print(probs)
 
             start = 0
             end = 0
