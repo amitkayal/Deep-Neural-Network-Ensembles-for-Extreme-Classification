@@ -18,12 +18,12 @@ from AverageMeter import *
 from cdimage import *
 
 # --------------------------------------------------------
-# from net.resnet101 import ResNet101 as Net
+from net.resnet101 import ResNet101 as Net
 # from net.excited_inception_v3 import SEInception3 as Net
-from net.xception import Xception as Net
+# from net.xception import Xception as Net
 
 
-IDENTIFIER = "xception"
+IDENTIFIER = "resnet"
 
 # Not change
 use_cuda = True
@@ -62,7 +62,7 @@ def run_training():
     iter_smooth = 50
     iter_valid  = 1200 # about 30 mins
     iter_log = 5 # i
-    iter_save_freq = 50 # i
+    iter_save_freq = 1500 # i
     iter_save   = [0, num_iters-1] + list(range(0,num_iters,1*iter_save_freq)) # first and last iters, then every 1000 iters
 
     validation_num = 10000
