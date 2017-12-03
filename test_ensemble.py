@@ -89,6 +89,7 @@ def evaluate_sequential_ensemble(net, test_loader, path):
         file.write("_id,category_id\n")
 
         for iter, (images, image_ids) in enumerate(test_loader, 0):
+            print("iter: ", str(cnt))
             if cnt > 4:
                 break;
 
@@ -122,6 +123,7 @@ def evaluate_sequential_ensemble(net, test_loader, path):
                     for probs in probs_list:
                         np.concatenate((cur_procuct_probs, np.array(probs[start:end])), axis=0)
 
+                    print(cur_procuct_probs)
                     # do predictions
                     winner = ensemble_predict(cur_procuct_probs, num)
 
