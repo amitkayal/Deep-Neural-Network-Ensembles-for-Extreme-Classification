@@ -19,6 +19,7 @@ import torch.nn as nn
 import torch.nn.functional as F
 import torch.utils.model_zoo as model_zoo
 from transform import *
+from pyinn.modules import Conv2dDepthwise
 
 #----- helper functions ------------------------------
 BN_EPS = 1e-4  #1e-4  #1e-5
