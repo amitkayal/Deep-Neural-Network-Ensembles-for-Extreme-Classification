@@ -23,7 +23,7 @@ from net.excited_inception_v3 import SEInception3 as Net
 
 use_cuda = True
 
-IDENTIFIER = "resnet"
+IDENTIFIER = "se-inc3"
 SEED = 123456
 PROJECT_PATH = './project'
 CDISCOUNT_HEIGHT = 180
