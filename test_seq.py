@@ -11,6 +11,9 @@ import operator
 
 from net.resnet101 import ResNet101 as Net
 
+
+
+
 use_cuda = False
 IDENTIFIER = "resnet"
 SEED = 123456
