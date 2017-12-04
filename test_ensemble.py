@@ -111,7 +111,6 @@ def evaluate_sequential_ensemble_val(net, loader, path):
 
             if product_id != cur_product_id:
                 # a new product
-                print(i)
                 print("------------------------- cur product: " + str(cur_product_id) + "-------------------------")
 
                 # find winner for previous product
@@ -120,7 +119,6 @@ def evaluate_sequential_ensemble_val(net, loader, path):
 
                 # do predictions
                 cur_procuct_probs = np.array(cur_procuct_probs)
-                print(cur_procuct_probs.shape)
                 winner = ensemble_predict(cur_procuct_probs, num)
 
                 if winner == cur_product_label:
