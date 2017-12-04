@@ -100,8 +100,8 @@ def evaluate_sequential_ensemble_val(net, loader, path):
         for images in images_list:
             images = Variable(images.type(torch.FloatTensor)).cuda()
             logits = net(images)
-            probs  = ((F.softmax(logits)).cpu().data.numpy()).astype(float)
-            probs_list.append(probs.reshape(-1, CDISCOUNT_NUM_CLASSES))
+            probs  = (((F.softmax(logits)).cpu().data.numpy()).astype(float)).reshape(-1, CDISCOUNT_NUM_CLASSES)
+            probs_list.append(probs)
 
         i = 0
         for image_id in image_ids:
