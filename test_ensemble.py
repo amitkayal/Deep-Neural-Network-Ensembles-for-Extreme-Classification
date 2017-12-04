@@ -77,6 +77,82 @@ def TTA(images):
 
     return images_TTA_list
 
+def evaluate_sequential_average_val(net, loader, path):
+    cur_procuct_prob = None
+    cur_product_id = None
+    cur_product_label = None
+
+    correct_product_cnt = 0
+    total_product_cnt = 0
+
+    for iter, (images, labels, image_ids) in enumerate(tqdm(loader), 0):
+        # if total_product_cnt > 10:
+        #     break
+
+        labels = labels.numpy()
+        image_ids = np.array(image_ids)
+
+        # transforms
+        images_list = TTA(images.numpy()) # a list of image batch using different transforms
+        probs_list = []
+        for images in images_list:
+            images = Variable(images.type(torch.FloatTensor)).cuda()
+            logits = net(images)
+            probs  = (((F.softmax(logits)).cpu().data.numpy()).astype(float))
+            probs_list.append(probs)
+
+        i = 0
+        for image_id in image_ids:
+            product_id = imageid_to_productid(image_id)
+
+            if cur_product_id == None:
+                cur_product_id = product_id
+                cur_product_label = labels[i]
+                cur_procuct_prob = probs[i]
+
+            if product_id != cur_product_id:
+                # a new product
+                print("------------------------- cur product: " + str(cur_product_id) + "-------------------------")
+
+                # find winner for previous product
+                num = len(cur_procuct_probs) * (transform_num + 1) # total number of instances for current product
+                print("Number of instances: ", num)
+
+                # do predictions
+                cur_procuct_probs = np.array(cur_procuct_probs)
+                winner = np.argmax(cur_procuct_probs)
+
+                if winner == cur_product_label:
+                    correct_product_cnt += 1
+                print("winner: ", str(winner))
+                print("label: ", str(cur_product_label))
+
+                total_product_cnt += 1
+
+                print("Acc: ", str(float(correct_product_cnt) / total_product_cnt))
+
+                # update
+                # start = end
+                cur_product_id = product_id
+                cur_product_label = labels[i]
+                cur_procuct_probs = probs[i]
+            else:
+                for probs in probs_list:
+                    cur_procuct_prob += cur_procuct_prob
+            i += 1
+
+    # find winner for current product
+    num = len(cur_procuct_probs) * transform_num  # total number of instances for current product
+    # do predictions
+    winner = ensemble_predict(np.array(cur_procuct_probs), num)
+
+    if winner == cur_product_label:
+        correct_product_cnt += 1
+
+    total_product_cnt += 1
+
+    print("Acc: ", str(float(correct_product_cnt) / total_product_cnt))
+
 def evaluate_sequential_ensemble_val(net, loader, path):
     cur_procuct_probs = []
     cur_product_id = None
@@ -258,6 +334,6 @@ if __name__ == '__main__':
                         num_workers = 4,
                         pin_memory  = False)
 
-    product_to_prediction_map = evaluate_sequential_ensemble_val(net, loader, res_path)
+    product_to_prediction_map = evaluate_sequential_average_val(net, loader, res_path)
 
     print('\nsucess!')
