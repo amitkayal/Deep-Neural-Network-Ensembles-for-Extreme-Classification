@@ -53,8 +53,8 @@ def run_training():
 
     #-------------------------------------------- Training settings --------------------------------------------
 
-    initial_checkpoint = None
-    initial_checkpoint = checkpoint_dir + "latest.pth"
+    # initial_checkpoint = None
+    initial_checkpoint = latest_dir + "latest.pth"
     # initial_checkpoint = '../trained_models/resnet_00243000_model.pth'
     # pretrained_file = '../trained_models/LB=0.69422_xception_00158000_model.pth'
     pretrained_file = None
@@ -245,7 +245,7 @@ def run_training():
                         (rate, i/1000, epoch, valid_loss_meter.val, valid_acc_meter.val, train_loss_meter.avg, train_acc_meter.avg, batch_loss, batch_acc,(timer() - start)/60,
                             iter_time_meter.avg, i, j))
 
-            if i in iter_save:
+            if i in iter_save and i != start_iter:
                 save_checkpoint(optimizer, i, epoch, net, best_valid_acc, best_train_acc, train_acc_meter.val, valid_acc_meter.val, checkpoint_dir, latest_dir, "%08d_model.pth"%(i))
 
             if i % iter_latest == 0 and i != start_iter:
