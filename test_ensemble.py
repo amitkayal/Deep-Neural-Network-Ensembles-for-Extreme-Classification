@@ -43,11 +43,12 @@ def ensemble_predict(cur_procuct_probs, num):
     winner = None
     for candidate in candidates:
         # Adopt criteria to abandan some instances
+        print("=> candidate: ", candidate)
+        print("=> prob_mean: ", probs_means[candidate])
         candidate_score = probs_means[candidate] * num
         abandan_cnt = 0
         for probs in cur_procuct_probs:  # iterate each product instance
-            print(candidate, " prob: ", probs[candidate])
-            print(candidate, " probs_mean: ", probs_means[candidate])
+            print("prob: ", probs[candidate])
             if probs[candidate] < probs_means[candidate] - 0.2:
                 # abandan this instance
                 candidate_score -= probs[candidate]
@@ -111,10 +112,11 @@ def evaluate_sequential_ensemble_val(net, loader, path):
 
             if product_id != cur_product_id:
                 # a new product
-                # print("cur product: " + str(cur_product_id))
+                print("------------------------- cur product: " + str(cur_product_id) + "-------------------------")
 
                 # find winner for previous product
                 num = (end - start) * (transform_num + 1) # total number of instances for current product
+                print("Number of instances: ", num)
                 ## get probs in range [start, end)
                 for probs in probs_list:
                     # print(probs)
