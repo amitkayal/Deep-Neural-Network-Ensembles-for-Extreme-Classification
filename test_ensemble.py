@@ -242,9 +242,6 @@ def evaluate_sequential_ensemble_test(net, loader, path):
         for iter, (images, image_ids) in enumerate(tqdm(loader), 0):
             image_ids = np.array(image_ids)
 
-            if iter > 10:
-                break
-
             # transforms
             images_list = TTA(images.numpy()) # a list of image batch using different transforms
             probs_list = []
@@ -300,7 +297,7 @@ def evaluate_sequential_ensemble_test(net, loader, path):
         product_to_prediction_map[cur_product_id] = winner
 
         for product_id, prediction in product_to_prediction_map.items():
-            file.write(str(product_id) + "," + str(prediction) + "\n")
+            file.write(str(product_id) + "," + str(label_to_category_id[prediction]) + "\n")
 
 def write_test_result(path, product_to_prediction_map):
     with open(path, "a") as file:
