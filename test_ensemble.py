@@ -107,10 +107,6 @@ def evaluate_sequential_average_val(net, loader, path):
             if cur_product_id == None:
                 cur_product_id = product_id
                 cur_product_label = labels[i]
-                for probs in probs_list:
-                    cur_procuct_probs += probs[i]
-                    cnt += 1
-                continue
 
             if product_id != cur_product_id:
                 # a new product
@@ -148,9 +144,9 @@ def evaluate_sequential_average_val(net, loader, path):
             i += 1
 
     # find winner for current product
-    num = len(cur_procuct_probs) * transform_num  # total number of instances for current product
     # do predictions
-    winner = ensemble_predict(np.array(cur_procuct_probs), num)
+    cur_procuct_probs = np.array(cur_procuct_probs)
+    winner = np.argmax(cur_procuct_probs)
 
     if winner == cur_product_label:
         correct_product_cnt += 1
@@ -216,10 +212,10 @@ def evaluate_sequential_ensemble_val(net, loader, path):
                 # start = end
                 cur_product_id = product_id
                 cur_product_label = labels[i]
-                cur_procuct_probs = [probs[i]]
-            else:
-                for probs in probs_list:
-                    cur_procuct_probs.append(probs[i])
+                cur_procuct_probs = []
+
+            for probs in probs_list:
+                cur_procuct_probs.append(probs[i])
             i += 1
 
     # find winner for current product
@@ -331,7 +327,7 @@ if __name__ == '__main__':
         print("=> no checkpoint found at '{}'".format(initial_checkpoint))
         exit(0)
 
-    dataset = CDiscountValidDataset(csv_dir + validation_data_filename, root_dir)
+    dataset = CDiscountValidDataset(csv_dir + test_data_filename, root_dir)
     loader  = DataLoader(
                         dataset,
                         sampler=SequentialSampler(dataset),
