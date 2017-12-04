@@ -119,7 +119,7 @@ def evaluate_sequential_ensemble_val(net, loader, path):
                 print("------------------------- cur product: " + str(cur_product_id) + "-------------------------")
 
                 # find winner for previous product
-                num = (len(cur_procuct_probs)) * (transform_num + 1) # total number of instances for current product
+                num = len(cur_procuct_probs) * (transform_num + 1) # total number of instances for current product
                 print("Number of instances: ", num)
                 ## get probs in range [start, end)
                 # for probs in probs_list:
