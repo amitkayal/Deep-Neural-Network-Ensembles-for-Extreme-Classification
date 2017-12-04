@@ -83,6 +83,7 @@ class CDiscountTestDataset(Dataset):
             #print("item before transform")
             img = self.transform(img)
             #print("item after transform")
+        print(type(image))
         return img,image_id
 
 
