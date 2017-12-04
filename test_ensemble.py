@@ -59,7 +59,6 @@ def TTA(images):
     for transform in TTA_list:
         cur_images = []
         for image in images:
-            print(image)
             cur_images.append(pytorch_image_to_tensor_transform(transform(image)))
 
         images_TTA_list.append(torch.stack(cur_images))
