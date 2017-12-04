@@ -33,7 +33,7 @@ test_data_filename = 'test.csv'
 validation_data_filename = 'validation_small.csv'
 
 initial_checkpoint = "./latest/" + IDENTIFIER + "/latest.pth"
-pretrained_file = "./trained_models/resnet_00243000_model.pth"
+pretrained_file = "../trained_models/resnet_00243000_model.pth"
 res_path = "./test_res/" + IDENTIFIER + "_val_TTA.res"
 validation_batch_size = 64
 
