@@ -15,8 +15,8 @@ import label_category_transform
 
 from net.resnet101 import ResNet101 as Net
 
-TTA_list = [random_shift_scale_rotate, random_crop]
-transform_num = 2
+TTA_list = [fix_center_crop, random_shift_scale_rotate, random_crop]
+transform_num = len(TTA_list)
 
 use_cuda = True
 IDENTIFIER = "resnet"
@@ -68,17 +68,9 @@ def ensemble_predict(cur_procuct_probs, num):
 def TTA(images):
     images_TTA_list = []
 
-    i = 0
-    cur_images = []
-    center_cropped_images = []
-    for image in images:
-        center_cropped_images.append(fix_center_crop(image, size=(160, 160)))
-        cur_images.append(pytorch_image_to_tensor_transform(center_cropped_images[i]))
-        i += 1
-
     for transform in TTA_list:
         cur_images = []
-        for image in center_cropped_images:
+        for image in images:
             cur_images.append(pytorch_image_to_tensor_transform(transform(image)))
 
         images_TTA_list.append(torch.stack(cur_images))
