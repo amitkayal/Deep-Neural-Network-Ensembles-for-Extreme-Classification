@@ -30,7 +30,7 @@ test_data_filename = 'test.csv'
 validation_data_filename = 'validation.csv'
 
 initial_checkpoint = "../checkpoint/" + IDENTIFIER + "/latest.pth"
-res_path = "./test_res/" + IDENTIFIER + "_test_TTA.res"
+res_path = "./test_res/" + IDENTIFIER + "_val_TTA.res"
 validation_batch_size = 64
 
 def ensemble_predict(cur_procuct_probs, num):
@@ -168,7 +168,7 @@ if __name__ == '__main__':
         print("=> no checkpoint found at '{}'".format(initial_checkpoint))
         exit(0)
 
-    test_dataset = CDiscountTestDataset(csv_dir + test_data_filename, root_dir)
+    test_dataset = CDiscountTestDataset(csv_dir + validation_data_filename, root_dir)
     test_loader  = DataLoader(
                         test_dataset,
                         sampler=SequentialSampler(test_dataset),
