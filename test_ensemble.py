@@ -144,6 +144,8 @@ def evaluate_sequential_ensemble_val(net, loader, path):
                 cur_procuct_probs = probs[i]
             else:
                 for probs in probs_list:
+                    print(probs[i])
+                    print(probs[i].shape)
                     cur_procuct_probs.append(probs[i])
 
             i += 1
