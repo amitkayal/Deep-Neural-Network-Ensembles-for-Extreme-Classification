@@ -77,6 +77,7 @@ def evaluate_sequential_ensemble(net, test_loader, path):
         file.write("_id,category_id\n")
 
         for iter, (images, image_ids) in enumerate(test_loader, 0):
+            print("xx: ", type(images))
             print("iter: ", str(cnt))
             # if cnt > 4:
             #     break;
