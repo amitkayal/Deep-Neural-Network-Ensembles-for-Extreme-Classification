@@ -140,17 +140,17 @@ def evaluate_sequential_ensemble_val(net, loader, path):
                     cur_procuct_probs.append(probs[i])
             i += 1
 
-        # find winner for current product
-        num = len(cur_procuct_probs) * transform_num  # total number of instances for current product
-        # do predictions
-        winner = ensemble_predict(np.array(cur_procuct_probs), num)
+    # find winner for current product
+    num = len(cur_procuct_probs) * transform_num  # total number of instances for current product
+    # do predictions
+    winner = ensemble_predict(np.array(cur_procuct_probs), num)
 
-        if winner == cur_product_label:
-            correct_product_cnt += 1
+    if winner == cur_product_label:
+        correct_product_cnt += 1
 
-        total_product_cnt += 1
+    total_product_cnt += 1
 
-        print("Acc: ", str(float(correct_product_cnt) / total_product_cnt))
+    print("Acc: ", str(float(correct_product_cnt) / total_product_cnt))
 
 def evaluate_sequential_ensemble(net, loader, path):
     product_to_prediction_map = {}
