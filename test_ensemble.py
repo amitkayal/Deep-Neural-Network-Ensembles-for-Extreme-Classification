@@ -34,7 +34,7 @@ validation_data_filename = 'validation_small.csv'
 
 initial_checkpoint = "./latest/" + IDENTIFIER + "/latest.pth"
 # initial_checkpoint = "../trained_models/resnet_00243000_model.pth"
-res_path = "./test_res/" + IDENTIFIER + "_val_TTA.res"
+res_path = "./test_res/" + IDENTIFIER + "_test_res.res"
 validation_batch_size = 64
 
 def ensemble_predict(cur_procuct_probs, num):
@@ -215,7 +215,7 @@ def evaluate_sequential_ensemble_val(net, loader, path):
                 cur_procuct_probs = []
 
             for probs in probs_list:
-                cur_procuct_probs.append(probs[i])
+                np.concatenate((cur_procuct_probs, probs[start:end]), axis=0)
 
             i += 1
 
