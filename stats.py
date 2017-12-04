@@ -46,10 +46,10 @@ nums = num_map.values()
 stats.describe(nums)
 
 ## split into train and validation
-val_num_2000 = 200 # for those classes with images [2000, +)
-val_r_1000 = 0.05 # for those classes with images [1000, 2000)
+val_num_2000 = 100 # for those classes with images [2000, +)
+val_r_1000 = 0.03 # for those classes with images [1000, 2000)
 val_r_100 = 0.02 # for those classes with images [100, 1000)
-val_num_0 = 2 # for those classes with images [0, 100)
+val_num_0 = 3 # for those classes with images [0, 100)
 
 val_rows = {}
 train_rows = {}
@@ -87,11 +87,11 @@ df = pd.DataFrame.from_dict(val_rows, orient="index")
 df.index.name = "index"
 df.columns = columns
 df.sort_index(inplace=True)
-df.to_csv("./data/validation.csv")
+df.to_csv("./data/validation_small.csv")
 
-# 12118359
-df = pd.DataFrame.from_diwct(train_rows, orient="index")
-df.index.name = "index"
-df.columns = columns
-df.sort_index(inplace=True)
-df.to_csv("./data/train.csv")
+# # 12118359
+# df = pd.DataFrame.from_diwct(train_rows, orient="index")
+# df.index.name = "index"
+# df.columns = columns
+# df.sort_index(inplace=True)
+# df.to_csv("./data/train.csv")
