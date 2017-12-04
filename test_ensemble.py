@@ -9,6 +9,7 @@ from Utils import *
 from cdimage import *
 from torch.utils.data.sampler import RandomSampler
 import operator
+from tqdm import tqdm
 # --------------------------------------------------------
 
 from net.resnet101 import ResNet101 as Net
@@ -75,7 +76,7 @@ def evaluate_sequential_ensemble(net, test_loader, path):
     with open(path, "a") as file:
         file.write("_id,category_id\n")
 
-        for iter, (images, image_ids) in enumerate(test_loader, 0):
+        for iter, (images, image_ids) in tqdm(enumerate(test_loader, 0)):
             print("iter: ", str(cnt))
             # if cnt > 4:
             #     break;
@@ -103,7 +104,7 @@ def evaluate_sequential_ensemble(net, test_loader, path):
 
                 if product_id != cur_product_id:
                     # a new product
-                    print("cur product: " + str(cur_product_id))
+                    # print("cur product: " + str(cur_product_id))
 
                     # find winner for previous product
                     num = (end - start) * transform_num # total number of instances for current product
@@ -112,10 +113,9 @@ def evaluate_sequential_ensemble(net, test_loader, path):
                         # print(probs)
                         cur_procuct_probs = np.concatenate((cur_procuct_probs, np.array(probs[start:end])), axis=0)
 
-                    print(cur_procuct_probs)
                     # do predictions
                     winner = ensemble_predict(cur_procuct_probs, num)
-                    print("winner: ", str(winner))
+                    # print("winner: ", str(winner))
 
                     # save winner
                     product_to_prediction_map[cur_product_id] = winner
