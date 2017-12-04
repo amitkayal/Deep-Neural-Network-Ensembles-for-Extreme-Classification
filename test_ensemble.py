@@ -32,8 +32,8 @@ root_dir = '../output/'
 test_data_filename = 'test.csv'
 validation_data_filename = 'validation_small.csv'
 
-initial_checkpoint = "./latest/" + IDENTIFIER + "/latest.pth"
-pretrained_file = "../trained_models/resnet_00243000_model.pth"
+# initial_checkpoint = "./latest/" + IDENTIFIER + "/latest.pth"
+initial_checkpoint = "../trained_models/resnet_00243000_model.pth"
 res_path = "./test_res/" + IDENTIFIER + "_val_TTA.res"
 validation_batch_size = 64
 
@@ -327,7 +327,7 @@ if __name__ == '__main__':
         # net.load_state_dict(checkpoint['state_dict'])  # load model weights from the checkpoint
 
         # load pretrained model
-        net.load_pretrain_file(pretrained_file, [])
+        net.load_pretrain_file(initial_checkpoint, [])
 
         print("=> loaded checkpoint '{}'".format(initial_checkpoint))
     else:
