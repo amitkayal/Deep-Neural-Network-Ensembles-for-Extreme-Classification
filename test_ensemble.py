@@ -77,7 +77,6 @@ def evaluate_sequential_ensemble(net, test_loader, path):
         file.write("_id,category_id\n")
 
         for iter, (images, image_ids) in enumerate(test_loader, 0):
-            print("xx: ", type(images))
             print("iter: ", str(cnt))
             # if cnt > 4:
             #     break;
@@ -86,7 +85,7 @@ def evaluate_sequential_ensemble(net, test_loader, path):
             image_ids = np.array(image_ids)
 
             # transforms
-            images_list = TTA(images) # a list of image batch using different transforms
+            images_list = TTA(images.numpy()) # a list of image batch using different transforms
             probs_list = []
             for images in images_list:
                 images = Variable(images.type(torch.FloatTensor)).cuda()

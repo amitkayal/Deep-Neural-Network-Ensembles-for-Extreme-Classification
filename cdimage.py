@@ -75,15 +75,10 @@ class CDiscountTestDataset(Dataset):
         return len(self.image_names)
 
     def __getitem__(self, idx):
-        #print("get item")
         img = cv2.imread(self.root_dir + 'test/'+ self.image_names[idx])
-        #plt.imshow(img)
         image_id = self.image_id[idx]
         if self.transform is not None:
-            #print("item before transform")
             img = self.transform(img)
-            #print("item after transform")
-        print(type(img))
         return img,image_id
 
 
