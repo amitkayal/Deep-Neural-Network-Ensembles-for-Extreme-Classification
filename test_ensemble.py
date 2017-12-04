@@ -31,7 +31,7 @@ validation_data_filename = 'validation.csv'
 
 initial_checkpoint = "../checkpoint/" + IDENTIFIER + "/latest.pth"
 res_path = "./test_res/" + IDENTIFIER + "_test_TTA.res"
-validation_batch_size = 50
+validation_batch_size = 64
 
 def ensemble_predict(cur_procuct_probs, num):
     candidates = np.argmax(cur_procuct_probs, axis=1)
