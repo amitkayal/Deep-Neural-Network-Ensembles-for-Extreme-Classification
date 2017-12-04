@@ -168,7 +168,7 @@ if __name__ == '__main__':
         print("=> no checkpoint found at '{}'".format(initial_checkpoint))
         exit(0)
 
-    test_dataset = CDiscountTestDataset(csv_dir + test_data_filename, root_dir)
+    test_dataset = CDiscountDataset(csv_dir + validation_data_filename, root_dir)
     test_loader  = DataLoader(
                         test_dataset,
                         sampler=SequentialSampler(test_dataset),
