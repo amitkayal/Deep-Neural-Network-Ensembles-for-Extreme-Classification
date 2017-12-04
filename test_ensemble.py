@@ -75,10 +75,81 @@ def evaluate_sequential_ensemble(net, loader, path):
     with open(path, "a") as file:
         file.write("_id,category_id\n")
 
+        for iter, (images, labels, image_ids) in enumerate(tqdm(loader), 0):
+            labels = labels.numpy()
+            image_ids = image_ids.numpy()
+
+            # transforms
+            images_list = TTA(images.numpy()) # a list of image batch using different transforms
+            probs_list = []
+            for images in images_list:
+                images = Variable(images.type(torch.FloatTensor)).cuda()
+                logits = net(images)
+                probs  = ((F.softmax(logits)).cpu().data.numpy()).astype(float)
+                probs_list.append(probs)
+                # print(probs)
+
+            start = 0
+            end = 0
+            for image_id in image_ids:
+                product_id = imageid_to_productid(image_id)
+
+                if cur_product_id == None:
+                    cur_product_id = product_id
+
+                if product_id != cur_product_id:
+                    # a new product
+                    # print("cur product: " + str(cur_product_id))
+
+                    # find winner for previous product
+                    num = (end - start) * transform_num # total number of instances for current product
+                    ## get probs in range [start, end)
+                    for probs in probs_list:
+                        # print(probs)
+                        cur_procuct_probs = np.concatenate((cur_procuct_probs, np.array(probs[start:end])), axis=0)
+
+                    # do predictions
+                    winner = ensemble_predict(cur_procuct_probs, num)
+                    # print("winner: ", str(winner))
+
+                    # save winner
+                    product_to_prediction_map[cur_product_id] = winner
+
+                    # update
+                    start = end
+                    cur_product_id = product_id
+                    cur_procuct_probs = np.array([]).reshape(0,CDISCOUNT_NUM_CLASSES)
+
+                end += 1
+
+            np.concatenate((cur_procuct_probs, np.array(probs[start:end])), axis=0)
+
+        # find winner for current product
+        num = (end - start) * transform_num  # total number of instances for current product
+        ## get probs in range [start, end)
+        for probs in probs_list:
+            np.concatenate((cur_procuct_probs, probs[start:end]), axis=0)
+
+        # do predictions
+        winner = ensemble_predict(cur_procuct_probs, num)
+
+        # save winner
+        product_to_prediction_map[cur_product_id] = winner
+
+        for product_id, prediction in product_to_prediction_map.items():
+            file.write(str(product_id) + "," + str(prediction) + "\n")
+
+def evaluate_sequential_ensemble_val(net, loader, path):
+    product_to_prediction_map = {}
+    cur_procuct_probs = np.array([]).reshape(0,CDISCOUNT_NUM_CLASSES)
+    cur_product_id = None
+    transform_num = 1
+
+    with open(path, "a") as file:
+        file.write("_id,category_id\n")
+
         for iter, (images, image_ids) in enumerate(tqdm(loader), 0):
             image_ids = np.array(image_ids)
-            print(image_ids)
-            print(image_ids.shape)
 
             # transforms
             images_list = TTA(images.numpy()) # a list of image batch using different transforms
@@ -175,6 +246,6 @@ if __name__ == '__main__':
                         num_workers = 4,
                         pin_memory  = False)
 
-    product_to_prediction_map = evaluate_sequential_ensemble(net, loader, res_path)
+    product_to_prediction_map = evaluate_sequential_ensemble_val(net, loader, res_path)
 
     print('\nsucess!')
