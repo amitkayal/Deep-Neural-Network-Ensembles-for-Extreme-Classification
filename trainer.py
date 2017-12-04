@@ -18,12 +18,12 @@ from AverageMeter import *
 from cdimage import *
 
 # --------------------------------------------------------
-# from net.resnet101 import ResNet101 as Net
+from net.resnet101 import ResNet101 as Net
 # from net.excited_inception_v3 import SEInception3 as Net
-from net.xception import Xception as Net
+# from net.xception import Xception as Net
 
 
-IDENTIFIER = "xception"
+IDENTIFIER = "resnet"
 
 # Not change
 use_cuda = True
