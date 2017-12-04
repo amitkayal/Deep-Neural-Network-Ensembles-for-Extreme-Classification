@@ -54,15 +54,15 @@ def ensemble_predict(cur_procuct_probs, num):
     return winner
 
 def TTA(images):
-    images_TTA_list = []
+    images_TTA_list = None
 
     for transform in TTA_list:
-        cur_images = []
+        cur_images = None
         for image in images:
             print(image)
             cur_images.append(pytorch_image_to_tensor_transform(transform(image)))
 
-        images_TTA_list.append(torch.FloatTensor(cur_images))
+        images_TTA_list.append(torch.stack(cur_images))
 
     return images_TTA_list
 
