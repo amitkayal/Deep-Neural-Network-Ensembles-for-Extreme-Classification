@@ -147,7 +147,7 @@ def evaluate_sequential_ensemble_val(net, loader, path):
                 cur_product_label = labels[i]
                 cur_procuct_probs = []
             else:
-                cur_procuct_probs = cur_procuct_probs.append(probs[i])
+                cur_procuct_probs.append(probs[i])
 
             # end += 1
             i += 1
