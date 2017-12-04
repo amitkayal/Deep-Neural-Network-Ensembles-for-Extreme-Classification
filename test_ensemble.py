@@ -66,7 +66,7 @@ def TTA(images):
 
     return images_TTA_list
 
-def evaluate_sequential_ensemble(net, loader, path):
+def evaluate_sequential_ensemble_val(net, loader, path):
     product_to_prediction_map = {}
     cur_procuct_probs = np.array([]).reshape(0,CDISCOUNT_NUM_CLASSES)
     cur_product_id = None
@@ -139,7 +139,7 @@ def evaluate_sequential_ensemble(net, loader, path):
         for product_id, prediction in product_to_prediction_map.items():
             file.write(str(product_id) + "," + str(prediction) + "\n")
 
-def evaluate_sequential_ensemble_val(net, loader, path):
+def evaluate_sequential_ensemble(net, loader, path):
     product_to_prediction_map = {}
     cur_procuct_probs = np.array([]).reshape(0,CDISCOUNT_NUM_CLASSES)
     cur_product_id = None
