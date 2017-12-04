@@ -78,7 +78,6 @@ def evaluate_sequential_ensemble(net, loader, path):
         for iter, (images, labels, image_ids) in enumerate(tqdm(loader), 0):
             labels = labels.numpy()
             image_ids = image_ids.numpy()
-            print(image_ids)
 
             # transforms
             images_list = TTA(images.numpy()) # a list of image batch using different transforms
@@ -238,7 +237,7 @@ if __name__ == '__main__':
         print("=> no checkpoint found at '{}'".format(initial_checkpoint))
         exit(0)
 
-    dataset = CDiscountDataset(csv_dir + validation_data_filename, root_dir)
+    dataset = CDiscountValidDataset(csv_dir + validation_data_filename, root_dir)
     loader  = DataLoader(
                         dataset,
                         sampler=SequentialSampler(dataset),
