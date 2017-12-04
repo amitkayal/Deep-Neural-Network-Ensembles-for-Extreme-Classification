@@ -46,10 +46,10 @@ nums = num_map.values()
 stats.describe(nums)
 
 ## split into train and validation
-val_num_2000 = 100 # for those classes with images [2000, +)
-val_r_1000 = 0.03 # for those classes with images [1000, 2000)
+val_num_2000 = 200 # for those classes with images [2000, +)
+val_r_1000 = 0.05 # for those classes with images [1000, 2000)
 val_r_100 = 0.02 # for those classes with images [100, 1000)
-val_num_0 = 3 # for those classes with images [0, 100)
+val_num_0 = 2 # for those classes with images [0, 100)
 
 val_rows = {}
 train_rows = {}
@@ -95,3 +95,47 @@ df.to_csv("./data/validation_small.csv")
 # df.columns = columns
 # df.sort_index(inplace=True)
 # df.to_csv("./data/train.csv")
+
+## split into train and validation
+val_num_2000 = 100 # for those classes with images [2000, +)
+val_r_1000 = 0.03 # for those classes with images [1000, 2000)
+val_r_100 = 0.02 # for those classes with images [100, 1000)
+val_num_0 = 3 # for those classes with images [0, 100)
+
+val_rows = {}
+train_rows = {}
+val_cnt = 0
+train_cnt = 0
+for cate_id, images in tqdm(map.items()):
+    val_images = []
+    train_images = []
+    split = 0
+    if num_map[cate_id] >= 2000:
+        split = val_num_2000
+    elif num_map[cate_id] >= 1000:
+        split = int(num_map[cate_id] * val_r_1000)
+    elif num_map[cate_id] >= 100:
+        split = int(num_map[cate_id] * val_r_100)
+    else:
+        split = val_num_0
+
+    val_images = images[0:split]
+    train_images = images[split:]
+
+    for val_img in val_images:
+        val_row = [val_img, cate_id]
+        val_rows[val_cnt] = val_row
+        val_cnt = val_cnt + 1
+
+    for train_img in train_images:
+        train_row = [train_img, cate_id]
+        train_rows[train_cnt] = train_row
+        train_cnt = train_cnt + 1
+
+# 141940
+columns = ["image_id", "category_id"]
+df = pd.DataFrame.from_dict(val_rows, orient="index")
+df.index.name = "index"
+df.columns = columns
+df.sort_index(inplace=True)
+df.to_csv("./data/validation_small.csv")
