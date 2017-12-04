@@ -78,7 +78,7 @@ def TTA(images):
     return images_TTA_list
 
 def evaluate_sequential_average_val(net, loader, path):
-    cur_procuct_probs = None
+    cur_procuct_probs = np.zeros((1, CDISCOUNT_NUM_CLASSES))
     cur_product_id = None
     cur_product_label = None
 
@@ -109,7 +109,9 @@ def evaluate_sequential_average_val(net, loader, path):
             if cur_product_id == None:
                 cur_product_id = product_id
                 cur_product_label = labels[i]
-                cur_procuct_probs = probs[i]
+                for probs in probs_list:
+                    cur_procuct_probs += probs[i]
+                    cnt += 1
 
             if product_id != cur_product_id:
                 # a new product
@@ -136,7 +138,9 @@ def evaluate_sequential_average_val(net, loader, path):
                 # start = end
                 cur_product_id = product_id
                 cur_product_label = labels[i]
-                cur_procuct_probs = probs[i]
+                for probs in probs_list:
+                    cur_procuct_probs += probs[i]
+                    cnt += 1
                 cnt = 1
             else:
                 for probs in probs_list:
