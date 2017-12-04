@@ -36,7 +36,7 @@ res_path = "./test_res/" + IDENTIFIER + "_val_TTA.res"
 validation_batch_size = 64
 
 def ensemble_predict(cur_procuct_probs, num):
-    candidates = np.argmax(cur_procuct_probs, axis=1)
+    candidates = list(set(np.argmax(cur_procuct_probs, axis=1))) # remove dups
     print("candidates: ", candidates)
     probs_means = np.mean(cur_procuct_probs, axis=0)
     winner_score = 0.0
@@ -96,6 +96,7 @@ def evaluate_sequential_ensemble_val(net, loader, path):
             images = Variable(images.type(torch.FloatTensor)).cuda()
             logits = net(images)
             probs  = ((F.softmax(logits)).cpu().data.numpy()).astype(float)
+            print("sum: ", sum(probs))
             probs_list.append(probs)
             # print(probs)
 
