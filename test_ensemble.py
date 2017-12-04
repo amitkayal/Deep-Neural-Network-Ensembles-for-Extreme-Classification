@@ -37,6 +37,9 @@ validation_batch_size = 64
 
 def ensemble_predict(cur_procuct_probs, num):
     candidates = list(set(np.argmax(cur_procuct_probs, axis=1))) # remove dups
+    if len(candidates) == 1:
+        return candidates[0]
+
     print("candidates: ", candidates)
     probs_means = np.mean(cur_procuct_probs, axis=0)
     winner_score = 0.0
@@ -76,7 +79,8 @@ def TTA(images):
 
 def evaluate_sequential_ensemble_val(net, loader, path):
     product_to_prediction_map = {}
-    cur_procuct_probs = np.array([]).reshape(0,CDISCOUNT_NUM_CLASSES)
+    # cur_procuct_probs = np.array([]).reshape(0,CDISCOUNT_NUM_CLASSES)
+    cur_procuct_probs = []
     cur_product_id = None
     cur_product_label = None
 
@@ -100,8 +104,8 @@ def evaluate_sequential_ensemble_val(net, loader, path):
             probs_list.append(probs)
             # print(probs)
 
-        start = 0
-        end = 0
+        # start = 0
+        # end = 0
         i = 0
         for image_id in image_ids:
             product_id = imageid_to_productid(image_id)
@@ -115,15 +119,15 @@ def evaluate_sequential_ensemble_val(net, loader, path):
                 print("------------------------- cur product: " + str(cur_product_id) + "-------------------------")
 
                 # find winner for previous product
-                num = (end - start) * (transform_num + 1) # total number of instances for current product
+                num = (len(cur_procuct_probs)) * (transform_num + 1) # total number of instances for current product
                 print("Number of instances: ", num)
                 ## get probs in range [start, end)
-                for probs in probs_list:
-                    # print(probs)
-                    cur_procuct_probs = np.concatenate((cur_procuct_probs, np.array(probs[start:end])), axis=0)
+                # for probs in probs_list:
+                #     # print(probs)
+                #     cur_procuct_probs = np.concatenate((cur_procuct_probs, np.array(probs[start:end])), axis=0)
 
                 # do predictions
-                winner = ensemble_predict(cur_procuct_probs, num)
+                winner = ensemble_predict(np.array(cur_procuct_probs), num)
 
                 if winner == cur_product_label:
                     correct_product_cnt += 1
@@ -138,24 +142,26 @@ def evaluate_sequential_ensemble_val(net, loader, path):
                 print("Acc: ", str(float(correct_product_cnt) / total_product_cnt))
 
                 # update
-                start = end
+                # start = end
                 cur_product_id = product_id
                 cur_product_label = labels[i]
-                cur_procuct_probs = np.array([]).reshape(0,CDISCOUNT_NUM_CLASSES)
+                cur_procuct_probs = []
+            else:
+                cur_procuct_probs = cur_procuct_probs.append(probs[i])
 
-            end += 1
+            # end += 1
             i += 1
 
-        np.concatenate((cur_procuct_probs, np.array(probs[start:end])), axis=0)
+        # np.concatenate((cur_procuct_probs, np.array(probs[start:end])), axis=0)
 
         # find winner for current product
-        num = (end - start) * transform_num  # total number of instances for current product
-        ## get probs in range [start, end)
-        for probs in probs_list:
-            np.concatenate((cur_procuct_probs, probs[start:end]), axis=0)
+        num = len(cur_procuct_probs) * transform_num  # total number of instances for current product
+        # ## get probs in range [start, end)
+        # for probs in probs_list:
+        #     np.concatenate((cur_procuct_probs, probs[start:end]), axis=0)
 
         # do predictions
-        winner = ensemble_predict(cur_procuct_probs, num)
+        winner = ensemble_predict(np.array(cur_procuct_probs), num)
 
         if winner == cur_product_label:
             correct_product_cnt += 1
