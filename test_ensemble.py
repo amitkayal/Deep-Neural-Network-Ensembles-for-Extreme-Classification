@@ -75,9 +75,10 @@ def evaluate_sequential_ensemble(net, loader, path):
     with open(path, "a") as file:
         file.write("_id,category_id\n")
 
-        for iter, (images, image_ids) in enumerate(loader, 0):
+        for iter, (images, image_ids) in enumerate(tqdm(loader), 0):
             print(image_ids)
             image_ids = np.array(image_ids)
+            print(image_ids.shape)
 
             # transforms
             images_list = TTA(images.numpy()) # a list of image batch using different transforms
