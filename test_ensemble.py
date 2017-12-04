@@ -62,7 +62,7 @@ def TTA(images):
             print(image)
             cur_images.append(pytorch_image_to_tensor_transform(transform(image)))
 
-        images_TTA_list.append(cur_images)
+        images_TTA_list.append(torch.FloatTensor(cur_images))
 
     return images_TTA_list
 
