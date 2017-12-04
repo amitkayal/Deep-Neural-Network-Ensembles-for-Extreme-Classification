@@ -78,8 +78,8 @@ def evaluate_sequential_ensemble_val(net, loader, path):
     total_product_cnt = 0
 
     for iter, (images, labels, image_ids) in enumerate(tqdm(loader), 0):
-        if total_product_cnt > 10:
-            break
+        # if total_product_cnt > 10:
+        #     break
 
         labels = labels.numpy()
         image_ids = np.array(image_ids)
@@ -117,7 +117,6 @@ def evaluate_sequential_ensemble_val(net, loader, path):
 
                 # do predictions
                 winner = ensemble_predict(cur_procuct_probs, num)
-                winner = label_to_category_id[winner]
 
                 if winner == cur_product_label:
                     correct_product_cnt += 1
@@ -128,6 +127,8 @@ def evaluate_sequential_ensemble_val(net, loader, path):
 
                 # save winner
                 product_to_prediction_map[cur_product_id] = winner
+
+                print("Acc: ", str(float(correct_product_cnt) / total_product_cnt))
 
                 # update
                 start = end
