@@ -327,7 +327,7 @@ if __name__ == '__main__':
         # net.load_state_dict(checkpoint['state_dict'])  # load model weights from the checkpoint
 
         # load pretrained model
-        net.load_pretrain_file(initial_checkpoint, [])
+        net.load_state_dict(torch.load(initial_checkpoint, map_location=lambda storage, loc: storage))
 
         print("=> loaded checkpoint '{}'".format(initial_checkpoint))
     else:
