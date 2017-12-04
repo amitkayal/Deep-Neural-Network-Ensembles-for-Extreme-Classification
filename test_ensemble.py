@@ -77,7 +77,7 @@ def evaluate_sequential_ensemble_val(net, loader, path):
 
         for iter, (images, labels, image_ids) in enumerate(tqdm(loader), 0):
             labels = labels.numpy()
-            image_ids = image_ids.numpy()
+            image_ids = np.array(image_ids)
 
             # transforms
             images_list = TTA(images.numpy()) # a list of image batch using different transforms
