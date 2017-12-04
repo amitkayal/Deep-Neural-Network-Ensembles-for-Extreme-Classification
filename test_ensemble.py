@@ -10,6 +10,7 @@ from cdimage import *
 from torch.utils.data.sampler import RandomSampler
 import operator
 from tqdm import tqdm
+import label_category_transform
 # --------------------------------------------------------
 
 from net.resnet101 import ResNet101 as Net
@@ -116,11 +117,10 @@ def evaluate_sequential_ensemble_val(net, loader, path):
 
                 # do predictions
                 winner = ensemble_predict(cur_procuct_probs, num)
+                winner = label_to_category_id[winner]
 
                 if winner == cur_product_label:
                     correct_product_cnt += 1
-                print("winner: ", str(winner))
-                print("label: ", str(cur_product_label))
 
                 total_product_cnt += 1
 
