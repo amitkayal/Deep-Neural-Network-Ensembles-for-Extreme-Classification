@@ -68,6 +68,13 @@ def ensemble_predict(cur_procuct_probs, num):
 def TTA(images):
     images_TTA_list = []
 
+    i = 0
+    cur_images = []
+    for image in images:
+        images[i] = fix_center_crop(image, size=(160, 160))
+        cur_images.append(pytorch_image_to_tensor_transform(images[i]))
+        i += 1
+
     for transform in TTA_list:
         cur_images = []
         for image in images:
@@ -137,7 +144,7 @@ def evaluate_sequential_average_val(net, loader, path):
                 cur_product_id = product_id
                 cur_product_label = labels[i]
                 cur_procuct_probs = probs[i]
-                cnt = 0
+                cnt = 1
             else:
                 for probs in probs_list:
                     cur_procuct_probs += probs[i]
