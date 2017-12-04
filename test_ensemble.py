@@ -102,10 +102,7 @@ def evaluate_sequential_ensemble_val(net, loader, path):
             logits = net(images)
             probs  = ((F.softmax(logits)).cpu().data.numpy()).astype(float)
             probs_list.append(probs)
-            # print(probs)
 
-        # start = 0
-        # end = 0
         i = 0
         for image_id in image_ids:
             product_id = imageid_to_productid(image_id)
@@ -121,12 +118,9 @@ def evaluate_sequential_ensemble_val(net, loader, path):
                 # find winner for previous product
                 num = len(cur_procuct_probs) * (transform_num + 1) # total number of instances for current product
                 print("Number of instances: ", num)
-                ## get probs in range [start, end)
-                # for probs in probs_list:
-                #     # print(probs)
-                #     cur_procuct_probs = np.concatenate((cur_procuct_probs, np.array(probs[start:end])), axis=0)
 
                 # do predictions
+                print(cur_procuct_probs)
                 winner = ensemble_predict(np.array(cur_procuct_probs), num)
 
                 if winner == cur_product_label:
@@ -149,18 +143,10 @@ def evaluate_sequential_ensemble_val(net, loader, path):
             else:
                 for probs in probs_list:
                     cur_procuct_probs.append(probs[i])
-
-            # end += 1
             i += 1
-
-        # np.concatenate((cur_procuct_probs, np.array(probs[start:end])), axis=0)
 
         # find winner for current product
         num = len(cur_procuct_probs) * transform_num  # total number of instances for current product
-        # ## get probs in range [start, end)
-        # for probs in probs_list:
-        #     np.concatenate((cur_procuct_probs, probs[start:end]), axis=0)
-
         # do predictions
         winner = ensemble_predict(np.array(cur_procuct_probs), num)
 
