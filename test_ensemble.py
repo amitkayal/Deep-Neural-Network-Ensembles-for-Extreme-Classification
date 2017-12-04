@@ -53,7 +53,7 @@ def ensemble_predict(cur_procuct_probs, num):
         abandan_cnt = 0
         for probs in cur_procuct_probs:  # iterate each product instance
             print("prob: ", probs[candidate])
-            if probs[candidate] < probs_means[candidate] - 0.2:
+            if probs[candidate] < probs_means[candidate] * 0.8:
                 # abandan this instance
                 candidate_score -= probs[candidate]
                 abandan_cnt += 1
