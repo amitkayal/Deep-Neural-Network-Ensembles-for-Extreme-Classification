@@ -78,8 +78,6 @@ def TTA(images):
     return images_TTA_list
 
 def evaluate_sequential_ensemble_val(net, loader, path):
-    product_to_prediction_map = {}
-    # cur_procuct_probs = np.array([]).reshape(0,CDISCOUNT_NUM_CLASSES)
     cur_procuct_probs = []
     cur_product_id = None
     cur_product_label = None
@@ -132,9 +130,6 @@ def evaluate_sequential_ensemble_val(net, loader, path):
 
                 total_product_cnt += 1
 
-                # save winner
-                product_to_prediction_map[cur_product_id] = winner
-
                 print("Acc: ", str(float(correct_product_cnt) / total_product_cnt))
 
                 # update
@@ -144,10 +139,7 @@ def evaluate_sequential_ensemble_val(net, loader, path):
                 cur_procuct_probs = [probs[i]]
             else:
                 for probs in probs_list:
-                    print(probs[i])
-                    print(probs[i].shape)
                     cur_procuct_probs.append(probs[i])
-
             i += 1
 
         # find winner for current product
@@ -157,12 +149,8 @@ def evaluate_sequential_ensemble_val(net, loader, path):
 
         if winner == cur_product_label:
             correct_product_cnt += 1
-        # print("winner: ", str(winner))
 
         total_product_cnt += 1
-
-        # save winner
-        product_to_prediction_map[cur_product_id] = winner
 
         print("Acc: ", str(float(correct_product_cnt) / total_product_cnt))
 
