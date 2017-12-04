@@ -15,8 +15,8 @@ import label_category_transform
 
 from net.resnet101 import ResNet101 as Net
 
-# TTA_list = [fix_center_crop, random_shift_scale_rotate]
-TTA_list = [fix_center_crop]
+TTA_list = [fix_center_crop, random_shift_scale_rotate]
+# TTA_list = [fix_center_crop]
 transform_num = len(TTA_list)
 
 use_cuda = True
@@ -32,8 +32,8 @@ root_dir = '../output/'
 test_data_filename = 'test.csv'
 validation_data_filename = 'validation_small.csv'
 
-# initial_checkpoint = "./latest/" + IDENTIFIER + "/latest.pth"
-initial_checkpoint = "../trained_models/resnet_00243000_model.pth"
+initial_checkpoint = "./latest/" + IDENTIFIER + "/latest.pth"
+# initial_checkpoint = "../trained_models/resnet_00243000_model.pth"
 res_path = "./test_res/" + IDENTIFIER + "_val_TTA.res"
 validation_batch_size = 64
 
@@ -231,7 +231,7 @@ def evaluate_sequential_ensemble_val(net, loader, path):
 
     print("Acc: ", str(float(correct_product_cnt) / total_product_cnt))
 
-def evaluate_sequential_ensemble(net, loader, path):
+def evaluate_sequential_ensemble_test(net, loader, path):
     product_to_prediction_map = {}
     cur_procuct_probs = np.array([]).reshape(0,CDISCOUNT_NUM_CLASSES)
     cur_product_id = None
@@ -242,6 +242,9 @@ def evaluate_sequential_ensemble(net, loader, path):
         for iter, (images, image_ids) in enumerate(tqdm(loader), 0):
             image_ids = np.array(image_ids)
 
+            if iter > 10:
+                break
+
             # transforms
             images_list = TTA(images.numpy()) # a list of image batch using different transforms
             probs_list = []
@@ -250,10 +253,8 @@ def evaluate_sequential_ensemble(net, loader, path):
                 logits = net(images)
                 probs  = ((F.softmax(logits)).cpu().data.numpy()).astype(float)
                 probs_list.append(probs)
-                # print(probs)
 
-            start = 0
-            end = 0
+            i = 0
             for image_id in image_ids:
                 product_id = imageid_to_productid(image_id)
 
@@ -262,38 +263,37 @@ def evaluate_sequential_ensemble(net, loader, path):
 
                 if product_id != cur_product_id:
                     # a new product
-                    # print("cur product: " + str(cur_product_id))
+                    print("------------------------- cur product: " + str(cur_product_id) + "-------------------------")
 
                     # find winner for previous product
-                    num = (end - start) * (transform_num + 1) # total number of instances for current product
-                    ## get probs in range [start, end)
-                    for probs in probs_list:
-                        # print(probs)
-                        cur_procuct_probs = np.concatenate((cur_procuct_probs, np.array(probs[start:end])), axis=0)
+                    num = len(cur_procuct_probs) * transform_num  # total number of instances for current product
+                    print("Number of instances: ", num)
 
                     # do predictions
+                    cur_procuct_probs = np.array(cur_procuct_probs)
                     winner = ensemble_predict(cur_procuct_probs, num)
-                    # print("winner: ", str(winner))
 
                     # save winner
                     product_to_prediction_map[cur_product_id] = winner
 
                     # update
-                    start = end
                     cur_product_id = product_id
-                    cur_procuct_probs = np.array([]).reshape(0,CDISCOUNT_NUM_CLASSES)
+                    cur_procuct_probs = np.array([]).reshape(0, CDISCOUNT_NUM_CLASSES)
 
-                end += 1
+                for probs in probs_list:
+                    cur_procuct_probs.append(probs[i])
 
-            np.concatenate((cur_procuct_probs, np.array(probs[start:end])), axis=0)
+                i += 1
 
-        # find winner for current product
-        num = (end - start) * transform_num  # total number of instances for current product
-        ## get probs in range [start, end)
-        for probs in probs_list:
-            np.concatenate((cur_procuct_probs, probs[start:end]), axis=0)
+        # a new product
+        print("------------------------- cur product: " + str(cur_product_id) + "-------------------------")
+
+        # find winner for previous product
+        num = len(cur_procuct_probs) * transform_num  # total number of instances for current product
+        print("Number of instances: ", num)
 
         # do predictions
+        cur_procuct_probs = np.array(cur_procuct_probs)
         winner = ensemble_predict(cur_procuct_probs, num)
 
         # save winner
@@ -322,12 +322,12 @@ if __name__ == '__main__':
     if os.path.isfile(initial_checkpoint):
         print("=> loading checkpoint '{}'".format(initial_checkpoint))
 
-        # # load checkpoint
-        # checkpoint = torch.load(initial_checkpoint)
-        # net.load_state_dict(checkpoint['state_dict'])  # load model weights from the checkpoint
+        # load checkpoint
+        checkpoint = torch.load(initial_checkpoint)
+        net.load_state_dict(checkpoint['state_dict'])  # load model weights from the checkpoint
 
-        # load pretrained model
-        net.load_state_dict(torch.load(initial_checkpoint, map_location=lambda storage, loc: storage))
+        # # load pretrained model
+        # net.load_state_dict(torch.load(initial_checkpoint, map_location=lambda storage, loc: storage))
 
         print("=> loaded checkpoint '{}'".format(initial_checkpoint))
     else:
@@ -343,6 +343,6 @@ if __name__ == '__main__':
                         num_workers = 4,
                         pin_memory  = False)
 
-    product_to_prediction_map = evaluate_sequential_ensemble_val(net, loader, res_path)
+    product_to_prediction_map = evaluate_sequential_ensemble_test(net, loader, res_path)
 
     print('\nsucess!')
