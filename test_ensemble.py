@@ -49,6 +49,8 @@ def ensemble_predict(cur_procuct_probs, num):
                 candidate_score -= probs[candidate]
                 abandan_cnt += 1
 
+        candidate_score = float(candidate_score) / (num - abandan_cnt)
+
         if candidate_score > winner_score:
             winner = candidate
             winner_score = candidate_score
@@ -106,7 +108,7 @@ def evaluate_sequential_ensemble_val(net, loader, path):
 
             if product_id != cur_product_id:
                 # a new product
-                print("cur product: " + str(cur_product_id))
+                # print("cur product: " + str(cur_product_id))
 
                 # find winner for previous product
                 num = (end - start) * transform_num # total number of instances for current product
