@@ -121,6 +121,8 @@ def evaluate_sequential_ensemble_val(net, loader, path):
 
                 if winner == cur_product_label:
                     correct_product_cnt += 1
+                print("winner: ", str(winner))
+                print("label: ", str(cur_product_label))
 
                 total_product_cnt += 1
 
