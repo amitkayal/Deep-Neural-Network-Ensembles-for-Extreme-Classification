@@ -40,10 +40,12 @@ def ensemble_predict(cur_procuct_probs, num):
     winner_score = 0.0
     winner = None
     for candidate in candidates:
-        # Adopt pre chosen criteria to abandan some instances
+        # Adopt criteria to abandan some instances
         candidate_score = probs_means[candidate] * num
         abandan_cnt = 0
         for probs in cur_procuct_probs:  # iterate each product instance
+            print("probs[candidate]: ", probs[candidate])
+            print("probs_means[candidate]: ", probs_means[candidate])
             if probs[candidate] < probs_means[candidate] - 0.2:
                 # abandan this instance
                 candidate_score -= probs[candidate]
