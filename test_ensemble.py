@@ -70,14 +70,15 @@ def TTA(images):
 
     i = 0
     cur_images = []
+    center_cropped_images = []
     for image in images:
-        images[i] = fix_center_crop(image, size=(160, 160))
-        cur_images.append(pytorch_image_to_tensor_transform(images[i]))
+        center_cropped_images.append(fix_center_crop(image, size=(160, 160)))
+        cur_images.append(pytorch_image_to_tensor_transform(center_cropped_images[i]))
         i += 1
 
     for transform in TTA_list:
         cur_images = []
-        for image in images:
+        for image in center_cropped_images:
             cur_images.append(pytorch_image_to_tensor_transform(transform(image)))
 
         images_TTA_list.append(torch.stack(cur_images))
