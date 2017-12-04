@@ -33,6 +33,7 @@ test_data_filename = 'test.csv'
 validation_data_filename = 'validation_small.csv'
 
 initial_checkpoint = "./latest/" + IDENTIFIER + "/latest.pth"
+pretrained_file = "./trained_models/resnet_00243000_model.pth"
 res_path = "./test_res/" + IDENTIFIER + "_val_TTA.res"
 validation_batch_size = 64
 
@@ -53,7 +54,7 @@ def ensemble_predict(cur_procuct_probs, num):
         abandan_cnt = 0
         for probs in cur_procuct_probs:  # iterate each product instance
             print("prob: ", probs[candidate])
-            if probs[candidate] < probs_means[candidate] * 0.8:
+            if probs[candidate] < probs_means[candidate] * 0.6:
                 # abandan this instance
                 candidate_score -= probs[candidate]
                 abandan_cnt += 1
@@ -209,7 +210,6 @@ def evaluate_sequential_ensemble_val(net, loader, path):
                 print("Acc: ", str(float(correct_product_cnt) / total_product_cnt))
 
                 # update
-                # start = end
                 cur_product_id = product_id
                 cur_product_label = labels[i]
                 cur_procuct_probs = []
@@ -321,8 +321,14 @@ if __name__ == '__main__':
 
     if os.path.isfile(initial_checkpoint):
         print("=> loading checkpoint '{}'".format(initial_checkpoint))
-        checkpoint = torch.load(initial_checkpoint)
-        net.load_state_dict(checkpoint['state_dict'])  # load model weights from the checkpoint
+
+        # # load checkpoint
+        # checkpoint = torch.load(initial_checkpoint)
+        # net.load_state_dict(checkpoint['state_dict'])  # load model weights from the checkpoint
+
+        # load pretrained model
+        net.load_pretrain_pytorch_file(pretrained_file, [])
+
         print("=> loaded checkpoint '{}'".format(initial_checkpoint))
     else:
         print("=> no checkpoint found at '{}'".format(initial_checkpoint))
