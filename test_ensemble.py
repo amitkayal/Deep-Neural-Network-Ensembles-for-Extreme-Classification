@@ -140,6 +140,7 @@ def evaluate_sequential_average_val(net, loader, path):
                 cur_product_id = product_id
                 cur_product_label = labels[i]
                 cnt = 0
+                cur_procuct_probs = np.zeros((1, CDISCOUNT_NUM_CLASSES))
                 for probs in probs_list:
                     cur_procuct_probs += probs[i]
                     cnt += 1
