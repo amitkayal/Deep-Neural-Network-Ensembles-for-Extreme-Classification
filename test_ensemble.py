@@ -16,6 +16,7 @@ import label_category_transform
 from net.resnet101 import ResNet101 as Net
 
 TTA_list = [random_shift_scale_rotate, random_crop]
+transform_num = 2
 
 use_cuda = True
 IDENTIFIER = "resnet"
@@ -76,7 +77,6 @@ def evaluate_sequential_ensemble_val(net, loader, path):
     cur_procuct_probs = np.array([]).reshape(0,CDISCOUNT_NUM_CLASSES)
     cur_product_id = None
     cur_product_label = None
-    transform_num = 1
 
     correct_product_cnt = 0
     total_product_cnt = 0
@@ -113,7 +113,7 @@ def evaluate_sequential_ensemble_val(net, loader, path):
                 # print("cur product: " + str(cur_product_id))
 
                 # find winner for previous product
-                num = (end - start) * transform_num # total number of instances for current product
+                num = (end - start) * (transform_num + 1) # total number of instances for current product
                 ## get probs in range [start, end)
                 for probs in probs_list:
                     # print(probs)
@@ -169,7 +169,6 @@ def evaluate_sequential_ensemble(net, loader, path):
     product_to_prediction_map = {}
     cur_procuct_probs = np.array([]).reshape(0,CDISCOUNT_NUM_CLASSES)
     cur_product_id = None
-    transform_num = 1
 
     with open(path, "a") as file:
         file.write("_id,category_id\n")
@@ -200,7 +199,7 @@ def evaluate_sequential_ensemble(net, loader, path):
                     # print("cur product: " + str(cur_product_id))
 
                     # find winner for previous product
-                    num = (end - start) * transform_num # total number of instances for current product
+                    num = (end - start) * (transform_num + 1) # total number of instances for current product
                     ## get probs in range [start, end)
                     for probs in probs_list:
                         # print(probs)
