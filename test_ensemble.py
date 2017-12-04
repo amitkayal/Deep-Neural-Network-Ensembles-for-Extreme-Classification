@@ -269,11 +269,9 @@ def evaluate_sequential_ensemble_test(net, loader, path):
                     # do predictions
                     cur_procuct_probs = np.array(cur_procuct_probs)
                     winner = ensemble_predict(cur_procuct_probs, num)
-                    print(type(winner))
 
                     # save winner
                     product_to_prediction_map[cur_product_id] = winner
-                    print(product_to_prediction_map)
 
                     # update
                     cur_product_id = product_id
