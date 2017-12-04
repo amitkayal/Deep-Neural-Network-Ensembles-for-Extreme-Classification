@@ -70,59 +70,72 @@ def evaluate_sequential_ensemble_val(net, loader, path):
     product_to_prediction_map = {}
     cur_procuct_probs = np.array([]).reshape(0,CDISCOUNT_NUM_CLASSES)
     cur_product_id = None
+    cur_product_label = None
     transform_num = 1
 
-    with open(path, "a") as file:
-        file.write("_id,category_id\n")
+    correct_product_cnt = 0
+    total_product_cnt = 0
 
-        for iter, (images, labels, image_ids) in enumerate(tqdm(loader), 0):
-            labels = labels.numpy()
-            image_ids = np.array(image_ids)
+    for iter, (images, labels, image_ids) in enumerate(tqdm(loader), 0):
+        if total_product_cnt > 10:
+            break
 
-            # transforms
-            images_list = TTA(images.numpy()) # a list of image batch using different transforms
-            probs_list = []
-            for images in images_list:
-                images = Variable(images.type(torch.FloatTensor)).cuda()
-                logits = net(images)
-                probs  = ((F.softmax(logits)).cpu().data.numpy()).astype(float)
-                probs_list.append(probs)
-                # print(probs)
+        labels = labels.numpy()
+        image_ids = np.array(image_ids)
 
-            start = 0
-            end = 0
-            for image_id in image_ids:
-                product_id = imageid_to_productid(image_id)
+        # transforms
+        images_list = TTA(images.numpy()) # a list of image batch using different transforms
+        probs_list = []
+        for images in images_list:
+            images = Variable(images.type(torch.FloatTensor)).cuda()
+            logits = net(images)
+            probs  = ((F.softmax(logits)).cpu().data.numpy()).astype(float)
+            probs_list.append(probs)
+            # print(probs)
 
-                if cur_product_id == None:
-                    cur_product_id = product_id
+        start = 0
+        end = 0
+        i = 0
+        for image_id in image_ids:
+            product_id = imageid_to_productid(image_id)
 
-                if product_id != cur_product_id:
-                    # a new product
-                    # print("cur product: " + str(cur_product_id))
+            if cur_product_id == None:
+                cur_product_id = product_id
+                cur_product_label = labels[i]
 
-                    # find winner for previous product
-                    num = (end - start) * transform_num # total number of instances for current product
-                    ## get probs in range [start, end)
-                    for probs in probs_list:
-                        # print(probs)
-                        cur_procuct_probs = np.concatenate((cur_procuct_probs, np.array(probs[start:end])), axis=0)
+            if product_id != cur_product_id:
+                # a new product
+                # print("cur product: " + str(cur_product_id))
 
-                    # do predictions
-                    winner = ensemble_predict(cur_procuct_probs, num)
-                    # print("winner: ", str(winner))
+                # find winner for previous product
+                num = (end - start) * transform_num # total number of instances for current product
+                ## get probs in range [start, end)
+                for probs in probs_list:
+                    # print(probs)
+                    cur_procuct_probs = np.concatenate((cur_procuct_probs, np.array(probs[start:end])), axis=0)
 
-                    # save winner
-                    product_to_prediction_map[cur_product_id] = winner
+                # do predictions
+                winner = ensemble_predict(cur_procuct_probs, num)
 
-                    # update
-                    start = end
-                    cur_product_id = product_id
-                    cur_procuct_probs = np.array([]).reshape(0,CDISCOUNT_NUM_CLASSES)
+                if winner == cur_product_label:
+                    correct_product_cnt += 1
+                # print("winner: ", str(winner))
 
-                end += 1
+                total_product_cnt += 1
 
-            np.concatenate((cur_procuct_probs, np.array(probs[start:end])), axis=0)
+                # save winner
+                product_to_prediction_map[cur_product_id] = winner
+
+                # update
+                start = end
+                cur_product_id = product_id
+                cur_product_label = labels[i]
+                cur_procuct_probs = np.array([]).reshape(0,CDISCOUNT_NUM_CLASSES)
+
+            end += 1
+            i += 1
+
+        np.concatenate((cur_procuct_probs, np.array(probs[start:end])), axis=0)
 
         # find winner for current product
         num = (end - start) * transform_num  # total number of instances for current product
@@ -133,11 +146,16 @@ def evaluate_sequential_ensemble_val(net, loader, path):
         # do predictions
         winner = ensemble_predict(cur_procuct_probs, num)
 
+        if winner == cur_product_label:
+            correct_product_cnt += 1
+        # print("winner: ", str(winner))
+
+        total_product_cnt += 1
+
         # save winner
         product_to_prediction_map[cur_product_id] = winner
 
-        for product_id, prediction in product_to_prediction_map.items():
-            file.write(str(product_id) + "," + str(prediction) + "\n")
+        print("Acc: ", str(float(correct_product_cnt) / total_product_cnt))
 
 def evaluate_sequential_ensemble(net, loader, path):
     product_to_prediction_map = {}
