@@ -37,6 +37,7 @@ validation_batch_size = 64
 
 def ensemble_predict(cur_procuct_probs, num):
     candidates = np.argmax(cur_procuct_probs, axis=1)
+    print("candidates: ", candidates)
     probs_means = np.mean(cur_procuct_probs, axis=0)
     winner_score = 0.0
     winner = None
@@ -45,8 +46,8 @@ def ensemble_predict(cur_procuct_probs, num):
         candidate_score = probs_means[candidate] * num
         abandan_cnt = 0
         for probs in cur_procuct_probs:  # iterate each product instance
-            print("probs[candidate]: ", probs[candidate])
-            print("probs_means[candidate]: ", probs_means[candidate])
+            print(candidate, " prob: ", probs[candidate])
+            print(candidate, " probs_mean: ", probs_means[candidate])
             if probs[candidate] < probs_means[candidate] - 0.2:
                 # abandan this instance
                 candidate_score -= probs[candidate]
