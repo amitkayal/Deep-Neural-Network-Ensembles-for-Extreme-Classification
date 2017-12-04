@@ -121,8 +121,9 @@ def evaluate_sequential_ensemble_val(net, loader, path):
                 print("Number of instances: ", num)
 
                 # do predictions
-                print(cur_procuct_probs)
-                winner = ensemble_predict(np.array(cur_procuct_probs), num)
+                cur_procuct_probs = np.array(cur_procuct_probs)
+                print(cur_procuct_probs.shape)
+                winner = ensemble_predict(cur_procuct_probs, num)
 
                 if winner == cur_product_label:
                     correct_product_cnt += 1
