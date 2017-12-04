@@ -15,7 +15,8 @@ import label_category_transform
 
 from net.resnet101 import ResNet101 as Net
 
-TTA_list = [fix_center_crop, random_shift_scale_rotate]
+# TTA_list = [fix_center_crop, random_shift_scale_rotate]
+TTA_list = [fix_center_crop]
 transform_num = len(TTA_list)
 
 use_cuda = True
@@ -86,9 +87,6 @@ def evaluate_sequential_average_val(net, loader, path):
     total_product_cnt = 0
 
     for iter, (images, labels, image_ids) in enumerate(tqdm(loader), 0):
-        # if total_product_cnt > 10:
-        #     break
-
         labels = labels.numpy()
         image_ids = np.array(image_ids)
 
@@ -128,6 +126,7 @@ def evaluate_sequential_average_val(net, loader, path):
 
                 if winner == cur_product_label:
                     correct_product_cnt += 1
+
                 print("winner: ", str(winner))
                 print("label: ", str(cur_product_label))
 
@@ -141,13 +140,11 @@ def evaluate_sequential_average_val(net, loader, path):
                 cur_product_label = labels[i]
                 cnt = 0
                 cur_procuct_probs = np.zeros((1, CDISCOUNT_NUM_CLASSES))
-                for probs in probs_list:
-                    cur_procuct_probs += probs[i]
-                    cnt += 1
-            else:
-                for probs in probs_list:
-                    cur_procuct_probs += probs[i]
-                    cnt += 1
+
+            # add up probs
+            for probs in probs_list:
+                cur_procuct_probs += probs[i]
+                cnt += 1
             i += 1
 
     # find winner for current product
