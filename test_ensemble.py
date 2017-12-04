@@ -112,6 +112,7 @@ def evaluate_sequential_average_val(net, loader, path):
                 for probs in probs_list:
                     cur_procuct_probs += probs[i]
                     cnt += 1
+                continue
 
             if product_id != cur_product_id:
                 # a new product
