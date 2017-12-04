@@ -66,7 +66,7 @@ def TTA(images):
 
     return images_TTA_list
 
-def evaluate_sequential_ensemble(net, test_loader, path):
+def evaluate_sequential_ensemble(net, loader, path):
     product_to_prediction_map = {}
     cur_procuct_probs = np.array([]).reshape(0,CDISCOUNT_NUM_CLASSES)
     cur_product_id = None
@@ -75,11 +75,7 @@ def evaluate_sequential_ensemble(net, test_loader, path):
     with open(path, "a") as file:
         file.write("_id,category_id\n")
 
-        for iter, (images, image_ids) in enumerate(tqdm(test_loader), 0):
-            # if cnt > 4:
-            #     break;
-
-            # images = Variable(images.type(torch.FloatTensor)).cuda() if use_cuda else Variable(images.type(torch.FloatTensor))
+        for iter, (images, image_ids) in enumerate(tqdm(loader), 0):
             image_ids = np.array(image_ids)
 
             # transforms
@@ -175,7 +171,7 @@ if __name__ == '__main__':
                         batch_size  = validation_batch_size,
                         drop_last   = False,
                         num_workers = 4,
-                        pin_memory  = True)
+                        pin_memory  = False)
 
     product_to_prediction_map = evaluate_sequential_ensemble(net, loader, res_path)
 
