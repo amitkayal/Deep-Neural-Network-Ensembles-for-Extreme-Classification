@@ -1,6 +1,6 @@
 import pandas as pd
 from scipy import stats
-
+import tqdm as tqdm
 # # Generate final data csv
 # csv_file = "./data/train_data.csv"
 # data_csv = pd.read_csv(csv_file)
@@ -55,7 +55,7 @@ val_rows = {}
 train_rows = {}
 val_cnt = 0
 train_cnt = 0
-for cate_id, images in map.items():
+for cate_id, images in tqdm(map.items()):
     val_images = []
     train_images = []
     split = 0
