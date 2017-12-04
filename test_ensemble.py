@@ -105,7 +105,7 @@ def evaluate_sequential_ensemble_val(net, loader, path):
 
             if product_id != cur_product_id:
                 # a new product
-                # print("cur product: " + str(cur_product_id))
+                print("cur product: " + str(cur_product_id))
 
                 # find winner for previous product
                 num = (end - start) * transform_num # total number of instances for current product
@@ -119,7 +119,8 @@ def evaluate_sequential_ensemble_val(net, loader, path):
 
                 if winner == cur_product_label:
                     correct_product_cnt += 1
-                # print("winner: ", str(winner))
+                print("winner: ", str(winner))
+                print("label: ", str(cur_product_label))
 
                 total_product_cnt += 1
 
