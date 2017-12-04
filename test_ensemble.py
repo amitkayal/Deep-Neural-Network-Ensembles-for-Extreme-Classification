@@ -15,7 +15,7 @@ import label_category_transform
 
 from net.resnet101 import ResNet101 as Net
 
-TTA_list = [fix_center_crop, random_shift_scale_rotate, random_crop]
+TTA_list = [fix_center_crop, random_shift_scale_rotate]
 transform_num = len(TTA_list)
 
 use_cuda = True
