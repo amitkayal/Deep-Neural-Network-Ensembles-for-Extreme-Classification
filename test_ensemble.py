@@ -102,6 +102,7 @@ def evaluate_sequential_average_val(net, loader, path):
             probs_list.append(probs)
 
         i = 0
+        cnt = 0;
         for image_id in image_ids:
             product_id = imageid_to_productid(image_id)
 
@@ -115,7 +116,7 @@ def evaluate_sequential_average_val(net, loader, path):
                 print("------------------------- cur product: " + str(cur_product_id) + "-------------------------")
 
                 # find winner for previous product
-                num = len(cur_procuct_probs) * (transform_num + 1) # total number of instances for current product
+                num = cnt # total number of instances for current product
                 print("Number of instances: ", num)
 
                 # do predictions
@@ -136,9 +137,11 @@ def evaluate_sequential_average_val(net, loader, path):
                 cur_product_id = product_id
                 cur_product_label = labels[i]
                 cur_procuct_probs = probs[i]
+                cnt = 0
             else:
                 for probs in probs_list:
-                    cur_procuct_probs += probs
+                    cur_procuct_probs += probs[i]
+                    cnt += 1
             i += 1
 
     # find winner for current product
