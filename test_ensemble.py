@@ -215,7 +215,7 @@ def evaluate_sequential_ensemble_val(net, loader, path):
                 cur_procuct_probs = []
 
             for probs in probs_list:
-                np.concatenate((cur_procuct_probs, probs[start:end]), axis=0)
+                cur_procuct_probs.append(probs[i])
 
             i += 1
 
@@ -233,7 +233,7 @@ def evaluate_sequential_ensemble_val(net, loader, path):
 
 def evaluate_sequential_ensemble_test(net, loader, path):
     product_to_prediction_map = {}
-    cur_procuct_probs = np.array([]).reshape(0,CDISCOUNT_NUM_CLASSES)
+    cur_procuct_probs = []
     cur_product_id = None
 
     with open(path, "a") as file:
@@ -278,7 +278,7 @@ def evaluate_sequential_ensemble_test(net, loader, path):
 
                     # update
                     cur_product_id = product_id
-                    cur_procuct_probs = np.array([]).reshape(0, CDISCOUNT_NUM_CLASSES)
+                    cur_procuct_probs = []
 
                 for probs in probs_list:
                     cur_procuct_probs.append(probs[i])
