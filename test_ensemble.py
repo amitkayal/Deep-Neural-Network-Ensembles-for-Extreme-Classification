@@ -67,7 +67,6 @@ def TTA(images):
     return images_TTA_list
 
 def evaluate_sequential_ensemble(net, test_loader, path):
-    cnt = 0
     product_to_prediction_map = {}
     cur_procuct_probs = np.array([]).reshape(0,CDISCOUNT_NUM_CLASSES)
     cur_product_id = None
@@ -76,8 +75,7 @@ def evaluate_sequential_ensemble(net, test_loader, path):
     with open(path, "a") as file:
         file.write("_id,category_id\n")
 
-        for iter, (images, image_ids) in tqdm(enumerate(test_loader, 0)):
-            print("iter: ", str(cnt))
+        for iter, (images, image_ids) in enumerate(tqdm(test_loader), 0):
             # if cnt > 4:
             #     break;
 
@@ -126,7 +124,6 @@ def evaluate_sequential_ensemble(net, test_loader, path):
                     cur_procuct_probs = np.array([]).reshape(0,CDISCOUNT_NUM_CLASSES)
 
                 end += 1
-            cnt += 1
 
             np.concatenate((cur_procuct_probs, np.array(probs[start:end])), axis=0)
 
