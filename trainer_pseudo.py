@@ -151,7 +151,7 @@ def run_training():
                         sampler = RandomSampler(train_dataset),
                         batch_size  = batch_size,
                         drop_last   = True,
-                        num_workers = 8,
+                        num_workers = 1,
                         pin_memory  = False)
     train_loader_iter = iter(train_loader)
     print("=> Inited training set")
@@ -310,7 +310,7 @@ def run_training():
             # accumulate gradients
             loss.backward()
 
-            if j%iter_org_train == 0:
+            if j%iter_org_train == 0 and j != 0:
                 print("=> use org train data")
                 cur = next(train_loader_iter, None)
                 if(cur == None):
@@ -332,18 +332,10 @@ def run_training():
                 # accumulate gradients
                 org_loss.backward()
 
-            # update gradients every iter_accum
-            if j%iter_accum == 0:
-                #torch.nn.utils.clip_grad_norm(net.parameters(), 1)
-                print("=> optim step")
-                optimizer.step()
-                optimizer.zero_grad()
-
             # measure elapsed time
             iter_time_meter.update(time.time() - end)
 
             # print statistics  ------------
-
             if i%iter_smooth == 0 and i != start_iter: # reset train stats every iter_smooth iters
                 if train_acc_meter.avg > best_train_acc:
                     best_train_acc = train_acc_meter.avg
@@ -358,6 +350,14 @@ def run_training():
             print('\r%0.4f  %5.1f k   %4.2f  | %0.4f  %0.4f | %0.4f  %0.4f | %0.4f  %0.4f | %5.0f min | %5.2f s | %d,%d' % \
                     (rate, i/1000, epoch, valid_loss_meter.val, valid_acc_meter.val, train_loss_meter.avg, train_acc_meter.avg, batch_loss, batch_acc,(timer() - start)/60, iter_time_meter.avg, i, j),\
                     end='',flush=True)
+
+            # update gradients every iter_accum
+            if j%iter_accum == 0 and j != 0:
+                #torch.nn.utils.clip_grad_norm(net.parameters(), 1)
+                print("=> optim step")
+                optimizer.step()
+                optimizer.zero_grad()
+
             j=j+1
         pass  #-- end of one data loader --
     pass #-- end of all iterations --
