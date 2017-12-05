@@ -22,21 +22,14 @@ class CDiscountDataset(Dataset):
         self.root_dir=root_dir
         self.transform = transform
         image_data = pd.read_csv(csv_dir)
-        #train_ids = list(train_images['product_id'])
         self.image_id = list(image_data['image_id'])
         self.labels = list(image_data['category_id'])
         self.indexes = list(image_data['category_id'])
         num_train = len(image_data)
-        # print(num_train)
-        # print("dataset labels",self.labels)
         for i in range(num_train):
             self.indexes[i] = category_id_to_index[self.labels[i]]
             image_name = '{}/{}.jpg'.format(self.labels[i],self.image_id[i])
             self.image_names.append(image_name)
-        # print("label type:",type(self.labels))
-        # print("label size:",len(self.labels))
-        # print("label content:",self.labels[0:10])
-        #print(self.train_names)
 
     def __len__(self):
         return len(self.image_names)
