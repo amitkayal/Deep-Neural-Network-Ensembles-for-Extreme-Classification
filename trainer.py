@@ -39,7 +39,6 @@ csv_dir = './data/'
 root_dir = '../output/'
 train_data_filename = 'train.csv'
 validation_data_filename = 'validation.csv'
-train_pseudo_data_filename = "test_pesudo_labeled.csv"
 checkpoint_dir = "../checkpoint/" + IDENTIFIER + "/"
 latest_dir = "./latest/" + IDENTIFIER + "/"
 log_dir = "./log/" + IDENTIFIER + "/"
@@ -138,7 +137,7 @@ def run_training():
     log.write('** dataset setting **\n')
     print("=> Initing training set ...")
     transform_train = transforms.Compose([transforms.Lambda(lambda x: net.train_augment(x))])
-    train_dataset = CDiscountDataset(csv_dir+train_data_filename,root_dir,transform=transform_train)
+    train_dataset = CDiscountDataset(csv_dir+train_data_filename,root_dir + "train/",transform=transform_train)
     train_loader  = DataLoader(
                         train_dataset,
                         sampler = RandomSampler(train_dataset),
@@ -151,7 +150,7 @@ def run_training():
 
     print("=> Initing validation set ...")
     transform_valid = transforms.Compose([transforms.Lambda(lambda x: net.valid_augment(x))])
-    valid_dataset = CDiscountDataset(csv_dir+validation_data_filename,root_dir,transform=transform_valid)
+    valid_dataset = CDiscountDataset(csv_dir+validation_data_filename,root_dir + "test/",transform=transform_valid)
     valid_loader  = DataLoader(
                         valid_dataset,
                         sampler     = SequentialSampler(valid_dataset),
@@ -194,6 +193,8 @@ def run_training():
             #
             # log.write("=> loaded checkpoint '{}' (epoch: {}, iter: {}, best_train_acc: {}, best_valid_acc: {})"
             #       .format(initial_checkpoint, start_epoch, start_iter, best_train_acc, best_valid_acc))
+
+
 
             # load original model
             log.write('\tinitial_checkpoint = %s\n' % initial_checkpoint)
