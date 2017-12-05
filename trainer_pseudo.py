@@ -23,7 +23,7 @@ from net.resnet101 import ResNet101 as Net
 # from net.xception import Xception as Net
 
 
-IDENTIFIER = "resnet"
+IDENTIFIER = "resnet_pseudo"
 
 # Not change
 use_cuda = True
@@ -40,7 +40,7 @@ csv_dir = './data/'
 root_dir = '../output/'
 train_data_filename = 'train.csv'
 validation_data_filename = 'validation.csv'
-train_pseudo_data_filename = ""
+train_pseudo_data_filename = "test_pesudo_labeled.csv"
 checkpoint_dir = "../checkpoint/" + IDENTIFIER + "/"
 latest_dir = "./latest/" + IDENTIFIER + "/"
 
