@@ -1,0 +1,13 @@
+
+--- [START 2017-12-05 22:33:28] ----------------------------------------------------------------
+
+** some experiment setting **
+	IDENTIFIER   = resnet_pseudo
+	SEED         = 123456
+	PROJECT_PATH = ./project
+	out_dir      = ../
+** net setting **
+<class 'net.resnet101.ResNet101'>
+
+
+** dataset setting **
