@@ -261,8 +261,8 @@ def run_training():
 
             if i % iter_log == 0:
                 # print('\r',end='',flush=True)
-                log.write('\r%0.4f  %5.1f k   %4.2f  | %0.4f  %0.4f | %0.4f  %0.4f | %0.4f  %0.4f | %5.0f min | %5.2f s | %d,%d \n' % \
-                        (rate, i/1000, epoch, valid_loss_meter.val, valid_acc_meter.val, train_loss_meter.avg, train_acc_meter.avg, batch_loss, batch_acc,(timer() - start)/60,
+                log.write('\r%0.4f  %5.1f k   %4.2f  | %0.4f  %0.4f | %0.4f  %0.4f | %0.4f  %0.4f | %0.4f  %0.4f | %5.0f min | %5.2f s | %d,%d \n' % \
+                        (rate, i/1000, epoch, valid_loss_meter.val, valid_acc_meter.val, train_loss_meter.avg, train_acc_meter.avg, org_train_loss_meter.avg, org_train_acc_meter.avg, batch_loss, batch_acc,(timer() - start)/60,
                             iter_time_meter.avg, i, j))
 
             if i in iter_save and i != start_iter:
@@ -332,6 +332,13 @@ def run_training():
                 # accumulate gradients
                 org_loss.backward()
 
+            # update gradients every iter_accum
+            if j%iter_accum == 0 and j != 0:
+                #torch.nn.utils.clip_grad_norm(net.parameters(), 1)
+                print("\n=> optim step")
+                optimizer.step()
+                optimizer.zero_grad()
+
             # measure elapsed time
             iter_time_meter.update(time.time() - end)
 
@@ -346,17 +353,11 @@ def run_training():
                 train_loss_meter = AverageMeter()
                 train_acc_meter = AverageMeter()
 
-
             print('\r%0.4f  %5.1f k   %4.2f  | %0.4f  %0.4f | %0.4f  %0.4f | %0.4f  %0.4f | %5.0f min | %5.2f s | %d,%d' % \
                     (rate, i/1000, epoch, valid_loss_meter.val, valid_acc_meter.val, train_loss_meter.avg, train_acc_meter.avg, batch_loss, batch_acc,(timer() - start)/60, iter_time_meter.avg, i, j),\
                     end='',flush=True)
 
-            # update gradients every iter_accum
-            if j%iter_accum == 0 and j != 0:
-                #torch.nn.utils.clip_grad_norm(net.parameters(), 1)
-                print("\n=> optim step")
-                optimizer.step()
-                optimizer.zero_grad()
+
 
             j=j+1
         pass  #-- end of one data loader --
