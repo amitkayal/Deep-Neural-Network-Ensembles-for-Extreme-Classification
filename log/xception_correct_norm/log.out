@@ -1,0 +1,173 @@
+
+--- [START 2017-12-05 21:32:39] ----------------------------------------------------------------
+
+** some experiment setting **
+	IDENTIFIER   = xception_correct_norm
+	SEED         = 123456
+	PROJECT_PATH = ./project
+	out_dir      = ../
+** net setting **
+<class 'net.resnet101.ResNet101'>
+
+
+** dataset setting **
+	len(train_dataset)  = 12118359
+	len(valid_dataset)  = 252934
+	len(train_loader)   = 189349
+	len(valid_loadernum_iters)   = 3953
+	batch_size  = 64
+	iter_accum  = 4
+	batch_size*iter_accum  = 256
+	loading @ pretrained_file = ../trained_models/LB=0.69422_xception_00158000_model.pth
+
+--- [START 2017-12-05 21:36:27] ----------------------------------------------------------------
+
+** some experiment setting **
+	IDENTIFIER   = xception_correct_norm
+	SEED         = 123456
+	PROJECT_PATH = ./project
+	out_dir      = ../
+** net setting **
+<class 'net.resnet101.ResNet101'>
+
+
+** dataset setting **
+	len(train_dataset)  = 12118359
+	len(valid_dataset)  = 252934
+	len(train_loader)   = 189349
+	len(valid_loadernum_iters)   = 3953
+	batch_size  = 64
+	iter_accum  = 4
+	batch_size*iter_accum  = 256
+	loading @ initial_checkpoint = ../trained_models/LB=0.69422_xception_00158000_model.pth
+	initial_checkpoint = ../trained_models/LB=0.69422_xception_00158000_model.pth
+
+--- [START 2017-12-05 21:56:25] ----------------------------------------------------------------
+
+** some experiment setting **
+	IDENTIFIER   = xception_correct_norm
+	SEED         = 123456
+	PROJECT_PATH = ./project
+	out_dir      = ../
+** net setting **
+<class 'net.xception.Xception'>
+
+
+** dataset setting **
+	len(train_dataset)  = 12118359
+	len(valid_dataset)  = 252934
+	len(train_loader)   = 189349
+	len(valid_loadernum_iters)   = 3953
+	batch_size  = 64
+	iter_accum  = 4
+	batch_size*iter_accum  = 256
+	loading @ initial_checkpoint = ../trained_models/LB=0.69422_xception_00158000_model.pth
+	initial_checkpoint = ../trained_models/LB=0.69422_xception_00158000_model.pth
+** start training here! **
+	optimizer=<torch.optim.sgd.SGD object at 0x7f6fdda0b9e8>
+   rate   iter   epoch  | valid_loss/acc | train_loss/acc | batch_loss/acc | total time | avg iter time | i j |
+----------------------------------------------------------------------------------------------------------------
+
+--- [START 2017-12-05 22:27:39] ----------------------------------------------------------------
+
+** some experiment setting **
+	IDENTIFIER   = xception_correct_norm
+	SEED         = 123456
+	PROJECT_PATH = ./project
+	out_dir      = ../
+** net setting **
+<class 'net.xception.Xception'>
+
+
+** dataset setting **
+	len(train_dataset)  = 12118359
+	len(valid_dataset)  = 252934
+	len(train_loader)   = 189349
+	len(valid_loadernum_iters)   = 3953
+	batch_size  = 64
+	iter_accum  = 4
+	batch_size*iter_accum  = 256
+	loading @ initial_checkpoint = ../trained_models/LB=0.69422_xception_00158000_model.pth
+	initial_checkpoint = ../trained_models/LB=0.69422_xception_00158000_model.pth
+** start training here! **
+	optimizer=<torch.optim.sgd.SGD object at 0x7f56e00f0978>
+   rate   iter   epoch  | valid_loss/acc | train_loss/acc | batch_loss/acc | total time | avg iter time | i j |
+----------------------------------------------------------------------------------------------------------------
+
+--- [START 2017-12-05 22:34:54] ----------------------------------------------------------------
+
+** some experiment setting **
+	IDENTIFIER   = xception_correct_norm
+	SEED         = 123456
+	PROJECT_PATH = ./project
+	out_dir      = ../
+** net setting **
+<class 'net.xception.Xception'>
+
+
+** dataset setting **
+	len(train_dataset)  = 12118359
+	len(valid_dataset)  = 252934
+	len(train_loader)   = 189349
+	len(valid_loadernum_iters)   = 3953
+	batch_size  = 64
+	iter_accum  = 4
+	batch_size*iter_accum  = 256
+	loading @ initial_checkpoint = ../trained_models/LB=0.69422_xception_00158000_model.pth
+	initial_checkpoint = ../trained_models/LB=0.69422_xception_00158000_model.pth
+** start training here! **
+	optimizer=<torch.optim.sgd.SGD object at 0x7fb8c15259e8>
+   rate   iter   epoch  | valid_loss/acc | train_loss/acc | batch_loss/acc | total time | avg iter time | i j |
+----------------------------------------------------------------------------------------------------------------
+
+--- [START 2017-12-05 23:27:52] ----------------------------------------------------------------
+
+** some experiment setting **
+	IDENTIFIER   = xception_correct_norm
+	SEED         = 123456
+	PROJECT_PATH = ./project
+	out_dir      = ../
+** net setting **
+<class 'net.xception.Xception'>
+
+
+** dataset setting **
+	len(train_dataset)  = 12118359
+	len(valid_dataset)  = 252934
+	len(train_loader)   = 189349
+	len(valid_loadernum_iters)   = 3953
+	batch_size  = 64
+	iter_accum  = 4
+	batch_size*iter_accum  = 256
+	loading @ initial_checkpoint = ../trained_models/LB=0.69422_xception_00158000_model.pth
+	initial_checkpoint = ../trained_models/LB=0.69422_xception_00158000_model.pth
+** start training here! **
+	optimizer=<torch.optim.sgd.SGD object at 0x7f51f3786860>
+   rate   iter   epoch  | valid_loss/acc | train_loss/acc | batch_loss/acc | total time | avg iter time | i j |
+----------------------------------------------------------------------------------------------------------------
+
+--- [START 2017-12-05 23:33:43] ----------------------------------------------------------------
+
+** some experiment setting **
+	IDENTIFIER   = xception_correct_norm
+	SEED         = 123456
+	PROJECT_PATH = ./project
+	out_dir      = ../
+** net setting **
+<class 'net.xception.Xception'>
+
+
+** dataset setting **
+	len(train_dataset)  = 12118359
+	len(valid_dataset)  = 252934
+	len(train_loader)   = 189349
+	len(valid_loadernum_iters)   = 3953
+	batch_size  = 64
+	iter_accum  = 4
+	batch_size*iter_accum  = 256
+	loading @ initial_checkpoint = ../trained_models/LB=0.69422_xception_00158000_model.pth
+	initial_checkpoint = ../trained_models/LB=0.69422_xception_00158000_model.pth
+** start training here! **
+	optimizer=<torch.optim.sgd.SGD object at 0x7f8105b99860>
+   rate   iter   epoch  | valid_loss/acc | train_loss/acc | batch_loss/acc | total time | avg iter time | i j |
+----------------------------------------------------------------------------------------------------------------
