@@ -83,9 +83,6 @@ class CDiscountValidDataset(Dataset):
             img = self.transform(img)
         return img, label, img_id
 
-
-
-
 class CDiscountTestDataset(Dataset):
     def __init__(self, csv_dir, root_dir, transform=None):
         # print("loading CDiscount Dataset...")

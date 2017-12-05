@@ -78,7 +78,7 @@ def run_training():
     batch_size  = 64 #60   #512  #96 #256
     pseudo_batch_size = 64
     validation_batch_size = 64
-    iter_accum  = 4 # j
+    iter_accum  = 3 # j
 
     batch_loss  = 0.0
     batch_acc   = 0.0
@@ -88,6 +88,8 @@ def run_training():
 
     iter_time_meter = AverageMeter()
     train_loss_meter = AverageMeter()
+    org_train_loss_meter = AverageMeter()
+    org_train_acc_meter = AverageMeter()
     train_acc_meter = AverageMeter()
     valid_acc_meter = AverageMeter()
     valid_loss_meter = AverageMeter()
@@ -296,30 +298,41 @@ def run_training():
             labels = Variable(labels).cuda() if use_cuda else Variable(labels)
             logits = net(images)
             probs  = F.softmax(logits)
-            loss = F.cross_entropy(logits, labels)
+            loss = pseudo_alpha * F.cross_entropy(logits, labels)
             batch_loss = loss.data[0]
             train_loss_meter.update(batch_loss)
-
-            ####
-            # loss = FocalLoss()(logits, labels)  #F.cross_entropy(logits, labels)
-            # acc  = top_accuracy(probs, labels, top_k=(1,))
-            ####
-
-            # optimizer.zero_grad()
-            # loss.backward()
-            # optimizer.step()
+            batch_acc  = get_accuracy(probs, labels, use_cuda)
+            train_acc_meter.update(batch_acc)
 
             # accumulate gradients
             loss.backward()
 
             if j%iter_org_train == 0:
-                next(train_loader_iter)
+                print("=> use org train data")
+                cur = next(train_loader_iter, None)
+                if(cur == None):
+                    train_loader_iter = iter(train_loader) # restart from the beginning
+                    cur = next(train_loader_iter, None)
+                    assert(cur != None)
+                org_images = cur[0]
+                org_images = Variable(org_images.type(torch.FloatTensor)).cuda() if use_cuda else Variable(org_images.type(torch.FloatTensor))
+                org_labels = cur[1]
+                org_labels = Variable(org_labels).cuda() if use_cuda else Variable(org_labels)
+                org_logits = net(org_images)
+                org_probs = F.softmax(org_logits)
+                org_loss = F.cross_entropy(org_logits, org_labels)
+                batch_loss = org_loss.data[0]
+                org_train_loss_meter.update(batch_loss)
+                batch_acc = get_accuracy(org_probs, org_labels, use_cuda)
+                org_train_acc_meter.update(batch_acc)
 
+                # accumulate gradients
+                org_loss.backward()
 
-            ## update gradients every iter_accum
+            # update gradients every iter_accum
             if j%iter_accum == 0:
                 #torch.nn.utils.clip_grad_norm(net.parameters(), 1)
-                #print("optim step")
+                print("=> optim step")
                 optimizer.step()
                 optimizer.zero_grad()
 
@@ -327,8 +340,6 @@ def run_training():
             iter_time_meter.update(time.time() - end)
 
             # print statistics  ------------
-            batch_acc  = get_accuracy(probs, labels, use_cuda)
-            train_acc_meter.update(batch_acc)
 
             if i%iter_smooth == 0 and i != start_iter: # reset train stats every iter_smooth iters
                 if train_acc_meter.avg > best_train_acc:
