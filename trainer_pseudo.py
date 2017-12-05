@@ -176,7 +176,7 @@ def run_training():
 
     print("=> Initing validation set ...")
     transform_valid = transforms.Compose([transforms.Lambda(lambda x: net.valid_augment(x))])
-    valid_dataset = CDiscountDataset(csv_dir+validation_data_filename,root_dir,transform=transform_valid)
+    valid_dataset = CDiscountDataset(csv_dir+validation_data_filename,root_dir,"train",transform=transform_valid)
     valid_loader  = DataLoader(
                         valid_dataset,
                         sampler     = SequentialSampler(valid_dataset),
