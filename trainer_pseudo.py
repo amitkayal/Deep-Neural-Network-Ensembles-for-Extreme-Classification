@@ -310,7 +310,7 @@ def run_training():
             # accumulate gradients
             loss.backward()
 
-            if j%iter_org_train == 0 and:
+            if j%iter_org_train == 0:
                 print("\n=> use org train data")
                 cur = next(train_loader_iter, None)
                 if(cur == None):
