@@ -94,10 +94,13 @@ class CDiscountTestDataset(Dataset):
         self.transform = transform
         image_data = pd.read_csv(csv_dir)
         self.image_id = list(image_data['image_id'])
+        self.labels = list(image_data['category_id'])
+        self.indexes = list(image_data['category_id'])
         num_train = len(image_data)
         # print(num_train)
         # print("dataset labels",self.labels)
         for i in range(num_train):
+            self.indexes[i] = category_id_to_index[self.labels[i]]
             image_name = '{}.jpg'.format(self.image_id[i])
             self.image_names.append(image_name)
         # print("label type:",type(self.labels))
@@ -110,10 +113,11 @@ class CDiscountTestDataset(Dataset):
 
     def __getitem__(self, idx):
         img = cv2.imread(self.root_dir + 'test/'+ self.image_names[idx])
+        label = self.indexes[idx]
         image_id = self.image_id[idx]
         if self.transform is not None:
             img = self.transform(img)
-        return img,image_id
+        return img, label, image_id
 
 
 
