@@ -16,7 +16,7 @@ data_file_name = 'train_data.csv'
 
 
 class CDiscountDataset(Dataset):
-    def __init__(self, csv_dir, root_dir,mode = "train", transform=None):
+    def __init__(self, csv_dir, root_dir, mode = "train", transform=None):
         # print("loading CDiscount Dataset...")
         self.image_names=[]
         self.root_dir=root_dir
@@ -52,6 +52,7 @@ class CDiscountDataset(Dataset):
             img = self.transform(img)
         return img, label, img_id
 
+<<<<<<< HEAD
 
 
 # class CDiscountValidDataset(Dataset):
@@ -183,6 +184,8 @@ class CDiscountTestDataset(Dataset):
         return img, label, image_id
 >>>>>>> b30b0189ca105ce791cd832e88b0798718a75444
 
+=======
+>>>>>>> 542943f99868e158d81324ecf18aaaa7b6f497b1
 class CDiscountDemoDataset(Dataset):
     def __init__(self, csv_dir, root_dir, transform=None):
         print("loading CDiscount Dataset...")
