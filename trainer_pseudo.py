@@ -81,7 +81,7 @@ def run_training():
     batch_size  = 64 #60   #512  #96 #256
     pseudo_batch_size = 64
     validation_batch_size = 64
-    iter_accum  = 3 # j
+    iter_accum  = 2 # j
 
     batch_loss  = 0.0
     batch_acc   = 0.0
@@ -311,7 +311,7 @@ def run_training():
             loss.backward()
 
             if j%iter_org_train == 0 and j != 0:
-                print("=> \nuse org train data")
+                print("\n=> use org train data")
                 cur = next(train_loader_iter, None)
                 if(cur == None):
                     train_loader_iter = iter(train_loader) # restart from the beginning
@@ -354,7 +354,7 @@ def run_training():
             # update gradients every iter_accum
             if j%iter_accum == 0 and j != 0:
                 #torch.nn.utils.clip_grad_norm(net.parameters(), 1)
-                print("=> \noptim step")
+                print("\n=> optim step")
                 optimizer.step()
                 optimizer.zero_grad()
 
