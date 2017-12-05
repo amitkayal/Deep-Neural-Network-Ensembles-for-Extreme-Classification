@@ -92,12 +92,16 @@ def run_training():
     rate = 0
 
     iter_time_meter = AverageMeter()
+
     train_loss_meter = AverageMeter()
+    train_acc_meter = AverageMeter()
+
     org_train_loss_meter = AverageMeter()
     org_train_acc_meter = AverageMeter()
-    train_acc_meter = AverageMeter()
-    valid_acc_meter = AverageMeter()
+
     valid_loss_meter = AverageMeter()
+    valid_acc_meter = AverageMeter()
+
 
 
     j = 0 # number of iters in total
@@ -161,7 +165,7 @@ def run_training():
     get_gpu_stats()
 
     print("=> Initing pseudo training set ...")
-    pseudo_train_dataset = CDiscountDataset(csv_dir+train_data_filename,root_dir,transform=transform_train)
+    pseudo_train_dataset = CDiscountDataset(csv_dir+train_pseudo_data_filename,root_dir,transform=transform_train)
     pseudo_train_loader  = DataLoader(
         pseudo_train_dataset,
                         sampler = RandomSampler(train_dataset),
