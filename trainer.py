@@ -218,10 +218,10 @@ def run_training():
     log.write('   rate   iter   epoch  | valid_loss/acc | train_loss/acc | batch_loss/acc | total time | avg iter time | i j |\n')
     log.write('----------------------------------------------------------------------------------------------------------------\n')
 
-    # Custom setting
-    start_iter = 158000
-    i = start_iter
-    start_epoch= start_iter*batch_size*iter_accum/len(train_dataset)
+    # # Custom setting
+    # start_iter = 158000
+    # i = start_iter
+    # start_epoch= start_iter*batch_size*iter_accum/len(train_dataset)
 
     start = timer()
     end = time.time()
