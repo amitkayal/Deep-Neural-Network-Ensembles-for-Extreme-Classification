@@ -72,7 +72,7 @@ def run_training():
     iter_latest = 50
     iter_save_freq = 1000 # i
     iter_save   = [0, num_iters-1] + list(range(0,num_iters,1*iter_save_freq)) # first and last iters, then every 1000 iters
-    iter_org_train = 2 # every 3 iters(j) of pseudo training set, use 1 iter of original train
+    iter_org_train = 3 # every 3 iters(j) of pseudo training set, use 1 iter of original train
 
     validation_num = 10000
 
@@ -81,7 +81,7 @@ def run_training():
     batch_size  = 64 #60   #512  #96 #256
     pseudo_batch_size = 64
     validation_batch_size = 64
-    iter_accum  = 2 # j
+    iter_accum  = 3 # j
 
     batch_loss  = 0.0
     batch_acc   = 0.0
@@ -239,8 +239,8 @@ def run_training():
 
     log.write('\toptimizer=%s\n'%str(optimizer) )
     # log.write(' LR=%s\n\n'%str(LR) )
-    log.write('   rate   iter   epoch  | valid_loss/acc | train_loss/acc | batch_loss/acc | total time | avg iter time | i j |\n')
-    log.write('----------------------------------------------------------------------------------------------------------------\n')
+    log.write('   rate   iter   epoch  | valid_loss/acc | train_loss/acc | org_train_loss/acc | batch_loss/acc | total time | avg iter time | i j |\n')
+    log.write('------------------------------------------------------------------------------------------------------------------------------------\n')
 
     # Custom setting
     # start_iter = 158000
@@ -310,7 +310,7 @@ def run_training():
             # accumulate gradients
             loss.backward()
 
-            if j%iter_org_train == 0 and j != 0:
+            if j%iter_org_train == 0 and:
                 print("\n=> use org train data")
                 cur = next(train_loader_iter, None)
                 if(cur == None):
@@ -333,7 +333,7 @@ def run_training():
                 org_loss.backward()
 
             # update gradients every iter_accum
-            if j%iter_accum == 0 and j != 0:
+            if j%iter_accum == 0:
                 #torch.nn.utils.clip_grad_norm(net.parameters(), 1)
                 print("\n=> optim step")
                 optimizer.step()
@@ -353,12 +353,9 @@ def run_training():
                 train_loss_meter = AverageMeter()
                 train_acc_meter = AverageMeter()
 
-            print('\r%0.4f  %5.1f k   %4.2f  | %0.4f  %0.4f | %0.4f  %0.4f | %0.4f  %0.4f | %5.0f min | %5.2f s | %d,%d' % \
-                    (rate, i/1000, epoch, valid_loss_meter.val, valid_acc_meter.val, train_loss_meter.avg, train_acc_meter.avg, batch_loss, batch_acc,(timer() - start)/60, iter_time_meter.avg, i, j),\
+            print('\r%0.4f  %5.1f k   %4.2f  | %0.4f  %0.4f | %0.4f  %0.4f | %0.4f  %0.4f | %0.4f  %0.4f | %5.0f min | %5.2f s | %d,%d' % \
+                    (rate, i/1000, epoch, valid_loss_meter.val, valid_acc_meter.val, train_loss_meter.avg, train_acc_meter.avg, org_train_loss_meter.avg, org_train_acc_meter.avg, batch_loss, batch_acc,(timer() - start)/60, iter_time_meter.avg, i, j),\
                     end='',flush=True)
-
-
-
             j=j+1
         pass  #-- end of one data loader --
     pass #-- end of all iterations --
