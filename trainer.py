@@ -92,7 +92,7 @@ def run_training():
 
     j = 0 # number of iters in total
     i = 0 # number of real iters where bp is conducted
-
+bash
     #-----------------------------------------------------------------------------------------------------------
 
     log.write('\n--- [START %s] %s\n\n' % (datetime.now().strftime('%Y-%m-%d %H:%M:%S'), '-' * 64))
