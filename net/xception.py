@@ -225,9 +225,14 @@ class Xception(nn.Module):
         x = self.fc (x)
         return x #logits
 
-    def image_to_tensor_transform(self, image):
-        tensor = pytorch_image_to_tensor_transform(image)
-        return tensor
+    def image_to_tensor_transform(sself, image):
+
+        image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
+        image = image.transpose((2, 0, 1))
+        tensor = torch.from_numpy(image).float().div(255)
+        tensor[0] = (tensor[0] - 0.5) * 2
+        tensor[1] = (tensor[1] - 0.5) * 2
+        tensor[2] = (tensor[2] - 0.5) * 2
 
     def train_augment(self, image):
 
