@@ -13,6 +13,7 @@ import time
 # custom modules
 from Log import *
 from StepLR import *
+from StepAlpha import *
 from Utils import *
 from AverageMeter import *
 from cdimage import *
@@ -137,6 +138,7 @@ def run_training():
     ## optimiser ----------------------------------
     #LR = StepLR([ (0, 0.01),  (200, 0.001),  (300, -1)])
     LR = StepLR([ (0, 0.01), (1, 0.005), (3, 0.0005)])
+    Alpha = StepAlpha()
 
     ## optimizer = optim.SGD(net.parameters(), lr=0.01, momentum=0.9, weight_decay=0.0005)  ###0.0005
     optimizer = optim.SGD(filter(lambda p: p.requires_grad, net.parameters()), lr=0.01, momentum=0.1, weight_decay=0.0001)
@@ -289,8 +291,9 @@ def run_training():
                     save_checkpoint(optimizer, i, epoch, net, best_valid_acc, best_train_acc, train_acc_meter.val, valid_acc_meter.val, checkpoint_dir, latest_dir, "best_val_model.pth")
                     log.write("=> Best validation model updated: iter %d, validation acc %f\n" % (i, best_valid_acc))
 
-            # learning rate schduler -------------
+            # learning rate/alpha schduler -------------
             lr = LR.get_rate(epoch)
+            pseudo_alpha = Alpha.get_rate(epoch)
             if lr<0 : break
             adjust_learning_rate(optimizer, lr/iter_accum)
             rate = get_learning_rate(optimizer)[0]*iter_accum
