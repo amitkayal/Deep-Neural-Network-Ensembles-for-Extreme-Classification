@@ -115,6 +115,19 @@ class CDiscountTestDataset(Dataset):
             img = self.transform(img)
         return img,image_id
 
+class CDiscountDemoDataset(Dataset):
+    def __init__(self, csv_dir, root_dir, transform=None):
+        print("loading CDiscount Dataset...")
+
+        self.cnt = 0
+
+    def __len__(self):
+        return 100
+
+    def __getitem__(self, idx):
+        self.cnt += 1
+        return self.cnt, idx
+
 
 
 
