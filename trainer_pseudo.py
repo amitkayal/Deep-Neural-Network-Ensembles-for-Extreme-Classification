@@ -166,7 +166,7 @@ def run_training():
     pseudo_train_dataset = CDiscountDataset(csv_dir+train_pseudo_data_filename,root_dir,"test",transform=transform_train)
     pseudo_train_loader  = DataLoader(
         pseudo_train_dataset,
-                        sampler = RandomSampler(train_dataset),
+                        sampler = RandomSampler(pseudo_train_dataset),
                         batch_size  = pseudo_batch_size,
                         drop_last   = True,
                         num_workers = 8,
