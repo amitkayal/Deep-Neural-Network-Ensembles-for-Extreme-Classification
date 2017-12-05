@@ -102,8 +102,6 @@ def run_training():
     valid_loss_meter = AverageMeter()
     valid_acc_meter = AverageMeter()
 
-
-
     j = 0 # number of iters in total
     i = 0 # number of real iters where bp is conducted
 
@@ -246,8 +244,8 @@ def run_training():
 
     log.write('\toptimizer=%s\n'%str(optimizer) )
     # log.write(' LR=%s\n\n'%str(LR) )
-    log.write('   rate   iter   epoch  | valid_loss/acc | train_loss/acc | org_train_loss/acc | batch_loss/acc | total time | avg iter time | i j |\n')
-    log.write('------------------------------------------------------------------------------------------------------------------------------------\n')
+    log.write('   rate   alpha   iter   epoch  | valid_loss/acc | train_loss/acc | org_train_loss/acc | batch_loss/acc | total time | avg iter time | i j |\n')
+    log.write('--------------------------------------------------------------------------------------------------------------------------------------------\n')
 
     # Custom setting
     start_iter = 0
@@ -270,8 +268,8 @@ def run_training():
 
             if i % iter_log == 0:
                 # print('\r',end='',flush=True)
-                log.write('\r%0.4f  %5.1f k   %4.2f  | %0.4f  %0.4f | %0.4f  %0.4f | %0.4f  %0.4f | %0.4f  %0.4f | %5.0f min | %5.2f s | %d,%d \n' % \
-                        (rate, i/1000, epoch, valid_loss_meter.val, valid_acc_meter.val, train_loss_meter.avg, train_acc_meter.avg, org_train_loss_meter.avg, org_train_acc_meter.avg, batch_loss, batch_acc,(timer() - start)/60,
+                log.write('\r%0.4f  %0.4f  %5.1f k   %4.2f  | %0.4f  %0.4f | %0.4f  %0.4f | %0.4f  %0.4f | %0.4f  %0.4f | %5.0f min | %5.2f s | %d,%d \n' % \
+                        (rate, pseudo_alpha, i/1000, epoch, valid_loss_meter.val, valid_acc_meter.val, train_loss_meter.avg, train_acc_meter.avg, org_train_loss_meter.avg, org_train_acc_meter.avg, batch_loss, batch_acc,(timer() - start)/60,
                             iter_time_meter.avg, i, j))
 
             if i in iter_save and i != start_iter:
@@ -363,8 +361,8 @@ def run_training():
                 train_loss_meter = AverageMeter()
                 train_acc_meter = AverageMeter()
 
-            print('\r%0.4f  %5.1f k   %4.2f  | %0.4f  %0.4f | %0.4f  %0.4f | %0.4f  %0.4f | %0.4f  %0.4f | %5.0f min | %5.2f s | %d,%d' % \
-                    (rate, i/1000, epoch, valid_loss_meter.val, valid_acc_meter.val, train_loss_meter.avg, train_acc_meter.avg, org_train_loss_meter.avg, org_train_acc_meter.avg, batch_loss, batch_acc,(timer() - start)/60, iter_time_meter.avg, i, j),\
+            print('\r%0.4f  %0.4f  %5.1f k   %4.2f  | %0.4f  %0.4f | %0.4f  %0.4f | %0.4f  %0.4f | %0.4f  %0.4f | %5.0f min | %5.2f s | %d,%d' % \
+                    (rate, pseudo_alpha, i/1000, epoch, valid_loss_meter.val, valid_acc_meter.val, train_loss_meter.avg, train_acc_meter.avg, org_train_loss_meter.avg, org_train_acc_meter.avg, batch_loss, batch_acc,(timer() - start)/60, iter_time_meter.avg, i, j),\
                     end='',flush=True)
             j=j+1
         pass  #-- end of one data loader --
