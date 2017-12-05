@@ -311,7 +311,7 @@ def run_training():
             loss.backward()
 
             if j%iter_org_train == 0 and j != 0:
-                print("=> use org train data")
+                print("=> \nuse org train data")
                 cur = next(train_loader_iter, None)
                 if(cur == None):
                     train_loader_iter = iter(train_loader) # restart from the beginning
@@ -354,7 +354,7 @@ def run_training():
             # update gradients every iter_accum
             if j%iter_accum == 0 and j != 0:
                 #torch.nn.utils.clip_grad_norm(net.parameters(), 1)
-                print("=> optim step")
+                print("=> \noptim step")
                 optimizer.step()
                 optimizer.zero_grad()
 
