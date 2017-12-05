@@ -150,7 +150,7 @@ def run_training():
     log.write('** dataset setting **\n')
     print("=> Initing training set ...")
     transform_train = transforms.Compose([transforms.Lambda(lambda x: net.train_augment(x))])
-    train_dataset = CDiscountDataset(csv_dir+train_data_filename,root_dir + "train/",transform=transform_train)
+    train_dataset = CDiscountDataset(csv_dir+train_data_filename,root_dir,"train",transform=transform_train)
     train_loader  = DataLoader(
                         train_dataset,
                         sampler = RandomSampler(train_dataset),
@@ -163,7 +163,7 @@ def run_training():
     get_gpu_stats()
 
     print("=> Initing pseudo training set ...")
-    pseudo_train_dataset = CDiscountDataset(csv_dir+train_pseudo_data_filename,root_dir + "test/",transform=transform_train)
+    pseudo_train_dataset = CDiscountDataset(csv_dir+train_pseudo_data_filename,root_dir,"test",transform=transform_train)
     pseudo_train_loader  = DataLoader(
         pseudo_train_dataset,
                         sampler = RandomSampler(train_dataset),

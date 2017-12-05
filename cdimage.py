@@ -16,7 +16,7 @@ data_file_name = 'train_data.csv'
 
 
 class CDiscountDataset(Dataset):
-    def __init__(self, csv_dir, root_dir,mode = "train", transform=None):
+    def __init__(self, csv_dir, root_dir, mode = "train", transform=None):
         # print("loading CDiscount Dataset...")
         self.image_names=[]
         self.root_dir=root_dir
