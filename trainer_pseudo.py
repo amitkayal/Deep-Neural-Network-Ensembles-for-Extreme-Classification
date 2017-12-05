@@ -245,9 +245,9 @@ def run_training():
     log.write('------------------------------------------------------------------------------------------------------------------------------------\n')
 
     # Custom setting
-    # start_iter = 158000
-    # i = start_iter
-    # start_epoch= start_iter*batch_size*iter_accum/len(train_dataset)
+    start_iter = 0
+    i = start_iter
+    start_epoch= start_iter*pseudo_batch_size*iter_accum/len(pseudo_train_dataset)
 
     start = timer()
     end = time.time()
@@ -255,11 +255,13 @@ def run_training():
         net.train()
         optimizer.zero_grad()
 
+        log.write("=> New epoch for pseudo training set\n")
+
         for k, data in enumerate(pseudo_train_loader, 0):
             images,labels,_ = data
 
             i = j/iter_accum + start_iter
-            epoch = (i-start_iter)*batch_size*iter_accum/len(train_dataset) + start_epoch
+            epoch = (i-start_iter)*pseudo_batch_size*iter_accum/len(pseudo_train_dataset) + start_epoch
 
             if i % iter_log == 0:
                 # print('\r',end='',flush=True)
