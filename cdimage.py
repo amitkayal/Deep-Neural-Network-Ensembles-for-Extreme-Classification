@@ -53,7 +53,7 @@ class CDiscountDataset(Dataset):
         return img, label, img_id
 
 
-<<<<<<< HEAD
+
 # class CDiscountValidDataset(Dataset):
 #     def __init__(self, csv_dir, root_dir, transform=None):
 #         # print("loading CDiscount Dataset...")
