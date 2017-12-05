@@ -23,7 +23,7 @@ from net.resnet101 import ResNet101 as Net
 # from net.xception import Xception as Net
 
 
-IDENTIFIER = "resnet"
+IDENTIFIER = "xception_correct_norm"
 
 # Not change
 use_cuda = True
@@ -32,7 +32,6 @@ PROJECT_PATH = './project'
 CDISCOUNT_HEIGHT = 180
 CDISCOUNT_WIDTH = 180
 CDISCOUNT_NUM_CLASSES = 5270
-log = Log(IDENTIFIER + "_log.out")
 
 # Dirs/Paths
 out_dir  = '../'
@@ -40,24 +39,29 @@ csv_dir = './data/'
 root_dir = '../output/'
 train_data_filename = 'train.csv'
 validation_data_filename = 'validation.csv'
+train_pseudo_data_filename = "test_pesudo_labeled.csv"
 checkpoint_dir = "../checkpoint/" + IDENTIFIER + "/"
 latest_dir = "./latest/" + IDENTIFIER + "/"
+log_dir = "./log/" + IDENTIFIER + "/"
 
 ## Create output folder
 os.makedirs(checkpoint_dir, exist_ok=True)
 os.makedirs(latest_dir, exist_ok=True)
+os.makedirs(log_dir, exist_ok=True)
 os.makedirs(out_dir +'/backup/' + IDENTIFIER, exist_ok=True)
+
+log = Log(log_dir + "log.out")
 
 
 def run_training():
 
     #-------------------------------------------- Training settings --------------------------------------------
 
-    # initial_checkpoint = None
-    initial_checkpoint = latest_dir + "latest.pth"
+    initial_checkpoint = None
+    # initial_checkpoint = latest_dir + "latest.pth"
     # initial_checkpoint = '../trained_models/resnet_00243000_model.pth'
-    # pretrained_file = '../trained_models/LB=0.69422_xception_00158000_model.pth'
-    pretrained_file = None
+    pretrained_file = '../trained_models/LB=0.69422_xception_00158000_model.pth'
+    # pretrained_file = None
     skip = [] #['fc.weight', 'fc.bias']
 
     num_iters   = 1000*1000
