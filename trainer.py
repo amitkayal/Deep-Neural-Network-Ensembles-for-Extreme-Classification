@@ -18,14 +18,12 @@ from AverageMeter import *
 from cdimage import *
 
 # --------------------------------------------------------
-from net.resnet101 import ResNet101 as Net
+# from net.resnet101 import ResNet101 as Net
 # from net.excited_inception_v3 import SEInception3 as Net
-# from net.xception import Xception as Net
+from net.xception import Xception as Net
 
 
-# IDENTIFIER = "xception_correct_norm"
-
-IDENTIFIER = "resnet"
+IDENTIFIER = "xception_correct_norm"
 
 # Not change
 use_cuda = True
@@ -59,9 +57,9 @@ def run_training():
     #-------------------------------------------- Training settings --------------------------------------------
 
     # initial_checkpoint = None
-    initial_checkpoint = latest_dir + "latest.pth"
+    # initial_checkpoint = latest_dir + "latest.pth"
     # initial_checkpoint = '../trained_models/resnet_00243000_model.pth'
-    # initial_checkpoint = '../trained_models/LB=0.69422_xception_00158000_model.pth'
+    initial_checkpoint = '../trained_models/LB=0.69422_xception_00158000_model.pth'
     pretrained_file = None
     skip = [] #['fc.weight', 'fc.bias']
 
@@ -183,24 +181,24 @@ def run_training():
 
             checkpoint = torch.load(initial_checkpoint)
 
-            # load custom checkpoint
-            start_epoch = checkpoint['epoch']
-            start_iter = checkpoint['iter']
-            best_train_acc = checkpoint['best_train_acc']
-            best_valid_acc = checkpoint['best_valid_acc']
-            train_acc_meter.update(checkpoint['train_acc'])
-            valid_acc_meter.update(checkpoint['valid_acc'])
-            net.load_state_dict(checkpoint['state_dict'])  # load model weights from the checkpoint
-            optimizer.load_state_dict(checkpoint['optimizer'])
+            # # load custom checkpoint
+            # start_epoch = checkpoint['epoch']
+            # start_iter = checkpoint['iter']
+            # best_train_acc = checkpoint['best_train_acc']
+            # best_valid_acc = checkpoint['best_valid_acc']
+            # train_acc_meter.update(checkpoint['train_acc'])
+            # valid_acc_meter.update(checkpoint['valid_acc'])
+            # net.load_state_dict(checkpoint['state_dict'])  # load model weights from the checkpoint
+            # optimizer.load_state_dict(checkpoint['optimizer'])
+            #
+            # log.write("=> loaded checkpoint '{}' (epoch: {}, iter: {}, best_train_acc: {}, best_valid_acc: {})"
+            #       .format(initial_checkpoint, start_epoch, start_iter, best_train_acc, best_valid_acc))
 
-            log.write("=> loaded checkpoint '{}' (epoch: {}, iter: {}, best_train_acc: {}, best_valid_acc: {})"
-                  .format(initial_checkpoint, start_epoch, start_iter, best_train_acc, best_valid_acc))
 
 
-
-            # # load original model
-            # log.write('\tinitial_checkpoint = %s\n' % initial_checkpoint)
-            # net.load_state_dict(torch.load(initial_checkpoint, map_location=lambda storage, loc: storage))
+            # load original model
+            log.write('\tinitial_checkpoint = %s\n' % initial_checkpoint)
+            net.load_state_dict(torch.load(initial_checkpoint, map_location=lambda storage, loc: storage))
 
             get_gpu_stats()
         else:
@@ -220,9 +218,9 @@ def run_training():
     log.write('----------------------------------------------------------------------------------------------------------------\n')
 
     # Custom setting
-    # start_iter = 158000
-    # i = start_iter
-    # start_epoch= start_iter*batch_size*iter_accum/len(train_dataset)
+    start_iter = 158000
+    i = start_iter
+    start_epoch= start_iter*batch_size*iter_accum/len(train_dataset)
 
     start = timer()
     end = time.time()
