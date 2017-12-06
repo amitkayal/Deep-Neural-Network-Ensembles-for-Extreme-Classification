@@ -60,8 +60,8 @@ def run_training():
     #-------------------------------------------- Training settings --------------------------------------------
 
     # initial_checkpoint = None
-    # initial_checkpoint = "./latest/resnet/latest.pth"
-    initial_checkpoint = latest_dir + "latest.pth"
+    initial_checkpoint = "./latest/resnet/latest.pth"
+    # initial_checkpoint = latest_dir + "latest.pth"
     # initial_checkpoint = '../trained_models/resnet_00243000_model.pth'
     # pretrained_file = '../trained_models/LB=0.69422_xception_00158000_model.pth'
     pretrained_file = None
@@ -247,10 +247,10 @@ def run_training():
     log.write('   rate   alpha   iter   epoch  | valid_loss/acc | train_loss/acc | org_train_loss/acc | batch_loss/acc | total time | avg iter time | i j |\n')
     log.write('--------------------------------------------------------------------------------------------------------------------------------------------\n')
 
-    # # Custom setting
-    # start_iter = 0
-    # i = start_iter
-    # start_epoch= start_iter*pseudo_batch_size*iter_accum/len(pseudo_train_dataset)
+    # Custom setting
+    start_iter = 0
+    i = start_iter
+    start_epoch= start_iter*pseudo_batch_size*iter_accum/len(pseudo_train_dataset)
 
     start = timer()
     end = time.time()
