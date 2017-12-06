@@ -232,7 +232,7 @@ def run_training():
         #for images, labels in train_loader:#delete indices for testing
         ################################
         #print("start iteration")
-        for k, data in enumerate(train_loader, 0):
+        for k, data in enumerate(valid_loader, 0):
             images,labels,_ = data
 
             i = j/iter_accum + start_iter
