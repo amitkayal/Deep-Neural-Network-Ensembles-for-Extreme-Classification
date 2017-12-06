@@ -25,7 +25,7 @@ from net.resnet101 import ResNet101 as Net
 
 # IDENTIFIER = "xception_correct_norm"
 
-IDENTIFIER = "resnet_pseudo"
+IDENTIFIER = "resnet"
 
 # Not change
 use_cuda = True
