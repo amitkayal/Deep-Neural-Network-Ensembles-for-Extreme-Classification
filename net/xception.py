@@ -234,6 +234,8 @@ class Xception(nn.Module):
         tensor[1] = (tensor[1] - 0.5) * 2
         tensor[2] = (tensor[2] - 0.5) * 2
 
+        return tensor
+
     def train_augment(self, image):
 
         if random.random() < 0.5:
