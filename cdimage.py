@@ -42,7 +42,6 @@ class CDiscountDataset(Dataset):
         return len(self.image_names)
 
     def __getitem__(self, idx):
-        print()
         if self.mode == "train" or self.mode == "valid":
             img = cv2.imread(self.root_dir + 'train/'+ self.image_names[idx])
         else:
