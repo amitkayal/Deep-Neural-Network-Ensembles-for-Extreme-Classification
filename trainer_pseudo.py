@@ -60,8 +60,8 @@ def run_training():
     #-------------------------------------------- Training settings --------------------------------------------
 
     # initial_checkpoint = None
-    initial_checkpoint = "./latest/resnet/latest.pth"
-    # initial_checkpoint = latest_dir + "latest.pth"
+    # initial_checkpoint = "./latest/resnet/latest.pth"
+    initial_checkpoint = latest_dir + "latest.pth"
     # initial_checkpoint = '../trained_models/resnet_00243000_model.pth'
     # pretrained_file = '../trained_models/LB=0.69422_xception_00158000_model.pth'
     pretrained_file = None
