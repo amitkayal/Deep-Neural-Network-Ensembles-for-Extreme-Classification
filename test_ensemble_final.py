@@ -11,9 +11,11 @@ from torch.utils.data.sampler import RandomSampler
 import operator
 from tqdm import tqdm
 import label_category_transform
+from get_net import *
 # --------------------------------------------------------
-
-from net.resnet101 import ResNet101 as Net
+from net.resnet101 import ResNet101 as ResNet
+from net.xception import Xception as XcepNet
+from net.inception_v3 import Inception3 as IncNet
 
 TTA_list = [fix_center_crop, random_shift_scale_rotate]
 # TTA_list = [fix_center_crop]
@@ -37,6 +39,8 @@ resnet_initial_checkpoint = "./latest/resnet/latest.pth"
 inc3_initial_checkpoint = "./latest/resnet/latest.pth"
 xce3_initial_checkpoint = "./latest/resnet/latest.pth"
 resnet_pseudo_initial_checkpoint = "./latest/resnet/latest.pth"
+
+net_params = {"in_shape": (3, CDISCOUNT_HEIGHT, CDISCOUNT_WIDTH), "num_classes": CDISCOUNT_NUM_CLASSES}
 
 res_path = "./test_res/" + IDENTIFIER + "_test_TTA.res"
 validation_batch_size = 32
@@ -380,8 +384,8 @@ def evaluate_sequential_ensemble_val_final(nets, loader, path):
     print("Acc: ", str(float(correct_product_cnt) / total_product_cnt))
 
 
-def load_net(initial_checkpoint, ):
-    net = Net(in_shape = (3, CDISCOUNT_HEIGHT, CDISCOUNT_WIDTH), num_classes=CDISCOUNT_NUM_CLASSES)
+def load_net(identifier, initial_checkpoint, net_params):
+    net = get_net(identifier, net_params)
     net.cuda()
     net.eval()
 
@@ -406,10 +410,10 @@ def load_net(initial_checkpoint, ):
 if __name__ == '__main__':
     print( '%s: calling main function ... ' % os.path.basename(__file__))
 
-    res_net = load_net(resnet_initial_checkpoint)
+    res_net = load_net("resnet101", resnet_initial_checkpoint, net_params)
     # res_pseudo_net = load_net(resnet_pseudo_initial_checkpoint)
-    inc3_net = load_net(inc3_initial_checkpoint)
-    xce3_net = load_net(xce3_initial_checkpoint)
+    inc3_net = load_net("inceptionv3", inc3_initial_checkpoint, net_params)
+    xce3_net = load_net("xceptionv3", xce3_initial_checkpoint, net_params)
 
     dataset = CDiscountDataset(csv_dir + validation_large_data_filename, root_dir)
     loader  = DataLoader(

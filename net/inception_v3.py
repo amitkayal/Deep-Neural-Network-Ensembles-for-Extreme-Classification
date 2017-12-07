@@ -12,6 +12,9 @@ from transform import *
 
 class Inception3(nn.Module):
 
+    def name(self):
+        return 'inceptionv3'
+
     def load_pretrain_pytorch_file(self, pytorch_file, skip=[]):
         pytorch_state_dict = torch.load(pytorch_file)
         state_dict = self.state_dict()

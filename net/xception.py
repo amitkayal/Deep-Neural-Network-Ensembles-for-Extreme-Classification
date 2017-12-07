@@ -159,6 +159,9 @@ class XBlock(nn.Module):
 
 class Xception(nn.Module):
 
+    def name(self):
+        return 'xceptionv3'
+
     def load_pretrain_pytorch_file(self,pytorch_file, skip=[]):
 
         pytorch_state_dict = torch.load(pytorch_file,map_location=lambda storage, loc: storage)

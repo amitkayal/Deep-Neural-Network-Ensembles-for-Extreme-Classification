@@ -113,6 +113,9 @@ def make_layer0(in_channels, out_planes):
 ## resenet   ##
 class ResNet101(nn.Module):
 
+    def name(self):
+        return 'resnet101'
+
     def load_pretrain_file(self,pretrain_file, skip=[]):
 
         pretrain_state_dict = torch.load(pretrain_file)
