@@ -303,7 +303,7 @@ def evaluate_sequential_ensemble_test(net, loader, path):
         for product_id, prediction in product_to_prediction_map.items():
             file.write(str(product_id) + "," + str(label_to_category_id[prediction]) + "\n")
 
-def evaluate_sequential_ensemble_val_final(net, loader, path):
+def evaluate_sequential_ensemble_val_final(nets, loader, path):
     cur_procuct_probs = []
     cur_product_id = None
     cur_product_label = None
@@ -323,9 +323,10 @@ def evaluate_sequential_ensemble_val_final(net, loader, path):
         probs_list = []
         for images in images_list:
             images = Variable(images.type(torch.FloatTensor)).cuda()
-            logits = net(images)
-            probs  = (((F.softmax(logits)).cpu().data.numpy()).astype(float))
-            probs_list.append(probs)
+            for net in nets:
+                logits = net(images)
+                probs  = (((F.softmax(logits)).cpu().data.numpy()).astype(float))
+                probs_list.append(probs)
 
         i = 0
         for image_id in image_ids:
@@ -419,6 +420,6 @@ if __name__ == '__main__':
                         num_workers = 4,
                         pin_memory  = False)
 
-    product_to_prediction_map = evaluate_sequential_ensemble_val(res_net, loader, res_path)
+    product_to_prediction_map = evaluate_sequential_ensemble_val_final([res_net, inc3_net, xce3_net], loader, res_path)
 
     print('\nsucess!')
