@@ -30,7 +30,8 @@ CDISCOUNT_NUM_CLASSES = 5270
 csv_dir = './data/'
 root_dir = '../output/'
 test_data_filename = 'test.csv'
-validation_data_filename = 'validation_small.csv'
+validation_small_data_filename = 'validation_small.csv'
+validation_large_data_filename = 'validation.csv'
 
 resnet_initial_checkpoint = "./latest/resnet/latest.pth"
 inc3_initial_checkpoint = "./latest/resnet/latest.pth"
@@ -302,14 +303,81 @@ def evaluate_sequential_ensemble_test(net, loader, path):
         for product_id, prediction in product_to_prediction_map.items():
             file.write(str(product_id) + "," + str(label_to_category_id[prediction]) + "\n")
 
-def write_test_result(path, product_to_prediction_map):
-    with open(path, "a") as file:
-        file.write("_id,category_id\n")
+def evaluate_sequential_ensemble_val_final(net, loader, path):
+    cur_procuct_probs = []
+    cur_product_id = None
+    cur_product_label = None
 
-        for product_id, prediction in product_to_prediction_map.items():
-            print(product_id)
-            print(prediction)
-            file.write(str(product_id) + "," + str(prediction) + "\n")
+    correct_product_cnt = 0
+    total_product_cnt = 0
+
+    for iter, (images, labels, image_ids) in enumerate(tqdm(loader), 0):
+        # if total_product_cnt > 10:
+        #     break
+
+        labels = labels.numpy()
+        image_ids = np.array(image_ids)
+
+        # transforms
+        images_list = TTA(images.numpy()) # a list of image batch using different transforms
+        probs_list = []
+        for images in images_list:
+            images = Variable(images.type(torch.FloatTensor)).cuda()
+            logits = net(images)
+            probs  = (((F.softmax(logits)).cpu().data.numpy()).astype(float))
+            probs_list.append(probs)
+
+        i = 0
+        for image_id in image_ids:
+            product_id = imageid_to_productid(image_id)
+
+            if cur_product_id == None:
+                cur_product_id = product_id
+                cur_product_label = labels[i]
+
+            if product_id != cur_product_id:
+                # a new product
+                print("------------------------- cur product: " + str(cur_product_id) + "-------------------------")
+
+                # find winner for previous product
+                num = len(cur_procuct_probs) * transform_num # total number of instances for current product
+                print("Number of instances: ", num)
+
+                # do predictions
+                cur_procuct_probs = np.array(cur_procuct_probs)
+                winner = ensemble_predict(cur_procuct_probs, num)
+
+                if winner == cur_product_label:
+                    correct_product_cnt += 1
+                print("winner: ", str(winner))
+                print("label: ", str(cur_product_label))
+
+                total_product_cnt += 1
+
+                print("Acc: ", str(float(correct_product_cnt) / total_product_cnt))
+
+                # update
+                cur_product_id = product_id
+                cur_product_label = labels[i]
+                cur_procuct_probs = []
+
+            for probs in probs_list:
+                cur_procuct_probs.append(probs[i])
+
+            i += 1
+
+    # find winner for current product
+    num = len(cur_procuct_probs) * transform_num  # total number of instances for current product
+    # do predictions
+    winner = ensemble_predict(np.array(cur_procuct_probs), num)
+
+    if winner == cur_product_label:
+        correct_product_cnt += 1
+
+    total_product_cnt += 1
+
+    print("Acc: ", str(float(correct_product_cnt) / total_product_cnt))
+
 
 def load_net(initial_checkpoint, ):
     net = Net(in_shape = (3, CDISCOUNT_HEIGHT, CDISCOUNT_WIDTH), num_classes=CDISCOUNT_NUM_CLASSES)
@@ -342,7 +410,7 @@ if __name__ == '__main__':
     inc3_net = load_net(inc3_initial_checkpoint)
     xce3_net = load_net(xce3_initial_checkpoint)
 
-    dataset = CDiscountDataset(csv_dir + test_data_filename, root_dir)
+    dataset = CDiscountDataset(csv_dir + validation_large_data_filename, root_dir)
     loader  = DataLoader(
                         dataset,
                         sampler=SequentialSampler(dataset),
