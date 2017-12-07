@@ -228,6 +228,7 @@ class Xception(nn.Module):
         x = self.fc (x)
         return x #logits
 
+    @staticmethod
     def image_to_tensor_transform(sself, image):
 
         image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
@@ -239,6 +240,7 @@ class Xception(nn.Module):
 
         return tensor
 
+    @staticmethod
     def train_augment(self, image):
 
         if random.random() < 0.5:
@@ -259,6 +261,7 @@ class Xception(nn.Module):
         tensor = self.image_to_tensor_transform(image)
         return tensor
 
+    @staticmethod
     def valid_augment(self, image):
         tensor = self.image_to_tensor_transform(image)
         return tensor

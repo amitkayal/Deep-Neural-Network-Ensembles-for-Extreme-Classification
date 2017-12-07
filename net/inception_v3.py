@@ -127,6 +127,7 @@ class Inception3(nn.Module):
  
         return x
 
+    @staticmethod
     def image_to_tensor_transform(self, image):
         tensor = pytorch_image_to_tensor_transform(image)
         tensor[0] = tensor[0] * (0.229 / 0.5) + (0.485 - 0.5) / 0.5
@@ -134,6 +135,7 @@ class Inception3(nn.Module):
         tensor[2] = tensor[2] * (0.225 / 0.5) + (0.406 - 0.5) / 0.5
         return tensor
 
+    @staticmethod
     def train_augment(self, image):
         if random.random() < 0.5:
             image = random_shift_scale_rotate(image,
@@ -153,6 +155,7 @@ class Inception3(nn.Module):
         tensor = self.image_to_tensor_transform(image)
         return tensor
 
+    @staticmethod
     def valid_augment(self, image):
         tensor = self.image_to_tensor_transform(image)
         return tensor

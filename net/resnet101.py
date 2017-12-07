@@ -190,6 +190,7 @@ class ResNet101(nn.Module):
         x = self.fc (x)
         return x #logits
 
+    @staticmethod
     def image_to_tensor_transform(self, image):
         tensor = pytorch_image_to_tensor_transform(image)
         # tensor[0] = tensor[0] * (0.229 / 0.5) + (0.485 - 0.5) / 0.5
@@ -197,6 +198,7 @@ class ResNet101(nn.Module):
         # tensor[2] = tensor[2] * (0.225 / 0.5) + (0.406 - 0.5) / 0.5
         return tensor
 
+    @staticmethod
     def train_augment(self, image):
 
         image = random_resize(image, scale_x_limits=[0.9, 1.1], scale_y_limits=[0.9, 1.1], u=0.5)
@@ -207,6 +209,7 @@ class ResNet101(nn.Module):
         tensor = self.image_to_tensor_transform(image)
         return tensor
 
+    @staticmethod
     def valid_augment(self, image):
 
         image = fix_center_crop(image, size=(160, 160))
