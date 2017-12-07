@@ -337,6 +337,7 @@ def load_net(initial_checkpoint, ):
 if __name__ == '__main__':
     print( '%s: calling main function ... ' % os.path.basename(__file__))
 
+    res_net = load_net(resnet_initial_checkpoint)
     res_pseudo_net = load_net(resnet_pseudo_initial_checkpoint)
     inc3_net = load_net(inc3_initial_checkpoint)
     xce3_net = load_net(xce3_initial_checkpoint)
@@ -350,6 +351,6 @@ if __name__ == '__main__':
                         num_workers = 4,
                         pin_memory  = False)
 
-    # product_to_prediction_map = evaluate_sequential_ensemble_test(net, loader, res_path)
+    product_to_prediction_map = evaluate_sequential_ensemble_val(res_net, loader, res_path)
 
     print('\nsucess!')
