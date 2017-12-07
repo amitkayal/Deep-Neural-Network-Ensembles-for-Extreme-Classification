@@ -18,7 +18,7 @@ from net.xception import Xception as XcepNet
 from net.inception_v3 import Inception3 as IncNet
 
 TTA_list = [ResNet.valid_augment, IncNet.valid_augment, XcepNet.valid_augment]
-# TTA_list = [fix_center_crop]
+# TTA_list = [fix_center_crop, random_shift_scale_rotate]
 transform_num = len(TTA_list)
 
 use_cuda = True
@@ -81,7 +81,7 @@ def TTA(images):
     for transform in TTA_list:
         cur_images = []
         for image in images:
-            cur_images.append(pytorch_image_to_tensor_transform(transform(image)))
+            cur_images.append(transform(image))
 
         images_TTA_list.append(torch.stack(cur_images))
 
