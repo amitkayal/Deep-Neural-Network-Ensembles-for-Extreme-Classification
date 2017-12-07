@@ -285,7 +285,7 @@ if __name__ == '__main__':
     print( '%s: calling main function ... ' % os.path.basename(__file__))
 
     # res_net = load_net("resnet101", resnet_initial_checkpoint, net_params)
-    res_pseudo_net = load_net("resnet101", resnet_pseudo_initial_checkpoint)
+    res_pseudo_net = load_net("resnet101", resnet_pseudo_initial_checkpoint, net_params)
     # inc3_net = load_net("inceptionv3", inc3_initial_checkpoint, net_params)
     # xce3_net = load_net("xceptionv3", xce3_initial_checkpoint, net_params)
 
