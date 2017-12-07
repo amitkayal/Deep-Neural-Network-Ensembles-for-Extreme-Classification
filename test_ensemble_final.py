@@ -17,8 +17,8 @@ from net.resnet101 import ResNet101 as ResNet
 from net.xception import Xception as XcepNet
 from net.inception_v3 import Inception3 as IncNet
 
-TTA_list = [fix_center_crop, random_shift_scale_rotate]
-# TTA_list = [fix_center_crop]
+# TTA_list = [fix_center_crop, random_shift_scale_rotate]
+TTA_list = [fix_center_crop]
 transform_num = len(TTA_list)
 
 use_cuda = True
@@ -386,9 +386,7 @@ def evaluate_sequential_ensemble_val_final(nets, loader, path):
 
 def load_net(identifier, initial_checkpoint, net_params):
     net = get_net(identifier, net_params)
-    print("cuda")
     net.cuda()
-    print("eval")
     net.eval()
 
     if os.path.isfile(initial_checkpoint):
