@@ -229,7 +229,7 @@ class Xception(nn.Module):
         return x #logits
 
     @staticmethod
-    def image_to_tensor_transform(sself, image):
+    def image_to_tensor_transform(image):
 
         image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
         image = image.transpose((2, 0, 1))
@@ -241,7 +241,7 @@ class Xception(nn.Module):
         return tensor
 
     @staticmethod
-    def train_augment(self, image):
+    def train_augment(image):
 
         if random.random() < 0.5:
             image = random_shift_scale_rotate(image,
@@ -258,12 +258,12 @@ class Xception(nn.Module):
         # flip  random ---------
         image = random_horizontal_flip(image, u=0.5)
 
-        tensor = self.image_to_tensor_transform(image)
+        tensor = Xception.image_to_tensor_transform(image)
         return tensor
 
     @staticmethod
-    def valid_augment(self, image):
-        tensor = self.image_to_tensor_transform(image)
+    def valid_augment(image):
+        tensor = Xception.image_to_tensor_transform(image)
         return tensor
 
 ########################################################################################################
