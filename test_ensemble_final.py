@@ -32,8 +32,11 @@ root_dir = '../output/'
 test_data_filename = 'test.csv'
 validation_data_filename = 'validation_small.csv'
 
-initial_checkpoint = "./latest/" + IDENTIFIER + "/latest.pth"
-# initial_checkpoint = "../trained_models/resnet_00243000_model.pth"
+resnet_initial_checkpoint = "./latest/resnet/latest.pth"
+inc3_initial_checkpoint = "./latest/resnet/latest.pth"
+xce3_initial_checkpoint = "./latest/resnet/latest.pth"
+resnet_pseudo_initial_checkpoint = "./latest/resnet/latest.pth"
+
 res_path = "./test_res/" + IDENTIFIER + "_test_TTA.res"
 validation_batch_size = 64
 
@@ -308,10 +311,7 @@ def write_test_result(path, product_to_prediction_map):
             print(prediction)
             file.write(str(product_id) + "," + str(prediction) + "\n")
 
-# main #################################################################
-if __name__ == '__main__':
-    print( '%s: calling main function ... ' % os.path.basename(__file__))
-
+def load_net(initial_checkpoint, ):
     net = Net(in_shape = (3, CDISCOUNT_HEIGHT, CDISCOUNT_WIDTH), num_classes=CDISCOUNT_NUM_CLASSES)
     net.cuda()
     net.eval()
@@ -331,6 +331,16 @@ if __name__ == '__main__':
         print("=> no checkpoint found at '{}'".format(initial_checkpoint))
         exit(0)
 
+    return net
+
+# main #################################################################
+if __name__ == '__main__':
+    print( '%s: calling main function ... ' % os.path.basename(__file__))
+
+    res_pseudo_net = load_net(resnet_pseudo_initial_checkpoint)
+    inc3_net = load_net(inc3_initial_checkpoint)
+    xce3_net = load_net(xce3_initial_checkpoint)
+
     dataset = CDiscountDataset(csv_dir + test_data_filename, root_dir)
     loader  = DataLoader(
                         dataset,
@@ -340,6 +350,6 @@ if __name__ == '__main__':
                         num_workers = 4,
                         pin_memory  = False)
 
-    product_to_prediction_map = evaluate_sequential_ensemble_test(net, loader, res_path)
+    # product_to_prediction_map = evaluate_sequential_ensemble_test(net, loader, res_path)
 
     print('\nsucess!')
