@@ -39,7 +39,7 @@ xce3_initial_checkpoint = "./latest/resnet/latest.pth"
 resnet_pseudo_initial_checkpoint = "./latest/resnet/latest.pth"
 
 res_path = "./test_res/" + IDENTIFIER + "_test_TTA.res"
-validation_batch_size = 64
+validation_batch_size = 32
 
 def ensemble_predict(cur_procuct_probs, num):
     candidates = list(set(np.argmax(cur_procuct_probs, axis=1))) # remove dups
@@ -407,7 +407,7 @@ if __name__ == '__main__':
     print( '%s: calling main function ... ' % os.path.basename(__file__))
 
     res_net = load_net(resnet_initial_checkpoint)
-    res_pseudo_net = load_net(resnet_pseudo_initial_checkpoint)
+    # res_pseudo_net = load_net(resnet_pseudo_initial_checkpoint)
     inc3_net = load_net(inc3_initial_checkpoint)
     xce3_net = load_net(xce3_initial_checkpoint)
 
