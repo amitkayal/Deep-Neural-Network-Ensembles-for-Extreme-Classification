@@ -36,8 +36,8 @@ validation_small_data_filename = 'validation_small.csv'
 validation_large_data_filename = 'validation.csv'
 
 resnet_initial_checkpoint = "./latest/resnet/latest.pth"
-inc3_initial_checkpoint = "./latest/resnet/latest.pth"
-xce3_initial_checkpoint = "./latest/resnet/latest.pth"
+inc3_initial_checkpoint = "./latest/inc3/latest.pth"
+xce3_initial_checkpoint = "./latest/xception_correct_norm/latest.pth"
 resnet_pseudo_initial_checkpoint = "./latest/resnet/latest.pth"
 
 net_params = {"in_shape": (3, CDISCOUNT_HEIGHT, CDISCOUNT_WIDTH), "num_classes": CDISCOUNT_NUM_CLASSES}
