@@ -43,7 +43,7 @@ resnet_pseudo_initial_checkpoint = "./latest/resnet/latest.pth"
 net_params = {"in_shape": (3, CDISCOUNT_HEIGHT, CDISCOUNT_WIDTH), "num_classes": CDISCOUNT_NUM_CLASSES}
 
 res_path = "./test_res/" + IDENTIFIER + "_test_TTA.res"
-validation_batch_size = 32
+validation_batch_size = 64
 
 def ensemble_predict(cur_procuct_probs, num):
     candidates = list(set(np.argmax(cur_procuct_probs, axis=1))) # remove dups
@@ -426,6 +426,8 @@ if __name__ == '__main__':
                         num_workers = 4,
                         pin_memory  = False)
 
-    product_to_prediction_map = evaluate_sequential_ensemble_val_final([res_net, inc3_net, xce3_net], loader, res_path)
+    # nets = [res_net, inc3_net, xce3_net]
+    nets = [res_net]
+    product_to_prediction_map = evaluate_sequential_ensemble_val_final(nets, loader, res_path)
 
     print('\nsucess!')
