@@ -17,7 +17,7 @@ from net.resnet101 import ResNet101 as ResNet
 from net.xception import Xception as XcepNet
 from net.inception_v3 import Inception3 as IncNet
 
-TTA_list = [fix_center_crop, random_shift_scale_rotate]
+TTA_list = [ResNet.valid_augment, IncNet.valid_augment, XcepNet.valid_augment]
 # TTA_list = [fix_center_crop]
 transform_num = len(TTA_list)
 
@@ -87,82 +87,18 @@ def TTA(images):
 
     return images_TTA_list
 
-def evaluate_sequential_average_val(net, loader, path):
-    cur_procuct_probs = np.zeros((1, CDISCOUNT_NUM_CLASSES))
-    cur_product_id = None
-    cur_product_label = None
+# def TTA_separate(images):
+#     images_TTA_list = []
+#
+#     for transform in TTA_list:
+#         cur_images = []
+#         for image in images:
+#             cur_images.append(pytorch_image_to_tensor_transform(transform(image)))
+#
+#         images_TTA_list.append(torch.stack(cur_images))
+#
+#     return images_TTA_list
 
-    correct_product_cnt = 0
-    total_product_cnt = 0
-
-    for iter, (images, labels, image_ids) in enumerate(tqdm(loader), 0):
-        labels = labels.numpy()
-        image_ids = np.array(image_ids)
-
-        # transforms
-        images_list = TTA(images.numpy()) # a list of image batch using different transforms
-        probs_list = []
-        for images in images_list:
-            images = Variable(images.type(torch.FloatTensor)).cuda()
-            logits = net(images)
-            probs  = (((F.softmax(logits)).cpu().data.numpy()).astype(float))
-            probs_list.append(probs)
-
-        i = 0
-        cnt = 0;
-        for image_id in image_ids:
-            product_id = imageid_to_productid(image_id)
-
-            if cur_product_id == None:
-                cur_product_id = product_id
-                cur_product_label = labels[i]
-
-            if product_id != cur_product_id:
-                # a new product
-                print("------------------------- cur product: " + str(cur_product_id) + "-------------------------")
-
-                # find winner for previous product
-                num = cnt # total number of instances for current product
-                print("Number of instances: ", num)
-
-                # do predictions
-                cur_procuct_probs = np.array(cur_procuct_probs)
-                winner = np.argmax(cur_procuct_probs)
-
-                if winner == cur_product_label:
-                    correct_product_cnt += 1
-
-                print("winner: ", str(winner))
-                print("label: ", str(cur_product_label))
-
-                total_product_cnt += 1
-
-                print("Acc: ", str(float(correct_product_cnt) / total_product_cnt))
-
-                # update
-                # start = end
-                cur_product_id = product_id
-                cur_product_label = labels[i]
-                cnt = 0
-                cur_procuct_probs = np.zeros((1, CDISCOUNT_NUM_CLASSES))
-
-            # add up probs
-            for probs in probs_list:
-                cur_procuct_probs += probs[i]
-                cnt += 1
-            i += 1
-
-    # find winner for current product
-    # do predictions
-    cur_procuct_probs = np.array(cur_procuct_probs)
-    winner = np.argmax(cur_procuct_probs)
-
-    if winner == cur_product_label:
-        correct_product_cnt += 1
-
-    total_product_cnt += 1
-
-    print("Acc: ", str(float(correct_product_cnt) / total_product_cnt))
 
 def evaluate_sequential_ensemble_val(net, loader, path):
     cur_procuct_probs = []
@@ -239,75 +175,8 @@ def evaluate_sequential_ensemble_val(net, loader, path):
 
     print("Acc: ", str(float(correct_product_cnt) / total_product_cnt))
 
-def evaluate_sequential_ensemble_test(net, loader, path):
-    product_to_prediction_map = {}
-    cur_procuct_probs = []
-    cur_product_id = None
 
-    with open(path, "a") as file:
-        file.write("_id,category_id\n")
-
-        for iter, (images, image_ids) in enumerate(tqdm(loader), 0):
-            image_ids = np.array(image_ids)
-
-            # transforms
-            images_list = TTA(images.numpy()) # a list of image batch using different transforms
-            probs_list = []
-            for images in images_list:
-                images = Variable(images.type(torch.FloatTensor)).cuda()
-                logits = net(images)
-                probs  = ((F.softmax(logits)).cpu().data.numpy()).astype(float)
-                probs_list.append(probs)
-
-            i = 0
-            for image_id in image_ids:
-                product_id = imageid_to_productid(image_id)
-
-                if cur_product_id == None:
-                    cur_product_id = product_id
-
-                if product_id != cur_product_id:
-                    # a new product
-                    print("------------------------- cur product: " + str(cur_product_id) + "-------------------------")
-
-                    # find winner for previous product
-                    num = len(cur_procuct_probs) * transform_num  # total number of instances for current product
-                    print("Number of instances: ", num)
-
-                    # do predictions
-                    cur_procuct_probs = np.array(cur_procuct_probs)
-                    winner = ensemble_predict(cur_procuct_probs, num)
-
-                    # save winner
-                    product_to_prediction_map[cur_product_id] = winner
-
-                    # update
-                    cur_product_id = product_id
-                    cur_procuct_probs = []
-
-                for probs in probs_list:
-                    cur_procuct_probs.append(probs[i])
-
-                i += 1
-
-        # a new product
-        print("------------------------- cur product: " + str(cur_product_id) + "-------------------------")
-
-        # find winner for previous product
-        num = len(cur_procuct_probs) * transform_num  # total number of instances for current product
-        print("Number of instances: ", num)
-
-        # do predictions
-        cur_procuct_probs = np.array(cur_procuct_probs)
-        winner = ensemble_predict(cur_procuct_probs, num)
-
-        # save winner
-        product_to_prediction_map[cur_product_id] = winner
-
-        for product_id, prediction in product_to_prediction_map.items():
-            file.write(str(product_id) + "," + str(label_to_category_id[prediction]) + "\n")
-
-def evaluate_sequential_ensemble_val_final(nets, loader, path):
+def evaluate_sequential_ensemble_val_bagging(nets, loader, path):
     cur_procuct_probs = []
     cur_product_id = None
     cur_product_label = None
@@ -324,13 +193,17 @@ def evaluate_sequential_ensemble_val_final(nets, loader, path):
 
         # transforms
         images_list = TTA(images.numpy()) # a list of image batch using different transforms
+        assert (len(images_list) == transform_num)
         probs_list = []
+
+        i = 0
         for images in images_list:
             images = Variable(images.type(torch.FloatTensor)).cuda()
-            for net in nets:
-                logits = net(images)
-                probs  = (((F.softmax(logits)).cpu().data.numpy()).astype(float))
-                probs_list.append(probs)
+            net = nets[i]
+            logits = net(images)
+            probs  = (((F.softmax(logits)).cpu().data.numpy()).astype(float))
+            probs_list.append(probs)
+            i += 1
 
         i = 0
         for image_id in image_ids:
@@ -415,7 +288,7 @@ if __name__ == '__main__':
     inc3_net = load_net("inceptionv3", inc3_initial_checkpoint, net_params)
     xce3_net = load_net("xceptionv3", xce3_initial_checkpoint, net_params)
 
-    dataset = CDiscountDataset(csv_dir + validation_large_data_filename, root_dir)
+    dataset = CDiscountDataset(csv_dir + validation_large_data_filename, root_dir, transform=None)
     loader  = DataLoader(
                         dataset,
                         sampler=SequentialSampler(dataset),
@@ -426,6 +299,6 @@ if __name__ == '__main__':
 
     # nets = [res_net, inc3_net, xce3_net]
     nets = [res_net]
-    product_to_prediction_map = evaluate_sequential_ensemble_val_final(nets, loader, res_path)
+    product_to_prediction_map = evaluate_sequential_ensemble_val_bagging(nets, loader, res_path)
 
     print('\nsucess!')
