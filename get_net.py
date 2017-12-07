@@ -1,7 +1,7 @@
 def get_net(identifier, net_params):
     model = None
     print(identifier)
-    if identifier == 'resnet':
+    if identifier == 'resnet101':
         from net.resnet101 import ResNet101 as Net
     elif identifier == 'xceptionv3':
         from net.xception import Xception as Net
