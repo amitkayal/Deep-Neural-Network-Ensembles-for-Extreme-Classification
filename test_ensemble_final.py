@@ -17,8 +17,9 @@ from net.resnet101 import ResNet101 as ResNet
 from net.xception import Xception as XcepNet
 from net.inception_v3 import Inception3 as IncNet
 
-TTA_list = [ResNet.valid_augment, IncNet.valid_augment, XcepNet.valid_augment]
+# TTA_list = [ResNet.valid_augment, IncNet.valid_augment, XcepNet.valid_augment]
 # TTA_list = [fix_center_crop, random_shift_scale_rotate]
+TTA_list = [ResNet.valid_augment]
 transform_num = len(TTA_list)
 
 use_cuda = True
@@ -38,7 +39,7 @@ validation_large_data_filename = 'validation.csv'
 resnet_initial_checkpoint = "./latest/resnet/latest.pth"
 inc3_initial_checkpoint = "./latest/inc3/latest.pth"
 xce3_initial_checkpoint = "./latest/xception_correct_norm/latest.pth"
-resnet_pseudo_initial_checkpoint = "./latest/resnet/latest.pth"
+resnet_pseudo_initial_checkpoint = "./latest/resnet_pseudo/latest.pth"
 
 net_params = {"in_shape": (3, CDISCOUNT_HEIGHT, CDISCOUNT_WIDTH), "num_classes": CDISCOUNT_NUM_CLASSES}
 
@@ -283,10 +284,11 @@ def load_net(identifier, initial_checkpoint, net_params):
 if __name__ == '__main__':
     print( '%s: calling main function ... ' % os.path.basename(__file__))
 
-    res_net = load_net("resnet101", resnet_initial_checkpoint, net_params)
-    # res_pseudo_net = load_net(resnet_pseudo_initial_checkpoint)
-    inc3_net = load_net("inceptionv3", inc3_initial_checkpoint, net_params)
-    xce3_net = load_net("xceptionv3", xce3_initial_checkpoint, net_params)
+    # res_net = load_net("resnet101", resnet_initial_checkpoint, net_params)
+    res_pseudo_net = load_net("resnet101", resnet_pseudo_initial_checkpoint)
+    # inc3_net = load_net("inceptionv3", inc3_initial_checkpoint, net_params)
+    # xce3_net = load_net("xceptionv3", xce3_initial_checkpoint, net_params)
+
 
     dataset = CDiscountDataset(csv_dir + validation_large_data_filename, root_dir, transform=None)
     loader  = DataLoader(
@@ -297,8 +299,8 @@ if __name__ == '__main__':
                         num_workers = 4,
                         pin_memory  = False)
 
-    nets = [res_net, inc3_net, xce3_net]
-    # nets = [res_net]
+    # nets = [res_net, inc3_net, xce3_net]
+    nets = [res_pseudo_net]
     product_to_prediction_map = evaluate_sequential_ensemble_val_bagging(nets, loader, res_path)
 
     print('\nsucess!')
