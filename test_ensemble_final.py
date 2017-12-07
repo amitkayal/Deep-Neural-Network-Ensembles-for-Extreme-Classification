@@ -386,7 +386,9 @@ def evaluate_sequential_ensemble_val_final(nets, loader, path):
 
 def load_net(identifier, initial_checkpoint, net_params):
     net = get_net(identifier, net_params)
+    print("cuda")
     net.cuda()
+    print("eval")
     net.eval()
 
     if os.path.isfile(initial_checkpoint):
