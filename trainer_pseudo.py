@@ -362,7 +362,7 @@ def run_training():
                 train_acc_meter = AverageMeter()
 
             print('\r%0.4f  %0.4f  %5.1f k   %4.2f  | %0.4f  %0.4f | %0.4f  %0.4f | %0.4f  %0.4f | %0.4f  %0.4f | %5.0f min | %5.2f s | %d,%d' % \
-                    (rate, pseudo_alpha, i/1000, epoch, valid_loss_meter.val, valid_acc_meter.val, train_loss_meter.avg, train_acc_meter.avg, org_train_loss_meter.avg, org_train_acc_meter.avg, batch_loss, batch_acc,(timer() - start)/60, iter_time_meter.avg, i, j),\
+                    (rate, pseudo_alpha, i/1000, epoch, valid_loss_meter.val, valid_acc_meter.val, train_loss_meter.avg, train_acc_meter.avg, org_train_loss_meter.avg, org_train_acc_meter.avg, batch_loss, batch_acc, (timer() - start)/60, iter_time_meter.avg, i, j),\
                     end='',flush=True)
             j=j+1
         pass  #-- end of one data loader --
