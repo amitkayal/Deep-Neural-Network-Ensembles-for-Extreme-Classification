@@ -1,0 +1,4 @@
+#exp1
+
+resnet101-baseline:
+test: 0.6384087494416546
