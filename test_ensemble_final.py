@@ -297,8 +297,8 @@ if __name__ == '__main__':
                         num_workers = 4,
                         pin_memory  = False)
 
-    # nets = [res_net, inc3_net, xce3_net]
-    nets = [res_net]
+    nets = [res_net, inc3_net, xce3_net]
+    # nets = [res_net]
     product_to_prediction_map = evaluate_sequential_ensemble_val_bagging(nets, loader, res_path)
 
     print('\nsucess!')
