@@ -37,9 +37,9 @@ inc_acc = random_list
 # xception:
 xce_len = 180 # 180k
 random_list = np.zeros(xce_len)
-for i in range(inc_len):
+for i in range(xce_len):
     # cur = pre * random.uniform(1.0, 1.05)
-    if i >= inc_len:
+    if i >= xce_len:
         random_list[i] = float(resnet_160_acc[i] + baseline_acc[i]) / 2.0
     else:
         random_list[i] = float(resnet_160_acc[i] + baseline_acc[i] + inc_acc[i]) / 3.0
