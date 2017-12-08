@@ -17,12 +17,12 @@ from net.resnet101 import ResNet101 as ResNet
 from net.xception import Xception as XcepNet
 from net.inception_v3 import Inception3 as IncNet
 
-def wrap(f, g):
-    return lambda x: f(g(x))
+def wrap(image):
+    return ResNet.valid_augment(random_shift_scale_rotate(image))
 
 # TTA_list = [ResNet.valid_augment, IncNet.valid_augment, XcepNet.valid_augment]
 # TTA_list = [fix_center_crop, random_shift_scale_rotate]
-TTA_list = [ResNet.valid_augment, wrap(ResNet.valid_augment, random_shift_scale_rotate)]
+TTA_list = [ResNet.valid_augment, wrap]
 transform_num = len(TTA_list)
 
 use_cuda = True
