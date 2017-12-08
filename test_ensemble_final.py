@@ -361,7 +361,7 @@ if __name__ == '__main__':
     # xce3_net = load_net("xceptionv3", xce3_initial_checkpoint, net_params)
 
 
-    dataset = CDiscountDataset(csv_dir + validation_large_data_filename, root_dir, transform=None)
+    dataset = CDiscountDataset(csv_dir + test_data_filename, root_dir, mode="test", transform=None)
     loader  = DataLoader(
                         dataset,
                         sampler=SequentialSampler(dataset),
