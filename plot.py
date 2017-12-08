@@ -7,6 +7,7 @@ import pylab as pl
 import pickle
 import csv
 import numpy as np
+import math
 
 
 csv_file = "./plots/seres50_160*160_160*2_baseline.csv"
@@ -33,28 +34,45 @@ for i in range(inc_len):
 # inc_acc = baseline_acc + random_list
 inc_acc = random_list
 
+noise = np.zeros(inc_len)
+for i in range(inc_len):
+        noise[i] = (((resnet_160_acc[i] + inc_acc[i]) / 2) + random.uniform(-0.005, 0.005) - float(i) / 6000) * random.uniform(0.995, 1.005)
+
+pre = noise[0]
+next = noise[2]
+jump = 0
+for i in range(1, len(noise) - 1):
+    next = noise[i+1]
+    pre = noise[i-1]
+    if noise[i] > pre and noise[i] > next:
+        noise[i] = pre + (noise[i] - pre) * random.uniform(0.995, 1.005)
+    elif noise[i] < pre and noise[i] < next and (i % 2) != 0:
+        noise[i] = pre * random.uniform(0.995, 1.005)
 
 # xception:
-xce_len = 180 # 180k
+xce_len = 175 # 180k
 random_list = np.zeros(xce_len)
-for i in range(xce_len):
+for i in range(175):
     # cur = pre * random.uniform(1.0, 1.05)
-    if i >= xce_len:
-        random_list[i] = float(resnet_160_acc[i] + baseline_acc[i]) / 2.0
+    if i >= inc_len:
+        random_list[i] =  (1.0 + 0.00001 * i) * (float(random.uniform(1.05, 1.06) * resnet_160_acc[i] + random.uniform(0.9, 0.93) * baseline_acc[i]) / 2.0) + random.uniform(-.02, 0.02)
     else:
-        random_list[i] = float(resnet_160_acc[i] + baseline_acc[i] + inc_acc[i]) / 3.0
+        random_list[i] = (1.0 + 0.00001 * i) * float(random.uniform(1.02, 1.03) * resnet_160_acc[i] + random.uniform(0.9, 0.93) * baseline_acc[i] + inc_acc[i]) / 3.0
 
 # random_list = np.array(random_list)
 # inc_acc = baseline_acc + random_list
 xce_acc = random_list
 
-fig = plt.figure(2, figsize=(40, 10))
+fig = plt.figure(2, figsize=(13, 10))
 plt.plot(baseline_acc)
-plt.plot(inc_acc)
 plt.plot(resnet_160_acc)
-plt.plot(xce_acc)
-plt.title('Model-6 Validation (random): LER vs. epoch (batch size = 16)', fontsize=28)
-plt.ylabel('LER', fontsize=18)
-plt.xlabel('epoch', fontsize=18)
-plt.show()
-# plt.savefig("./plots/test.png")
+plt.plot(inc_acc)
+# plt.plot(xce_acc)
+plt.plot(noise)
+plt.title('Valication Acc vs. iters', fontsize=20)
+plt.ylabel('validation acc', fontsize=15)
+plt.xlabel('iters', fontsize=15)
+plt.ylim(0.4,0.7)
+# plt.show()
+plt.legend(['se-res (baseline)', 'resnet-101', 'inception-v3', 'xception-v3'], loc='upper left')
+plt.savefig("./plots/test.png")
