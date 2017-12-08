@@ -47,7 +47,7 @@ resnet_pseudo_initial_checkpoint = "./latest/resnet_pseudo/latest.pth"
 
 net_params = {"in_shape": (3, CDISCOUNT_HEIGHT, CDISCOUNT_WIDTH), "num_classes": CDISCOUNT_NUM_CLASSES}
 
-res_path = "./test_res/" + IDENTIFIER + "_test_TTA_pseudo.res"
+res_path = "./test_res/" + IDENTIFIER + "_test_TTA_ensemble.res"
 validation_batch_size = 64
 
 def ensemble_predict(cur_procuct_probs, num):
