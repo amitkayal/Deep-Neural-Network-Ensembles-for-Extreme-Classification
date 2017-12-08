@@ -18,11 +18,11 @@ from net.xception import Xception as XcepNet
 from net.inception_v3 import Inception3 as IncNet
 
 def wrap(f, g):
-    return lambda x: g(f(x))
+    return lambda x: f(g(x))
 
 # TTA_list = [ResNet.valid_augment, IncNet.valid_augment, XcepNet.valid_augment]
 # TTA_list = [fix_center_crop, random_shift_scale_rotate]
-TTA_list = [ResNet.valid_augment, wrap(random_shift_scale_rotate, ResNet.valid_augment)]
+TTA_list = [ResNet.valid_augment, wrap(ResNet.valid_augment, random_shift_scale_rotate)]
 transform_num = len(TTA_list)
 
 use_cuda = True
@@ -291,7 +291,7 @@ def evaluate_sequential_ensemble_test(net, loader, path):
     with open(path, "a") as file:
         file.write("_id,category_id\n")
 
-        for iter, (images, image_ids) in enumerate(tqdm(loader), 0):
+        for iter, (images, _, image_ids) in enumerate(tqdm(loader), 0):
             image_ids = np.array(image_ids)
 
             # transforms
