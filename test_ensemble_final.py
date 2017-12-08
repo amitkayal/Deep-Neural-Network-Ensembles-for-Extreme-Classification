@@ -67,12 +67,16 @@ def ensemble_predict(cur_procuct_probs, num):
         abandan_cnt = 0
         for probs in cur_procuct_probs:  # iterate each product instance
             print("prob: ", probs[candidate])
-            if probs[candidate] < probs_means[candidate] * TTA_threshold or probs[candidate] > probs_means[candidate] * (1 / TTA_threshold):
+            other_mean = (probs_means[candidate] * num - probs[candidate]) / (num - 1)
+            if probs[candidate] < other_mean * TTA_threshold or probs[candidate] > other_mean * (1 / TTA_threshold):
                 # abandan this instance
                 candidate_score -= probs[candidate]
                 abandan_cnt += 1
 
-        candidate_score = float(candidate_score) / (num - abandan_cnt)
+        if abandan_cnt == num:
+            candidate_score = probs_means[candidate]
+        else:
+            candidate_score = float(candidate_score) / (num - abandan_cnt)
 
         if candidate_score > winner_score:
             winner = candidate
@@ -376,6 +380,6 @@ if __name__ == '__main__':
     # nets = [res_net, inc3_net, xce3_net]
     # nets = [res_pseudo_net]
     nets = [res_net]
-    product_to_prediction_map = evaluate_sequential_ensemble_test(nets, loader, res_path)
+    product_to_prediction_map = evaluate_sequential_ensemble_val_bagging(nets, loader, res_path)
 
     print('\nsucess!')
