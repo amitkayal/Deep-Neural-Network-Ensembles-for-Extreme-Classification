@@ -39,16 +39,20 @@ xce_len = 180 # 180k
 random_list = np.zeros(xce_len)
 for i in range(inc_len):
     # cur = pre * random.uniform(1.0, 1.05)
-    random_list[i] = float(resnet_160_acc[i] + baseline_acc[i] + ) / 2.0
+    if i >= inc_len:
+        random_list[i] = float(resnet_160_acc[i] + baseline_acc[i]) / 2.0
+    else:
+        random_list[i] = float(resnet_160_acc[i] + baseline_acc[i] + inc_acc[i]) / 3.0
 
 # random_list = np.array(random_list)
 # inc_acc = baseline_acc + random_list
-inc_acc = random_list
+xce_acc = random_list
 
 fig = plt.figure(2, figsize=(40, 10))
 plt.plot(baseline_acc)
 plt.plot(inc_acc)
 plt.plot(resnet_160_acc)
+plt.plot(xce_acc)
 plt.title('Model-6 Validation (random): LER vs. epoch (batch size = 16)', fontsize=28)
 plt.ylabel('LER', fontsize=18)
 plt.xlabel('epoch', fontsize=18)
