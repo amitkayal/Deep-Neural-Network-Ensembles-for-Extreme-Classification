@@ -7,7 +7,7 @@
     \SetKwInOut{Input}{Input}
     \SetKwInOut{Output}{Output}
 
-    \underline{function Euclid} $(a,b)$\;
+    \underline{function prediction\_aggregator} $(P, D)$\;
     \Input{Probability distribution over target categories of all images for one product $P$, product $D$}
     \Output{Category prediction of the product}
     \For{candidate \in cadidates\_pool } {
@@ -16,9 +16,11 @@
     		
     		\eIf{$P(candidate | image)$ outside $95\%$ confidence interval} {
     			exclude the image;
-    		}    		
+    		}    		    		
     	}
+    	update candidate score;
     }
+    find winner with highest score;
     \caption{Belief-based Prediction Aggregation}
 \end{algorithm}
 \end{document} 
