@@ -24,8 +24,9 @@ class CDiscountDataset(Dataset):
         self.mode = mode
         image_data = pd.read_csv(csv_dir)
         self.image_id = list(image_data['image_id'])
-        self.labels = list(image_data['category_id'])
-        self.indexes = list(image_data['category_id'])
+        if self.mode == "train" or self.mode == "valid":
+            self.labels = list(image_data['category_id'])
+            self.indexes = list(image_data['category_id'])
         num_train = len(image_data)
         for i in range(num_train):
             self.indexes[i] = category_id_to_index[self.labels[i]]
