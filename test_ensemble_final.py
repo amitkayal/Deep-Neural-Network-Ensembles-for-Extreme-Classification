@@ -283,7 +283,7 @@ def load_net(identifier, initial_checkpoint, net_params):
 
     return net
 
-def evaluate_sequential_ensemble_test(net, loader, path):
+def evaluate_sequential_ensemble_test(nets, loader, path):
     product_to_prediction_map = {}
     cur_procuct_probs = []
     cur_product_id = None
@@ -297,11 +297,13 @@ def evaluate_sequential_ensemble_test(net, loader, path):
             # transforms
             images_list = TTA(images.numpy()) # a list of image batch using different transforms
             probs_list = []
+            i = 0
             for images in images_list:
                 images = Variable(images.type(torch.FloatTensor)).cuda()
-                logits = net(images)
+                logits = nets[i](images)
                 probs  = ((F.softmax(logits)).cpu().data.numpy()).astype(float)
                 probs_list.append(probs)
+                i += 1
 
             i = 0
             for image_id in image_ids:

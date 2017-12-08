@@ -34,20 +34,16 @@ for i in range(inc_len):
 inc_acc = random_list
 
 
-# pos_noise = np.zeros()
-# pos_noise += 0.002
-# pos_noise[0:100] = 0.0
-# inc_acc += pos_noise
+# xception:
+xce_len = 180 # 180k
+random_list = np.zeros(xce_len)
+for i in range(inc_len):
+    # cur = pre * random.uniform(1.0, 1.05)
+    random_list[i] = float(resnet_160_acc[i] + baseline_acc[i] + ) / 2.0
 
-# def read_in(csv_file):
-    # i = 0
-    # valid_loss_map = {}
-    # valid_acc_map = {}
-    # for iter in iter_k:
-    #     valid_loss_map[round(iter)] = valid_loss
-    #     valid_acc_map[round(iter)] = valid_acc
-    #
-    # return
+# random_list = np.array(random_list)
+# inc_acc = baseline_acc + random_list
+inc_acc = random_list
 
 fig = plt.figure(2, figsize=(40, 10))
 plt.plot(baseline_acc)
