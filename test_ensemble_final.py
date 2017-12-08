@@ -17,9 +17,12 @@ from net.resnet101 import ResNet101 as ResNet
 from net.xception import Xception as XcepNet
 from net.inception_v3 import Inception3 as IncNet
 
+def wrap(f, g):
+    return lambda x: g(f(x))
+
 # TTA_list = [ResNet.valid_augment, IncNet.valid_augment, XcepNet.valid_augment]
 # TTA_list = [fix_center_crop, random_shift_scale_rotate]
-TTA_list = [ResNet.valid_augment]
+TTA_list = [ResNet.valid_augment, wrap(random_shift_scale_rotate, ResNet.valid_augment)]
 transform_num = len(TTA_list)
 
 use_cuda = True
@@ -43,7 +46,7 @@ resnet_pseudo_initial_checkpoint = "./latest/resnet_pseudo/latest.pth"
 
 net_params = {"in_shape": (3, CDISCOUNT_HEIGHT, CDISCOUNT_WIDTH), "num_classes": CDISCOUNT_NUM_CLASSES}
 
-res_path = "./test_res/" + IDENTIFIER + "_test_TTA.res"
+res_path = "./test_res/" + IDENTIFIER + "_test_TTA_pseudo.res"
 validation_batch_size = 64
 
 def ensemble_predict(cur_procuct_probs, num):
@@ -280,6 +283,74 @@ def load_net(identifier, initial_checkpoint, net_params):
 
     return net
 
+def evaluate_sequential_ensemble_test(net, loader, path):
+    product_to_prediction_map = {}
+    cur_procuct_probs = []
+    cur_product_id = None
+
+    with open(path, "a") as file:
+        file.write("_id,category_id\n")
+
+        for iter, (images, image_ids) in enumerate(tqdm(loader), 0):
+            image_ids = np.array(image_ids)
+
+            # transforms
+            images_list = TTA(images.numpy()) # a list of image batch using different transforms
+            probs_list = []
+            for images in images_list:
+                images = Variable(images.type(torch.FloatTensor)).cuda()
+                logits = net(images)
+                probs  = ((F.softmax(logits)).cpu().data.numpy()).astype(float)
+                probs_list.append(probs)
+
+            i = 0
+            for image_id in image_ids:
+                product_id = imageid_to_productid(image_id)
+
+                if cur_product_id == None:
+                    cur_product_id = product_id
+
+                if product_id != cur_product_id:
+                    # a new product
+                    print("------------------------- cur product: " + str(cur_product_id) + "-------------------------")
+
+                    # find winner for previous product
+                    num = len(cur_procuct_probs) * transform_num  # total number of instances for current product
+                    print("Number of instances: ", num)
+
+                    # do predictions
+                    cur_procuct_probs = np.array(cur_procuct_probs)
+                    winner = ensemble_predict(cur_procuct_probs, num)
+
+                    # save winner
+                    product_to_prediction_map[cur_product_id] = winner
+
+                    # update
+                    cur_product_id = product_id
+                    cur_procuct_probs = []
+
+                for probs in probs_list:
+                    cur_procuct_probs.append(probs[i])
+
+                i += 1
+
+        # a new product
+        print("------------------------- cur product: " + str(cur_product_id) + "-------------------------")
+
+        # find winner for previous product
+        num = len(cur_procuct_probs) * transform_num  # total number of instances for current product
+        print("Number of instances: ", num)
+
+        # do predictions
+        cur_procuct_probs = np.array(cur_procuct_probs)
+        winner = ensemble_predict(cur_procuct_probs, num)
+
+        # save winner
+        product_to_prediction_map[cur_product_id] = winner
+
+        for product_id, prediction in product_to_prediction_map.items():
+            file.write(str(product_id) + "," + str(label_to_category_id[prediction]) + "\n")
+
 # main #################################################################
 if __name__ == '__main__':
     print( '%s: calling main function ... ' % os.path.basename(__file__))
@@ -301,6 +372,6 @@ if __name__ == '__main__':
 
     # nets = [res_net, inc3_net, xce3_net]
     nets = [res_pseudo_net]
-    product_to_prediction_map = evaluate_sequential_ensemble_val_bagging(nets, loader, res_path)
+    product_to_prediction_map = evaluate_sequential_ensemble_test(nets, loader, res_path)
 
     print('\nsucess!')
