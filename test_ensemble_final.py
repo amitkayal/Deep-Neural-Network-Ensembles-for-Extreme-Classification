@@ -208,7 +208,7 @@ def evaluate_sequential_ensemble_val_bagging(nets, loader, path):
         i = 0
         for images in images_list:
             images = Variable(images.type(torch.FloatTensor)).cuda()
-            net = nets[i]
+            net = nets[0]
             logits = net(images)
             probs  = (((F.softmax(logits)).cpu().data.numpy()).astype(float))
             probs_list.append(probs)
