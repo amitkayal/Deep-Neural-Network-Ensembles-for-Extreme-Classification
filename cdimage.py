@@ -47,7 +47,9 @@ class CDiscountDataset(Dataset):
             img = cv2.imread(self.root_dir + 'train/'+ self.image_names[idx])
         else:
             img = cv2.imread(self.root_dir + 'test/' + self.image_names[idx])
-        label = self.indexes[idx]
+        label = None
+        if self.mode == "train" or self.mode == "valid":
+            label = self.indexes[idx]
         img_id = self.image_id[idx]
         if self.transform is not None:
             img = self.transform(img)
