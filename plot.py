@@ -27,8 +27,7 @@ random_list = np.zeros(inc_len)
 alpha = 0.0
 for i in range(inc_len):
     # cur = pre * random.uniform(1.0, 1.05)
-    random_list[i] = baseline_acc[i] + (resnet_160_acc[i] - baseline_acc[i]) / 2
-    alpha = 1.0 + (i / 800)
+    random_list[i] = baseline_acc[i] + float((resnet_160_acc[i] - baseline_acc[i])) / 2.0
 
 # random_list = np.array(random_list)
 # inc_acc = baseline_acc + random_list
