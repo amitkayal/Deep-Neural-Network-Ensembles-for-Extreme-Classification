@@ -63,6 +63,7 @@ for i in range(175):
 # inc_acc = baseline_acc + random_list
 xce_acc = random_list
 
+plt.style.use(['dark_background', 'presentation'])
 fig = plt.figure(2, figsize=(13, 10))
 plt.plot(baseline_acc)
 plt.plot(resnet_160_acc)
@@ -75,4 +76,5 @@ plt.xlabel('iters', fontsize=15)
 plt.ylim(0.4,0.7)
 # plt.show()
 plt.legend(['se-res (baseline)', 'resnet-101', 'inception-v3', 'xception-v3'], loc='upper left')
+plt.grid('on')
 plt.savefig("./plots/test.png")

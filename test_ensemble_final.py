@@ -362,13 +362,13 @@ def evaluate_sequential_ensemble_test(nets, loader, path):
 if __name__ == '__main__':
     print( '%s: calling main function ... ' % os.path.basename(__file__))
 
-    res_net = load_net("resnet101", resnet_initial_checkpoint, net_params)
-    # res_pseudo_net = load_net("resnet101", resnet_pseudo_initial_checkpoint, net_params)
+    # res_net = load_net("resnet101", resnet_initial_checkpoint, net_params)
+    res_pseudo_net = load_net("resnet101", resnet_pseudo_initial_checkpoint, net_params)
     # inc3_net = load_net("inceptionv3", inc3_initial_checkpoint, net_params)
     # xce3_net = load_net("xceptionv3", xce3_initial_checkpoint, net_params)
 
 
-    dataset = CDiscountDataset(csv_dir + validation_large_data_filename, root_dir, mode="valid", transform=None)
+    dataset = CDiscountDataset(csv_dir + test_data_filename, root_dir, mode="test", transform=None)
     loader  = DataLoader(
                         dataset,
                         sampler=SequentialSampler(dataset),
@@ -378,8 +378,8 @@ if __name__ == '__main__':
                         pin_memory  = False)
 
     # nets = [res_net, inc3_net, xce3_net]
-    # nets = [res_pseudo_net]
-    nets = [res_net]
-    product_to_prediction_map = evaluate_sequential_ensemble_val_bagging(nets, loader, res_path)
+    nets = [res_pseudo_net]
+    # nets = [res_net]
+    product_to_prediction_map = evaluate_sequential_ensemble_test(nets, loader, res_path)
 
     print('\nsucess!')
