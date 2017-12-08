@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.16 (TeX Live 2015) (preloaded format=pdflatex 2015.10.23)  8 DEC 2017 01:28
+This is pdfTeX, Version 3.14159265-2.6-1.40.16 (TeX Live 2015) (preloaded format=pdflatex 2015.10.23)  8 DEC 2017 02:00
 entering extended mode
  restricted \write18 enabled.
  file:line:error style messages enabled.
@@ -142,22 +142,126 @@ LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 5.
 LaTeX Font Info:    ... okay on input line 5.
 LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 5.
 LaTeX Font Info:    ... okay on input line 5.
- [1
+
+./pseudocode.tex:21: Missing $ inserted.
+<inserted text> 
+                $
+l.21     }
+          
+I've inserted a begin-math/end-math symbol since I think
+you left one out. Proceed, with fingers crossed.
+
+./pseudocode.tex:21: Extra }, or forgotten $.
+<recently read> \egroup 
+                        
+l.21     }
+          
+I've deleted a group-closing symbol because it seems to be
+spurious, as in `$x}$'. But perhaps the } is legitimate and
+you forgot something else, as in `\hbox{$x}'. In such cases
+the way to recover is to insert both the forgotten and the
+deleted material, e.g., by typing `I$}'.
+
+./pseudocode.tex:21: Extra }, or forgotten $.
+<recently read> \egroup 
+                        
+l.21     }
+          
+I've deleted a group-closing symbol because it seems to be
+spurious, as in `$x}$'. But perhaps the } is legitimate and
+you forgot something else, as in `\hbox{$x}'. In such cases
+the way to recover is to insert both the forgotten and the
+deleted material, e.g., by typing `I$}'.
+
+./pseudocode.tex:21: Missing $ inserted.
+<inserted text> 
+                $
+l.21     }
+          
+I've inserted a begin-math/end-math symbol since I think
+you left one out. Proceed, with fingers crossed.
+
+./pseudocode.tex:21: Missing $ inserted.
+<inserted text> 
+                $
+l.21     }
+          
+I've inserted a begin-math/end-math symbol since I think
+you left one out. Proceed, with fingers crossed.
+
+./pseudocode.tex:21: Missing $ inserted.
+<inserted text> 
+                $
+l.21     }
+          
+I've inserted a begin-math/end-math symbol since I think
+you left one out. Proceed, with fingers crossed.
+
+./pseudocode.tex:21: Argument of \algocf@algocf@eIfthenelsemain has an extra }.
+<inserted text> 
+                \par 
+l.21     }
+          
+I've run across a `}' that doesn't seem to match anything.
+For example, `\def\a#1{...}' and `\a}' would produce
+this error. If you simply proceed now, the `\par' that
+I've just inserted will cause me to report a runaway
+argument that might be the root of the problem. But if
+your `}' was spurious, just type `2' and it will go away.
+
+Runaway argument?
+./pseudocode.tex:21: Paragraph ended before \algocf@algocf@eIfthenelsemain was complete.
+<to be read again> 
+                   \par 
+l.21     }
+          
+I suspect you've forgotten a `}', causing me to apply this
+control sequence to too much text. How can we recover?
+My plan is to forget the whole thing and hope for the best.
+
+./pseudocode.tex:23: Missing } inserted.
+<inserted text> 
+                }
+l.23 \end{algorithm}
+                    
+I've inserted something that you may have forgotten.
+(See the <inserted text> above.)
+With luck, this will get me unwedged. But if you
+really didn't forget anything, try typing `2' now; then
+my insertion and my current dilemma will both disappear.
+
+
+Underfull \hbox (badness 10000) detected at line 23
+[][]
+ []
+
+./pseudocode.tex:23: Missing } inserted.
+<inserted text> 
+                }
+l.23 \end{algorithm}
+                    
+I've inserted something that you may have forgotten.
+(See the <inserted text> above.)
+With luck, this will get me unwedged. But if you
+really didn't forget anything, try typing `2' now; then
+my insertion and my current dilemma will both disappear.
+
+[1
 
 {/usr/local/texlive/2015/texmf-var/fonts/map/pdftex/updmap/pdftex.map}] (/Volumes/Extend/20170906Extend/git/CMU/Cdiscount-2017/paper/.texpadtmp/pseudocode.aux) ) 
 Here is how much of TeX's memory you used:
- 2223 strings out of 493089
- 29462 string characters out of 6134841
+ 2229 strings out of 493089
+ 29532 string characters out of 6134841
  107278 words of memory out of 5000000
- 5758 multiletter control sequences out of 15000+600000
- 5058 words of font info for 19 fonts, out of 8000000 for 9000
+ 5762 multiletter control sequences out of 15000+600000
+ 6065 words of font info for 22 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
- 27i,11n,26p,251b,400s stack positions out of 5000i,500n,10000p,200000b,80000s
-</usr/local/texlive/2015/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx10.pfb></usr/local/texlive/2015/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx7.pfb></usr/local/texlive/2015/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi10.pfb></usr/local/texlive/2015/texmf-dist/fonts/type1/public/amsfonts/cm/cmr10.pfb>
-Output written on /Volumes/Extend/20170906Extend/git/CMU/Cdiscount-2017/paper/.texpadtmp/pseudocode.pdf (1 page, 44984 bytes).
+ 31i,17n,31p,251b,505s stack positions out of 5000i,500n,10000p,200000b,80000s
+</usr/local/texlive/2015/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx10.pfb></usr/local/texlive/2015/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx7.pfb></usr/local/texlive/2015/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi10.pfb></usr/local/texlive/2015/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi7.pfb></usr/local/texlive/2015/texmf-dist/fonts/type1/public/amsfonts/cm/cmr10.pfb></usr/local/texlive/2015/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy10.pfb></usr/local/texlive/2015/texmf-dist/fonts/type1/public/amsfonts/cm/cmti10.pfb>
+Output written on /Volumes/Extend/20170906Extend/git/CMU/Cdiscount-2017/paper/.texpadtmp/pseudocode.pdf (1 page, 76739 bytes).
 PDF statistics:
- 24 PDF objects out of 1000 (max. 8388607)
- 16 compressed objects within 1 object stream
+ 36 PDF objects out of 1000 (max. 8388607)
+ 25 compressed objects within 1 object stream
  0 named destinations out of 1000 (max. 500000)
  1 words of extra memory for PDF output out of 10000 (max. 10000000)
 

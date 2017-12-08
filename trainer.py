@@ -21,10 +21,10 @@ from cdimage import *
 # from net.resnet101 import ResNet101 as Net
 # from net.excited_inception_v3 import SEInception3 as Net
 # from net.xception import Xception as Net
-from net.inception_v3 import Inception3 as Net
+# from net.inception_v3 import Inception3 as Net
+from net.excited_resnet50 import SEResNet50 as Net
 
-
-IDENTIFIER = "inc3"
+IDENTIFIER = "se-resnet50"
 
 # Not change
 use_cuda = True
@@ -57,14 +57,18 @@ def run_training():
 
     #-------------------------------------------- Training settings --------------------------------------------
 
-    # initial_checkpoint = None
+    initial_checkpoint = None
     # initial_checkpoint = latest_dir + "latest.pth"
     # initial_checkpoint = '../trained_models/resnet_00243000_model.pth'
     # initial_checkpoint = '../trained_models/LB=0.69422_xception_00158000_model.pth'
     # initial_checkpoint = '../trained_models/LB=0.69673_se-inc3_00026000_model.pth'
-    initial_checkpoint = '../trained_models/LB=0.69565_inc3_00075000_model.pth'
-    pretrained_file = None
-    skip = [] #['fc.weight', 'fc.bias']
+    # initial_checkpoint = '../trained_models/LB=0.69565_inc3_00075000_model.pth'
+    # pretrained_file = None
+    # skip = [] #['fc.weight', 'fc.bias']
+
+    # resnet-50
+    pretrained_file = '../trained_models/SE-ResNet-50.convert.pth'
+    skip = ['fc.weight', 'fc.bias']
 
     num_iters   = 1000*1000
     iter_smooth = 50
