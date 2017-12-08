@@ -8,15 +8,17 @@
     \SetKwInOut{Output}{Output}
 
     \underline{function Euclid} $(a,b)$\;
-    \Input{Probability distribution over target categories of all images for one product}
+    \Input{Probability distribution over target categories of all images for one product $P$, product $D$}
     \Output{Category prediction of the product}
-    \eIf{$b=0$}
-      {
-        return $a$\;
-      }
-      {
-        return Euclid$(b,a\mod b)$\;
-      }
+    \For{candidate \in cadidates\_pool } {
+    	\For{image \in $imgaes_{D}$} {
+    		calculate exclusive average and standard deviation of probability predictions of candidate category among all images except for current image;
+    		
+    		\eIf{$P(candidate | image)$ outside $95\%$ confidence interval} {
+    			exclude the image;
+    		}    		
+    	}
+    }
     \caption{Belief-based Prediction Aggregation}
 \end{algorithm}
 \end{document} 
