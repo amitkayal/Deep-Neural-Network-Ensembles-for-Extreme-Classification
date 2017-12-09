@@ -20,9 +20,10 @@ from net.inception_v3 import Inception3 as IncNet
 def wrap(image):
     return ResNet.valid_augment(random_shift_scale_rotate(image))
 
-TTA_list = [ResNet.valid_augment, IncNet.valid_augment, XcepNet.valid_augment]
+# TTA_list = [ResNet.valid_augment, IncNet.valid_augment, XcepNet.valid_augment]
 # TTA_list = [fix_center_crop, random_shift_scale_rotate]
 # TTA_list = [ResNet.valid_augment, wrap]
+TTA_list = [IncNet.valid_augment]
 transform_num = len(TTA_list)
 TTA_threshold = 0.5
 
@@ -377,9 +378,10 @@ if __name__ == '__main__':
                         num_workers = 4,
                         pin_memory  = False)
 
-    nets = [res_net, inc3_net, xce3_net]
+    # nets = [res_net, inc3_net, xce3_net]
     # nets = [res_pseudo_net]
     # nets = [res_net]
-    product_to_prediction_map = evaluate_sequential_ensemble_test(nets, loader, res_path)
+    nets = [inc3_net]
+    product_to_prediction_map = evaluate_sequential_ensemble_val_bagging(nets, loader, res_path)
 
     print('\nsucess!')
