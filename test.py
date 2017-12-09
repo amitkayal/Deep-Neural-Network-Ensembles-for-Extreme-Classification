@@ -78,7 +78,7 @@ def evaluate_vote(net, test_loader, path):
     with open(path, "a") as file:
         file.write("_id,category_id\n")
 
-        for iter, (images, image_ids) in enumerate(test_loader, 0):#remove indices for testing
+        for iter, (images, image_ids) in enumerate(test_loader, 0):
             # if cnt > 4:
             #     break;
 
@@ -132,6 +132,7 @@ if __name__ == '__main__':
 
     net = Net(in_shape = (3, CDISCOUNT_HEIGHT, CDISCOUNT_WIDTH), num_classes=CDISCOUNT_NUM_CLASSES)
     if use_cuda: net.cuda()
+    net.eval()
 
     if os.path.isfile(initial_checkpoint):
         print("=> loading checkpoint '{}'".format(initial_checkpoint))

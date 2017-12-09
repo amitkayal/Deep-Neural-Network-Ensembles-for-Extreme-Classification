@@ -1,0 +1,10 @@
+#exp1
+
+resnet101-baseline:
+val: 0.6384087494416546
+
+resnet101-TTA(1):
+val: 0.6375830750280864
+
+ensemble(resnet, incv3, xcepv3):
+val:  0.6527091595717321
