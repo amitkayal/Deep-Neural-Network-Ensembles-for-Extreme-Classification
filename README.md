@@ -1,3 +1,5 @@
+For detailed report, please refer to [Deep Neural Network Ensembles for Extreme Classification](http://panatopos.com/papers/Deep Neural Network Ensembles for Extreme Classification.pdf)
+
 # Abstract
 The main task of this project is about the so called Extreme Classification, where we need to deal with multi-class involving an extremely large number of labels. Specifically, the training set of Cdiscount dataset contains 12,118,359 images (6,924,452 products), and in total, there are 5,270 categories. The final goal of the project is to correctly predict products into these 5,270 categories. First, we experimented with several deep neural network models, including ResNet50, Se-ResNet50, ResNet101, InceptionV3, Xception, etc. with a limited training epochs, to test single model performance and set the baseline for further experiments. Then, we implemented Test Time Augmentation (TTA) and network ensembles to make whole framework more stable in testing stage. Then, in order to eliminate negative effect from noise data in prediction stage, we proposed a noise robust prediction aggregation algorithm. Finally, we used pseudo labeling to further fine-tune the trained neural network in a semi-supervised fashion, hoping to further generalize the model to the testing set and improve the model performance on product-wise prediction (i.e. not simply image-wise prediction). The proposed framework turns out to be more stable and effective than single base model.
 
@@ -338,6 +340,10 @@ of categories. In such case, we might be able to integrate hierarchy
 classification layers into our network, which could decrease the chance
 of misclassification at the early stage and improve the accuracy of
 prediction.
+
+# Contributions
+
+Part of the work is inspired by @Heng CherKeng on Kaggle.
 
 # References
 [1] O. Chapelle, B. Scholkopf, and A. Zien. Semi-supervised learning (chapelle, o. et al., eds.; 2006)[book reviews]. IEEE Transactions on Neural Networks, 20(3):542–542, 2009.
