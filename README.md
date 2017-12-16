@@ -190,7 +190,7 @@ models of all candidate categories and select the one with maximum
 score. This category winner is our final prediction. The pseudo code is
 shown below.
 
-<img src="img/pseudocode.jpg" width="500px"/>
+<img src="img/pseudocode.jpg" width="700px"/>
 
 ## Pseudo-Labeling
 
@@ -257,7 +257,7 @@ accuracy results are shown in Figure 3.
 | Batch          |           160*2           |    64*4   |   64*4   |            64*4           |
 | Time per epoch |           55.54h          |    31h    |    31h   |            64*4           |
 
-<img src="img/val_acc.png" width="500px"/>
+<img src="img/val_acc.png" width="700px"/>
 
 |                                                  | Validation Acc |
 |--------------------------------------------------|:--------------:|
@@ -276,6 +276,12 @@ pseudo-labeling turns out to help the models further generalize on
 testing data, which bring improvement as well.
 
 # Observations
+
+|                            | Test Acc |
+|----------------------------|:--------:|
+| Resnet-101-baseline        |   0.683  |
+| Resnet-101-TTA(1-2)        |   0.703  |
+| Resnet-101-Pseudo-Labeling |   0.695  |
 
 As shown in Table 5, Batch Pseudo Labeling helps improve the performance
 of the model on the testing set. We contributed this to the regularizing
@@ -335,12 +341,21 @@ prediction.
 
 # References
 [1] O. Chapelle, B. Scholkopf, and A. Zien. Semi-supervised learning (chapelle, o. et al., eds.; 2006)[book reviews]. IEEE Transactions on Neural Networks, 20(3):542–542, 2009.
+
 [2] F. Chollet. Xception: Deep learning with depthwise separa- ble convolutions. arXiv preprint arXiv:1610.02357, 2016.
+
 [3] A. Choromanska, A. Agarwal, and J. Langford. Extreme multi class classification. In NIPS Workshop: eXtreme Clas- sification, submitted, 2013.
+
 [4] S. Dieleman, A. van den Oord, I. Korshunova, J. Burms, J. Degrave, L. Pigou, and P. Buteneers. Classifying plank- ton with deep neural networks. Blog entry, 3:4, 2015.
+
 [5] T.G.Dietterich.Anexperimentalcomparisonofthreemeth- ods for constructing ensembles of decision trees: Bagging, boosting, and randomization. Machine learning, 40(2):139– 157, 2000.
+
 [6] K. He, X. Zhang, S. Ren, and J. Sun. Deep residual learn- ing for image recognition. In Proceedings of the IEEE con- ference on computer vision and pattern recognition, pages 770–778, 2016.
+
 [7] D.-H. Lee. Pseudo-label: The simple and efficient semi- supervised learning method for deep neural networks. In Workshop on Challenges in Representation Learning, ICML, volume 3, page 2, 2013.
+
 [8] S. L. Smith, P.-J. Kindermans, and Q. V. Le. Don’t decay the learning rate, increase the batch size. arXiv preprint arXiv:1711.00489, 2017.
+
 [9] W. N. Street and Y. Kim. A streaming ensemble algorithm (sea) for large-scale classification. In Proceedings of the sev- enth ACM SIGKDD international conference on Knowledge discovery and data mining, pages 377–382. ACM, 2001.
+
 [10] C. Szegedy, W. Liu, Y. Jia, P. Sermanet, S. Reed, D. Anguelov, D. Erhan, V. Vanhoucke, and A. Rabinovich. Going deeper with convolutions. In Proceedings of the IEEE conference on computer vision and pattern recogni- tion, pages 1–9, 2015.
