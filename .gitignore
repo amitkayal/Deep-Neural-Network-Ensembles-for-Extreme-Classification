@@ -8,3 +8,5 @@ __pycache__
 output/*
 test/*
 latest/*
+log/*
+test_res/*

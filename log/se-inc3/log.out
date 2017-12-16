@@ -1,35 +1,0 @@
-
---- [START 2017-12-06 05:22:51] ----------------------------------------------------------------
-
-** some experiment setting **
-	IDENTIFIER   = se-inc3
-	SEED         = 123456
-	PROJECT_PATH = ./project
-	out_dir      = ../
-** net setting **
-<class 'net.excited_inception_v3.SEInception3'>
-
-
-** dataset setting **
-	len(train_dataset)  = 12118359
-	len(valid_dataset)  = 252934
-	len(train_loader)   = 189349
-	len(valid_loadernum_iters)   = 3953
-	batch_size  = 64
-	iter_accum  = 4
-	batch_size*iter_accum  = 256
-	loading @ initial_checkpoint = ../trained_models/LB=0.69673_se-inc3_00026000_model.pth
-	initial_checkpoint = ../trained_models/LB=0.69673_se-inc3_00026000_model.pth
-** start training here! **
-	optimizer=<torch.optim.sgd.SGD object at 0x7fca26c5a748>
-   rate   iter   epoch  | valid_loss/acc | train_loss/acc | batch_loss/acc | total time | avg iter time | i j |
-----------------------------------------------------------------------------------------------------------------
-0.0000   26.0 k   0.55  | 0.0000  0.0000 | 0.0000  0.0000 | 0.0000  0.0000 |     0 min |  0.00 s | 26000,0 
-0.0100   26.0 k   0.55  | 0.0000  0.0000 | 2.1512  0.5687 | 2.4891  0.5312 |     1 min |  1.61 s | 26005,20 
-0.0100   26.0 k   0.55  | 0.0000  0.0000 | 2.1359  0.5715 | 2.0473  0.5781 |     1 min |  1.09 s | 26010,40 
-0.0100   26.0 k   0.55  | 0.0000  0.0000 | 2.1409  0.5635 | 2.3160  0.5469 |     2 min |  0.92 s | 26015,60 
-0.0100   26.0 k   0.55  | 0.0000  0.0000 | 2.0931  0.5721 | 1.7876  0.6719 |     2 min |  0.83 s | 26020,80 
-0.0100   26.0 k   0.55  | 0.0000  0.0000 | 2.0938  0.5717 | 1.8311  0.6250 |     2 min |  0.78 s | 26025,100 
-0.0100   26.0 k   0.55  | 0.0000  0.0000 | 2.1107  0.5695 | 2.5135  0.5469 |     3 min |  0.75 s | 26030,120 
-0.0100   26.0 k   0.55  | 0.0000  0.0000 | 2.1139  0.5710 | 2.1041  0.6094 |     3 min |  0.72 s | 26035,140 
-0.0100   26.0 k   0.55  | 0.0000  0.0000 | 2.1157  0.5704 | 2.2249  0.5938 |     3 min |  0.71 s | 26040,160 
