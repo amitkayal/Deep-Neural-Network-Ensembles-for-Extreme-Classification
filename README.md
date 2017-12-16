@@ -46,7 +46,11 @@ In this project, we proposed a deep neural network ensemble based
 classification framework on Cdiscount classification task. The pipeline
 is shown in Figure 1 below.
 
-<img src="img/architecture.jpg" width="900px"/>
+<p align="center">
+<img src="img/architecture.jpg" width="600" align="middle"/>
+<h4 align="center"> Figure 1. Whole pipeline </h4>
+</p>
+
 
 # Dataset
 
@@ -54,12 +58,19 @@ The open Cdiscount dataset contains almost 9 million products: half of
 the current catalogue. There are more than 15 million images at 180x180
 resolution with more than 5000 categories as shown in Table 1.
 
-<img src="img/data_example.png" width="500px"/>
+<p align="center">
+<img src="img/data_example.png" width="600" align="middle"/>
+<h4 align="center"> Figure 2. Examples in Cdiscount dataset </h4>
+</p>
 
 |          |    Train   | Validation |    Test   |
 |----------|:----------:|:----------:|:---------:|
 | Images   | 12,118,359 |   252,934  | 3,095,080 |
 | Products |  6,924,452 |   137,758  | 1,768,182 |
+
+<p align="center">
+<h4 align="center"> Table 1. Cdiscount dataset overview </h4>
+</p>
 
 Specifically, the validation is carefully splitted from training set by
 evenly sampling from each category.
@@ -192,7 +203,10 @@ models of all candidate categories and select the one with maximum
 score. This category winner is our final prediction. The pseudo code is
 shown below.
 
-<img src="img/pseudocode.jpg" width="700px"/>
+<p align="center">
+<img src="img/pseudocode.jpg" width="600" align="middle"/>
+<h4 align="center"> Pseudocode for Belief-based prediction aggregation algorithm </h4>
+</p>
 
 ## Pseudo-Labeling
 
@@ -258,14 +272,14 @@ accuracy results are shown in Figure 3.
 | Input Size     | 160*160 crop from 180*180 |  180*180  |  180*180 | 160*160 crop from 180*180 |
 | Batch          |           160*2           |    64*4   |   64*4   |            64*4           |
 | Time per epoch |           55.54h          |    31h    |    31h   |            64*4           |
+<p align="center">
+<h4 align="center"> Table 2. Single base model settings </h4>
+</p>
 
-<img src="img/val_acc.png" width="700px"/>
-
-|                                                  | Validation Acc |
-|--------------------------------------------------|:--------------:|
-| Resnet-101-baseline                              |      0.638     |
-| Resnet-101-TTA(1-2)                              |      0.648     |
-| Ensemble(ResNet101+Inception+Xception)-TTA (1-1) |      0.653     |
+<p align="center">
+<img src="img/val_acc.png" width="600" align="middle"/>
+<h4 align="center"> Figure 3. Comparison of validation accuracy of base models </h4>
+</p>
 
 As shown in Table 4, network ensembles improve the performance of the
 whole framework significantly, which sufficiently demonstrates the
@@ -277,6 +291,15 @@ more sophisticated transforms, but within the limited range. Third,
 pseudo-labeling turns out to help the models further generalize on
 testing data, which bring improvement as well.
 
+|                                                  | Validation Acc |
+|--------------------------------------------------|:--------------:|
+| Resnet-101-baseline                              |      0.638     |
+| Resnet-101-TTA(1-2)                              |      0.648     |
+| Ensemble(ResNet101+Inception+Xception)-TTA (1-1) |      0.653     |
+<p align="center">
+<h4 align="center"> Table 4. Comparison of performance on validation set </h4>
+</p>
+
 # Observations
 
 |                            | Test Acc |
@@ -284,6 +307,10 @@ testing data, which bring improvement as well.
 | Resnet-101-baseline        |   0.683  |
 | Resnet-101-TTA(1-2)        |   0.703  |
 | Resnet-101-Pseudo-Labeling |   0.695  |
+
+<p align="center">
+<h4 align="center"> Table 5. Comparison of performance on test set </h4>
+</p>
 
 As shown in Table 5, Batch Pseudo Labeling helps improve the performance
 of the model on the testing set. We contributed this to the regularizing
