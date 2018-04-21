@@ -1,5 +1,3 @@
-For detailed report, please refer to [Deep Neural Network Ensembles for Extreme Classification](http://panatopos.com/papers/Deep_Neural_Network_Ensembles_for_Extreme_Classification.pdf)
-
 # Abstract
 The main task of this project is about the so called Extreme Classification, where we need to deal with multi-class involving an extremely large number of labels. Specifically, the training set of Cdiscount dataset contains 12,118,359 images (6,924,452 products), and in total, there are 5,270 categories. The final goal of the project is to correctly predict products into these 5,270 categories. First, we experimented with several deep neural network models, including ResNet50, Se-ResNet50, ResNet101, InceptionV3, Xception, etc. with a limited training epochs, to test single model performance and set the baseline for further experiments. Then, we implemented Test Time Augmentation (TTA) and network ensembles to make whole framework more stable in testing stage. Then, in order to eliminate negative effect from noise data in prediction stage, we proposed a noise robust prediction aggregation algorithm. Finally, we used pseudo labeling to further fine-tune the trained neural network in a semi-supervised fashion, hoping to further generalize the model to the testing set and improve the model performance on product-wise prediction (i.e. not simply image-wise prediction). The proposed framework turns out to be more stable and effective than single base model.
 
@@ -274,11 +272,6 @@ accuracy results are shown in Figure 3.
 | Time per epoch |           55.54h          |    31h    |    31h   |            64*4           |
 <p align="center">
 <h4 align="center"> Table 2. Single base model settings </h4>
-</p>
-
-<p align="center">
-<img src="img/val_acc.png" width="600" align="middle"/>
-<h4 align="center"> Figure 3. Comparison of validation accuracy of base models </h4>
 </p>
 
 As shown in Table 4, network ensembles improve the performance of the
