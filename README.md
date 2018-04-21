@@ -274,11 +274,6 @@ accuracy results are shown in Figure 3.
 <h4 align="center"> Table 2. Single base model settings </h4>
 </p>
 
-<p align="center">
-<img src="img/val_acc.png" width="600" align="middle"/>
-<h4 align="center"> Figure 3. Comparison of validation accuracy of base models </h4>
-</p>
-
 As shown in Table 4, network ensembles improve the performance of the
 whole framework significantly, which sufficiently demonstrates the
 effectiveness of deep ensembles. Second, the performance improvement of
